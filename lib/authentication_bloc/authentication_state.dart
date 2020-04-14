@@ -10,15 +10,15 @@ abstract class AuthenticationState extends Equatable {
 class Uninitialized extends AuthenticationState {}
 
 class Authenticated extends AuthenticationState {
-    final FirebaseUser firebaseUser;
+    final User user;
 
-    const Authenticated(this.firebaseUser);
-
-    @override
-    List<Object> get props => [firebaseUser];
+    const Authenticated(this.user);
 
     @override
-    String toString() => 'Authenticated { displayName: ${firebaseUser.displayName} }';
+    List<Object> get props => [user];
+
+    @override
+    String toString() => 'Authenticated { displayName: ${user.name} }';
 }
 
 class Unauthenticated extends AuthenticationState {}

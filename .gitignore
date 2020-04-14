@@ -28,7 +28,11 @@
 .packages
 .pub-cache/
 .pub/
+.gradle/
 /build/
+
+# Misc tools
+credentials.json
 
 # Web related
 lib/generated_plugin_registrant.dart

@@ -3,29 +3,36 @@ import 'package:flutter/material.dart';
 class AppColors {
     AppColors._();
 
-    static const primary = Color(0xFFef5350);
-    static const primaryDark = Color(0xFFb61827);
-    static const primaryVariant = Color(0xFFff867c);
+    static const primary = Color(0xFFF44336);
+    static const primaryDark = Color(0xFFB71C1C);
+    static const primaryVariant = Color(0xFFEF5350);
 
-    static const secondary = Color(0xFF50ecef);
-    static const secondaryLight = Color(0xFF8effff);
-    static const secondaryDark = Color(0xFF00b9bd);
+    static const secondary = Color(0xFF00BCD4);
+    static const secondaryLight = Color(0xFF80DEEA);
+    static const secondaryDark = Color(0xFF006064);
+
+    static const surface = Color(0xFF3C3C3C);
 }
 
 class AppThemes {
     AppThemes._();
 
-    static ThemeData get light => ThemeData(
-        brightness: Brightness.light,
-        primaryColor: AppColors.primary,
-        primaryColorDark: AppColors.primaryDark,
-        primaryColorLight: AppColors.primaryVariant,
-        accentColor: AppColors.secondary,
-    );
+    static ThemeData get light =>
+        ThemeData(
+            brightness: Brightness.light,
+            primaryColor: AppColors.primary,
+            primaryColorDark: AppColors.primaryDark,
+            primaryColorLight: AppColors.primaryVariant,
+            accentColor: AppColors.secondary,
+            scaffoldBackgroundColor: AppColors.surface,
+            backgroundColor: AppColors.surface,
+            dialogBackgroundColor: AppColors.surface
+        );
 
-    static ThemeData get dark => ThemeData(
-        brightness: Brightness.dark
-    );
+    static ThemeData get dark =>
+        ThemeData(
+            brightness: Brightness.dark
+        );
 
     static AppBarTheme get darkAppBarTheme {
         return AppBarTheme(

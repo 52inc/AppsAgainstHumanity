@@ -21,6 +21,9 @@ class AppLocalization {
   }
 
   String get appName => Intl.message('AppsAgainstHumanity', name: 'appName');
+  String get appNameDisplay => Intl.message('Apps\nAgainst\nHumanity', name: 'appNameDisplay');
+
+  String get actionSignIn => Intl.message('Sign in with Google', name: 'actionSignIn');
 
 }
 

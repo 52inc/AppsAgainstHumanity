@@ -1,9 +1,11 @@
 import 'dart:async';
+import 'package:appsagainsthumanity/data/features/users/model/user.dart';
 import 'package:appsagainsthumanity/data/features/users/user_repository.dart';
 import 'package:appsagainsthumanity/internal.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:logging/logging.dart';
 import 'package:meta/meta.dart';
 
 part 'authentication_event.dart';
@@ -37,6 +39,7 @@ class AuthenticationBloc
     try {
       final isSignedIn = await _userRepository.isSignedIn();
       if (isSignedIn) {
+        Logger("authentication_bloc").fine("User is signed-in!");
         final user = await _userRepository.getUser();
         yield Authenticated(user);
       } else {
