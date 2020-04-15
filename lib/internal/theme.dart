@@ -19,14 +19,12 @@ class AppThemes {
 
     static ThemeData get light =>
         ThemeData(
-            brightness: Brightness.light,
+            brightness: Brightness.dark,
             primaryColor: AppColors.primary,
             primaryColorDark: AppColors.primaryDark,
             primaryColorLight: AppColors.primaryVariant,
             accentColor: AppColors.secondary,
-            scaffoldBackgroundColor: AppColors.surface,
-            backgroundColor: AppColors.surface,
-            dialogBackgroundColor: AppColors.surface
+            canvasColor: AppColors.surface
         );
 
     static ThemeData get dark =>

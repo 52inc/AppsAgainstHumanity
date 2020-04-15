@@ -54,12 +54,16 @@ dependencies:
   # UI
   material_design_icons_flutter: ^3.4.5045
 
+
+  json_annotation: ^3.0.0
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
   intl_translation: ^0.17.7
   bloc_test: ^3.0.0
-
+  build_runner: ^1.0.0
+  json_serializable: ^3.2.0
 
 builders:
   json_config_builder: 0.0.6

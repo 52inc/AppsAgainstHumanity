@@ -6,29 +6,12 @@ class FirebaseConstants {
 
     static const COLLECTION_USERS = "users";
     static const COLLECTION_DEVICES = "devices";
+    static const COLLECTION_CARD_SETS = "cardSets";
+    static const COLLECTION_GAMES = "games";
+    static const COLLECTION_PLAYERS = "players";
 }
 
 class UserNotFoundException { }
-
-Future<bool> isEmailVerified({bool reload = false}) async {
-    FirebaseUser currentUser = await FirebaseAuth.instance.currentUser();
-    if (currentUser != null) {
-        if (reload) {
-            await currentUser.reload();
-            currentUser = await FirebaseAuth.instance.currentUser();
-        }
-        return currentUser.isEmailVerified;
-    }
-    throw UserNotFoundException();
-}
-
-Future<void> resendEmailVerification() async {
-    final FirebaseUser currentUser = await FirebaseAuth.instance.currentUser();
-    if (currentUser != null) {
-        return await currentUser.sendEmailVerification();
-    }
-    throw UserNotFoundException();
-}
 
 Future<T> currentUserOrThrow<T>(Future<T> Function(FirebaseUser user) action) async {
     final FirebaseUser currentUser = await FirebaseAuth.instance.currentUser();
@@ -46,3 +29,4 @@ Stream<T> streamCurrentUserOrThrow<T>(Stream<T> Function(FirebaseUser user) acti
         throw UserNotFoundException();
     }
 }
+
