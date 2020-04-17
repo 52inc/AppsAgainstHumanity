@@ -11,29 +11,14 @@ part 'game.g.dart';
 class Game {
   @JsonKey(ignore: true)
   String id;
-
-  @nonNull
   final String gid;
-
-  @nonNull
   final String ownerId;
-
-  @nonNull
   final GameState state;
-
-  @nonNull
   final int round;
-
-  @nonNull
   final int prizesToWin;
-
-  @nonNull
+  final List<String> judgeRotation;
   final Set<String> cardSets;
-
-  @nullable
   final Turn turn;
-
-  @nullable
   final String winner;
 
   Game({
@@ -44,6 +29,7 @@ class Game {
     @required this.cardSets,
     this.round = 1,
     this.prizesToWin = 10,
+    this.judgeRotation,
     this.turn,
     this.winner
   });

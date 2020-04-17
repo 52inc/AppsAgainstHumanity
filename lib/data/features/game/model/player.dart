@@ -13,6 +13,9 @@ class Player {
   final String name;
   final String avatarUrl;
 
+  @JsonKey(defaultValue: false)
+  final bool isRandoCardrissian;
+
   @JsonKey(includeIfNull: false)
   final List<ResponseCard> hand;
 
@@ -25,7 +28,8 @@ class Player {
     this.avatarUrl,
     this.hand,
     this.prizes,
-  });
+    bool isRandoCardrissian = false
+  }) : isRandoCardrissian = isRandoCardrissian;
 
   factory Player.fromDocument(DocumentSnapshot documentSnapshot) =>
       Player.fromJson(documentSnapshot.data);
@@ -39,7 +43,8 @@ class Player {
     return '''Player { 
       id: $id, 
       name: $name, 
-      avatarUrl: $avatarUrl, 
+      avatarUrl: $avatarUrl,
+      isRandoCardrissian: $isRandoCardrissian, 
       hand: $hand, 
       prizes: $prizes
     }''';

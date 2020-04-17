@@ -9,6 +9,7 @@ import 'package:appsagainsthumanity/data/features/users/model/user_game.dart';
 import 'package:appsagainsthumanity/data/features/users/user_repository.dart';
 import 'package:appsagainsthumanity/data/firestore.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cloud_functions/cloud_functions.dart';
 import 'package:kt_dart/kt.dart';
 
 class FirestoreGameRepository extends GameRepository {
@@ -66,14 +67,30 @@ class FirestoreGameRepository extends GameRepository {
   }
 
   @override
-  Future<List<UserGame>> getJoinedGames() {
-    return currentUserOrThrow((firebaseUser) async {
-      var games = await db.collection(FirebaseConstants.COLLECTION_USERS)
+  Future<Game> findGame(String gid) async {
+    var snapshots = await db
+        .collection(FirebaseConstants.COLLECTION_GAMES)
+        .where('gid', isEqualTo: gid)
+        .limit(1)
+        .getDocuments();
+
+    if (snapshots != null && snapshots.documents.isNotEmpty) {
+      var document = snapshots.documents.first;
+      return Game.fromDocument(document);
+    } else {
+      throw 'Unable to find a game for $gid';
+    }
+  }
+
+  @override
+  Stream<List<UserGame>> observeJoinedGames() {
+    return streamCurrentUserOrThrow((firebaseUser) {
+      return db
+          .collection(FirebaseConstants.COLLECTION_USERS)
           .document(firebaseUser.uid)
           .collection(FirebaseConstants.COLLECTION_GAMES)
-          .getDocuments();
-
-      return games.documents.map((document) => UserGame.fromDocument(document)).toList();
+          .snapshots()
+          .map((querySnapshot) => querySnapshot.documents.map((e) => UserGame.fromDocument(e)).toList());
     });
   }
 
@@ -92,6 +109,34 @@ class FirestoreGameRepository extends GameRepository {
         .collection(FirebaseConstants.COLLECTION_PLAYERS);
 
     return collection.snapshots().map((snapshots) => snapshots.documents.map((e) => Player.fromDocument(e)).toList());
+  }
+
+  @override
+  Future<void> addRandoCardrissian(String gameDocumentId) async {
+    var document = db
+        .collection(FirebaseConstants.COLLECTION_GAMES)
+        .document(gameDocumentId)
+        .collection(FirebaseConstants.COLLECTION_PLAYERS)
+        .document(FirebaseConstants.DOCUMENT_RANDO_CARDRISSIAN);
+
+    var rando = Player(
+      id: FirebaseConstants.DOCUMENT_RANDO_CARDRISSIAN,
+      name: "Rando Cardrissian",
+      avatarUrl: null,
+      isRandoCardrissian: true
+    );
+
+    await document.setData(rando.toJson());
+  }
+
+  @override
+  Future<void> startGame(String gameDocumentId) async {
+    final HttpsCallable callable = CloudFunctions.instance.getHttpsCallable(functionName: 'startGame');
+    dynamic response = await callable.call(<String, dynamic>{
+      'game_id': gameDocumentId
+    });
+
+    print("Start game Successful! $response");
   }
 
   @override

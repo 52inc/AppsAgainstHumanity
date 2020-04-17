@@ -17,6 +17,12 @@ function cleanPath(input: string): string {
     return input.replace('/', '_');
 }
 
+function computeCardId(set: string, cardText: string): string {
+    const hash = crypto.createHash('sha256');
+    hash.update(set + cardText);
+    return hash.digest('hex');
+}
+
 function hashDocumentId(input: string): string {
     const hash = crypto.createHash('sha256');
     hash.update(input);
@@ -24,6 +30,7 @@ function hashDocumentId(input: string): string {
 }
 
 type PromptCard = {
+    cid: string;
     text: string;
     special: string;
     set: string;
@@ -31,6 +38,7 @@ type PromptCard = {
 }
 
 type ResponseCard = {
+    cid: string;
     text: string;
     set: string;
     source: string;
@@ -49,12 +57,14 @@ async function loadAndSavePromptCards(sheet: GoogleSpreadsheetWorksheet) {
         const promptSpecial = sheet.getCellByA1(`B${i}`).value;
         const promptSet = sheet.getCellByA1(`C${i}`).value;
         const sourceSheet = sheet.getCellByA1(`D${i}`).value;
+        const cid = computeCardId(promptSet, promptText);
 
         let cards = prompts.get(promptSet);
         if (!cards) {
             cards = [];
         }
         cards.push({
+            cid: cid,
             text: promptText,
             special: promptSpecial,
             set: promptSet,
@@ -71,7 +81,7 @@ async function loadAndSavePromptCards(sheet: GoogleSpreadsheetWorksheet) {
         await cardSetDocument.set({
             name: promptSet,
             prompts: cards.length,
-            promptIndexes: cards.map((card) => hashDocumentId(card.text))
+            promptIndexes: cards.map((card) => card.cid)
         }, { merge: true });
 
         const promptsCollection = cardSetDocument.collection('prompts');
@@ -110,12 +120,14 @@ async function loadAndSaveResponseCards(sheet: GoogleSpreadsheetWorksheet) {
         const responseText = sheet.getCellByA1(`G${i}`).value.toString();
         const responseSet = sheet.getCellByA1(`H${i}`).value;
         const sourceSheet = sheet.getCellByA1(`I${i}`).value;
+        const cid = computeCardId(responseSet, responseText);
 
         let cards = responses.get(responseSet);
         if (!cards) {
             cards = [];
         }
         cards.push({
+            cid: cid,
             text: responseText,
             set: responseSet,
             source: sourceSheet
@@ -130,7 +142,7 @@ async function loadAndSaveResponseCards(sheet: GoogleSpreadsheetWorksheet) {
         await cardSetDocument.set({
             name: responseSet,
             responses: cards.length,
-            responseIndexes: cards.map((card) => hashDocumentId(card.text))
+            responseIndexes: cards.map((card) => card.cid)
         }, { merge: true });
 
         const responsesCollection = cardSetDocument.collection('responses');

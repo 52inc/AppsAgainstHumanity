@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:appsagainsthumanity/data/features/cards/model/response_card.dart';
 import 'package:appsagainsthumanity/data/features/game/model/game.dart';
+import 'package:appsagainsthumanity/data/features/game/model/game_state.dart';
 import 'package:appsagainsthumanity/data/features/game/model/player.dart';
 import 'package:appsagainsthumanity/data/features/users/model/user_game.dart';
 import 'package:kt_dart/collection.dart';
@@ -13,8 +14,11 @@ abstract class GameRepository {
     /// Join an existing game using the [gid] game id code
     Future<Game> joinGame(String gid);
 
+    /// Find an existing game using the [gid] game id code
+    Future<Game> findGame(String gid);
+
     /// Return a list of games that you have joined in the past
-    Future<List<UserGame>> getJoinedGames();
+    Stream<List<UserGame>> observeJoinedGames();
 
     /// Observe any changes to a game state by it's [gameDocumentId]
     Stream<Game> observeGame(String gameDocumentId);
@@ -22,6 +26,15 @@ abstract class GameRepository {
     /// Observe any changes to the players of a game by it's
     /// [gameDocumentId]
     Stream<List<Player>> observePlayers(String gameDocumentId);
+
+    /// Add Rando Cardrissian to the game
+    /// [gid] the game to add him to
+    Future<void> addRandoCardrissian(String gameDocumentId);
+
+    /// Start a game that is in it's [GameState.waitingRoom] state
+    /// The gamescreen should pick up the game state change and update the UI
+    /// accordingly
+    Future<void> startGame(String gameDocumentId);
 
     /// Submit your responses for the current turn, if you are not a judge, and
     /// you haven't submitted your response already

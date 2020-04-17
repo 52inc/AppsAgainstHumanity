@@ -22,6 +22,20 @@ class Subscribe extends GameEvent {
   List<Object> get props => [gameId];
 }
 
+class StartGame extends GameEvent {}
+class ClearError extends GameEvent {}
+
+/// This event is triggered to update the user id in the game state
+@immutable
+class UserUpdated extends GameEvent {
+  final String userId;
+
+  UserUpdated(this.userId);
+
+  @override
+  List<Object> get props => [userId];
+}
+
 /// This event is triggered whenever the game object get's update or is loaded
 @immutable
 class GameUpdated extends GameEvent {

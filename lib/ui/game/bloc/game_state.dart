@@ -15,7 +15,7 @@ class GameViewState {
   GameViewState({
     this.userId,
     @required this.game,
-    @required this.players,
+    this.players,
     this.isLoading = true,
     this.error,
   });
@@ -38,11 +38,13 @@ class GameViewState {
 
   @override
   String toString() {
-    return '''GameState { 
-      game: $game, 
+    return '''GameViewState { 
+      userId: $userId,
+      game: ${game?.gid}, 
       players: $players, 
       isLoading: $isLoading, 
-      error: $error
+      error: $error,
+      isOurGame: $isOurGame,
     }''';
   }
 }

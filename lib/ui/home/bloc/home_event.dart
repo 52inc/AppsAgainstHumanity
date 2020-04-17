@@ -1,6 +1,6 @@
-import 'package:appsagainsthumanity/data/features/users/model/user.dart';
-import 'package:meta/meta.dart';
+import 'package:appsagainsthumanity/data/features/users/model/user_game.dart';
 import 'package:equatable/equatable.dart';
+import 'package:meta/meta.dart';
 
 abstract class HomeEvent extends Equatable {
   const HomeEvent();
@@ -10,3 +10,13 @@ abstract class HomeEvent extends Equatable {
 }
 
 class HomeStarted extends HomeEvent {}
+
+@immutable
+class JoinedGamesUpdated extends HomeEvent {
+  final List<UserGame> games;
+
+  JoinedGamesUpdated(this.games);
+
+  @override
+  List<Object> get props => [games];
+}

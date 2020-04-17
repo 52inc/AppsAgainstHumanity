@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class FirebaseConstants {
@@ -9,6 +8,8 @@ class FirebaseConstants {
     static const COLLECTION_CARD_SETS = "cardSets";
     static const COLLECTION_GAMES = "games";
     static const COLLECTION_PLAYERS = "players";
+
+    static const DOCUMENT_RANDO_CARDRISSIAN = "rando-cardrissian";
 }
 
 class UserNotFoundException { }

@@ -26,7 +26,7 @@ class GameScreen extends StatelessWidget {
         },
         builder: (context, state) {
           if (state.game.state == GameState.waitingRoom) {
-            return WaitingRoomScreen(gameState: state);
+            return WaitingRoomScreen();
           } else if (state.game.state == GameState.inProgress) {
             throw 'Show Game Ui';
           } else if (state.game.state == GameState.completed) {

@@ -33,6 +33,7 @@
 
 # Misc tools
 credentials.json
+*.g.dart
 
 # Web related
 lib/generated_plugin_registrant.dart

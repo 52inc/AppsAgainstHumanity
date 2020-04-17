@@ -19,7 +19,7 @@ class Turn {
   final Map<String, Set<ResponseCard>> responses;
 
   @nonNull
-  @JsonKey(nullable: false)
+  @JsonKey(nullable: true)
   final Set<String> downvotes;
 
   @nullable
@@ -31,7 +31,7 @@ class Turn {
     @required this.responses,
     Set<String> downvotes,
     this.winnerId,
-  }) : downvotes = downvotes ?? emptySet();
+  }) : downvotes = downvotes;
 
   factory Turn.fromJson(Map<String, dynamic> json) => _$TurnFromJson(json);
 

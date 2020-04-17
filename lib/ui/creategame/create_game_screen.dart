@@ -5,7 +5,6 @@ import 'package:appsagainsthumanity/ui/game/game_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:kt_dart/kt.dart';
-import 'package:logging/logging.dart';
 
 class CreateGameScreen extends StatefulWidget {
   @override
@@ -15,28 +14,14 @@ class CreateGameScreen extends StatefulWidget {
 class _CreateGameScreenState extends State<CreateGameScreen> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(context.strings.titleNewGame),
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back),
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
-        ),
-      ),
-      body: BlocProvider(
-        create: (context) =>
-            CreateGameBloc(context.repository(), context.repository())
-              ..add(ScreenLoaded()),
-        child: _buildBody(),
-      ),
+    return BlocProvider(
+      create: (context) => CreateGameBloc(context.repository(), context.repository())..add(ScreenLoaded()),
+      child: _buildScaffold(),
     );
   }
 
-  Widget _buildBody() {
-    return BlocConsumer<CreateGameBloc, CreateGameState>(
-        listener: (context, state) {
+  Widget _buildScaffold() {
+    return BlocConsumer<CreateGameBloc, CreateGameState>(listener: (context, state) {
       if (state.error != null) {
         Scaffold.of(context)
           ..hideCurrentSnackBar()
@@ -51,56 +36,68 @@ class _CreateGameScreenState extends State<CreateGameScreen> {
           );
       }
     }, builder: (context, state) {
-      return Column(
-        children: [
-          Expanded(
-            child: state.isLoading
-                ? _buildLoading()
-                : _buildList(state.cardSets, state.selectedSets),
+      return Scaffold(
+        appBar: AppBar(
+          title: Text(context.strings.titleNewGame),
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
           ),
-          Material(
-            elevation: 2,
-            color: AppColors.primary,
-            child: Container(
-              height: 56,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Expanded(
-                    child: Container(
-                      margin: const EdgeInsets.symmetric(horizontal: 16),
-                      child: Text(
-                        "${state.selectedSets.size} Selected",
-                        style: context.theme.textTheme.subtitle1,
-                      ),
+        ),
+        bottomNavigationBar: BottomAppBar(
+          notchMargin: 8,
+          color: AppColors.primary,
+          shape: CircularNotchedRectangle(),
+          child: Container(
+            height: 56,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Expanded(
+                  child: Container(
+                    margin: const EdgeInsets.symmetric(horizontal: 16),
+                    child: Text(
+                      "${state.selectedSets.size} Selected",
+                      style: context.theme.textTheme.headline6,
                     ),
                   ),
-                  Container(
-                    margin: const EdgeInsets.symmetric(horizontal: 16),
-                    child: RaisedButton(
-                      child: Text(context.strings.actionStartGame),
-                      color: AppColors.secondary,
-                      onPressed: state.selectedSets.isNotEmpty()
-                          ? () async {
-                              // Start game?
-                              var newGame = await context
-                                  .repository<GameRepository>()
-                                  .createGame(state.selectedSets);
-
-                              Navigator.of(context).pushReplacement(
-                                  MaterialPageRoute(
-                                      builder: (_) => GameScreen(newGame)));
-                            }
-                          : null,
-                    ),
-                  )
-                ],
-              ),
+                ),
+              ],
             ),
-          )
-        ],
+          ),
+        ),
+        floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
+        floatingActionButton: FloatingActionButton(
+          child: Icon(Icons.play_arrow),
+          onPressed: state.selectedSets.isNotEmpty()
+              ? () async {
+                  // Start game?
+                  var newGame = await context.repository<GameRepository>()
+                      .createGame(state.selectedSets);
+
+                  Navigator.of(context).pushReplacement(MaterialPageRoute(
+                      builder: (_) => GameScreen(newGame)
+                  ));
+                }
+              : null,
+        ),
+        body: _buildBody(state),
       );
     });
+  }
+
+  Widget _buildBody(CreateGameState state) {
+    return Column(
+      children: [
+        Expanded(
+          child: state.isLoading
+              ? _buildLoading()
+              : _buildList(state.cardSets, state.selectedSets),
+        ),
+      ],
+    );
   }
 
   Widget _buildLoading() {
