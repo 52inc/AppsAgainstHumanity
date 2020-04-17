@@ -12,6 +12,7 @@ class AppColors {
     static const secondaryDark = Color(0xFF006064);
 
     static const surface = Color(0xFF3C3C3C);
+    static const responseCardBackground = Color(0xFFF2F2F2);
 }
 
 class AppThemes {

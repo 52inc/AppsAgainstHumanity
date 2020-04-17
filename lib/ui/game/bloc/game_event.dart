@@ -57,3 +57,5 @@ class PlayersUpdated extends GameEvent {
   @override
   List<Object> get props => [players];
 }
+
+class DownvotePrompt extends GameEvent { }

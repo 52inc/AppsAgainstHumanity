@@ -1,7 +1,9 @@
 import 'package:appsagainsthumanity/data/features/game/model/game.dart';
 import 'package:appsagainsthumanity/data/features/game/model/game_state.dart';
 import 'package:appsagainsthumanity/ui/game/bloc/bloc.dart';
-import 'package:appsagainsthumanity/ui/game/waiting/waiting_room_screen.dart';
+import 'package:appsagainsthumanity/ui/game/screens/gameplay/game_play_screen.dart';
+import 'package:appsagainsthumanity/ui/game/screens/starting/starting_room_screen.dart';
+import 'package:appsagainsthumanity/ui/game/screens/waiting/waiting_room_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -27,8 +29,10 @@ class GameScreen extends StatelessWidget {
         builder: (context, state) {
           if (state.game.state == GameState.waitingRoom) {
             return WaitingRoomScreen();
+          } else if (state.game.state == GameState.starting) {
+            return StartingRoomScreen(state);
           } else if (state.game.state == GameState.inProgress) {
-            throw 'Show Game Ui';
+            return GamePlayScreen(state);
           } else if (state.game.state == GameState.completed) {
             throw 'Show Game Completed Ui';
           } else {

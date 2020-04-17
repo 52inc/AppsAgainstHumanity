@@ -52,7 +52,7 @@ class _HomeScreenState extends State<HomeScreen> {
       },
       builder: (context, state) {
         return Scaffold(
-          body: ListView(
+          body: Column(
             children: [
               if (state.games.isNotEmpty)
                 AspectRatio(
@@ -62,25 +62,39 @@ class _HomeScreenState extends State<HomeScreen> {
                     children: [_buildTitleCard(state, includeMargin: false), _buildPastGamesCard(state)],
                   ),
                 ),
-              if (state.games.isEmpty) _buildTitleCard(state),
-              Column(
-                children: [
-                  _buildJoinGameAction(),
-                  Container(
-                    margin: const EdgeInsets.only(top: 16),
-                    child: FloatingActionButton.extended(
-                      label: Container(
-                        margin: const EdgeInsets.only(left: 32, right: 48),
-                        child: Text("NEW GAME"),
-                      ),
-                      icon: Icon(MdiIcons.gamepad),
-                      backgroundColor: AppColors.primary,
-                      onPressed: () {
+              if (state.games.isEmpty)
+                _buildTitleCard(state),
+              Expanded(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    _buildMenuAction(
+                      context: context,
+                      margin: const EdgeInsets.only(left: 24, top: 16, right: 4, bottom: 16),
+                      icon: MdiIcons.gamepad,
+                      color: AppColors.primaryVariant,
+                      label: "START GAME",
+                      onTap: () {
                         Navigator.of(context).push(MaterialPageRoute(builder: (context) => CreateGameScreen()));
                       },
                     ),
-                  )
-                ],
+                    _buildMenuAction(
+                      context: context,
+                      margin: const EdgeInsets.only(left: 12, top: 16, right: 12, bottom: 16),
+                      icon: MdiIcons.gamepadVariantOutline,
+                      color: AppColors.secondaryLight,
+                      label: "JOIN GAME",
+                      onTap: () => _joinGame(),
+                    ),
+                    _buildMenuAction(
+                      context: context,
+                      margin: const EdgeInsets.only(left: 4, top: 16, right: 24, bottom: 16),
+                      icon: MdiIcons.cogOutline,
+                      label: "SETTINGS",
+                      onTap: () {},
+                    ),
+                  ],
+                ),
               )
             ],
           ),
@@ -92,8 +106,8 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget _buildTitleCard(HomeState state, {bool includeMargin = true}) {
     return Container(
       margin: includeMargin
-          ? const EdgeInsets.only(left: 24, right: 24, top: 24)
-          : const EdgeInsets.only(left: 8, right: 8, top: 24),
+          ? const EdgeInsets.only(left: 24, right: 24, top: 48)
+          : const EdgeInsets.only(left: 8, right: 8, top: 48),
       child: AspectRatio(
         aspectRatio: 312 / 436,
         child: Material(
@@ -129,7 +143,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Widget _buildPastGamesCard(HomeState state) {
     return Container(
-      margin: const EdgeInsets.only(left: 8, right: 8, top: 24),
+      margin: const EdgeInsets.only(left: 8, right: 8, top: 48),
       child: AspectRatio(
         aspectRatio: 312 / 436,
         child: Material(
@@ -175,12 +189,10 @@ class _HomeScreenState extends State<HomeScreen> {
                             ? () async {
                                 // Fetch and load game
                                 try {
-                                  var existingGame = await context.repository<GameRepository>()
-                                      .findGame(game.gid);
+                                  var existingGame = await context.repository<GameRepository>().findGame(game.gid);
 
-                                  Navigator.of(context).push(MaterialPageRoute(
-                                      builder: (_) => GameScreen(existingGame)
-                                  ));
+                                  Navigator.of(context)
+                                      .push(MaterialPageRoute(builder: (_) => GameScreen(existingGame)));
                                 } catch (e) {
                                   Scaffold.of(context)
                                     ..hideCurrentSnackBar()
@@ -200,52 +212,45 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _buildJoinGameAction() {
-    return Container(
-      height: 56,
-      width: double.maxFinite,
-      margin: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-      child: Material(
-        clipBehavior: Clip.hardEdge,
-        color: Colors.transparent,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8), side: BorderSide(color: Colors.white30)),
-        child: Builder(builder: (context) {
-          return InkWell(
-            onTap: () async {
-              var gameId = await showJoinRoomDialog(context);
-              if (gameId != null) {
-                try {
-                  var game = await context.repository<GameRepository>().joinGame(gameId);
-
-                  Navigator.of(context).push(MaterialPageRoute(builder: (_) => GameScreen(game)));
-                } catch (e) {
-                  Scaffold.of(context)
-                    ..hideCurrentSnackBar()
-                    ..showSnackBar(SnackBar(
-                      content: Text("$e"),
-                    ));
-                }
-              }
-            },
-            child: Row(
-              children: [
-                Container(
-                  child: Icon(
-                    MdiIcons.gamepadVariantOutline,
-                    color: Colors.white70,
+  Widget _buildMenuAction({
+    @required BuildContext context,
+    @required IconData icon,
+    @required String label,
+    @required EdgeInsets margin,
+    Color color = Colors.white,
+    VoidCallback onTap,
+  }) {
+    return Expanded(
+      child: Container(
+        margin: margin,
+        child: Material(
+          borderRadius: BorderRadius.circular(16),
+          elevation: 2,
+          color: color,
+          clipBehavior: Clip.hardEdge,
+          child: InkWell(
+            onTap: onTap,
+            child: Container(
+              height: double.maxFinite,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    icon,
+                    color: Colors.black87,
                   ),
-                  padding: const EdgeInsets.all(16),
-                ),
-                Container(
-                  child: Text(
-                    "Join game",
-                    style: context.theme.textTheme.subtitle1.copyWith(color: Colors.white70),
-                  ),
-                )
-              ],
+                  Container(
+                    margin: const EdgeInsets.only(top: 16),
+                    child: Text(label,
+                        style: context.theme.textTheme.button.copyWith(
+                          color: Colors.black87,
+                        )),
+                  )
+                ],
+              ),
             ),
-          );
-        }),
+          ),
+        ),
       ),
     );
   }
@@ -299,5 +304,22 @@ class _HomeScreenState extends State<HomeScreen> {
         backgroundColor: AppColors.primary,
       ),
     );
+  }
+
+  void _joinGame() async {
+    var gameId = await showJoinRoomDialog(context);
+    if (gameId != null) {
+      try {
+        var game = await context.repository<GameRepository>().joinGame(gameId);
+
+        Navigator.of(context).push(MaterialPageRoute(builder: (_) => GameScreen(game)));
+      } catch (e) {
+        Scaffold.of(context)
+          ..hideCurrentSnackBar()
+          ..showSnackBar(SnackBar(
+            content: Text("$e"),
+          ));
+      }
+    }
   }
 }
