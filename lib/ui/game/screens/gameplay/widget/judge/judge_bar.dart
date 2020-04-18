@@ -12,8 +12,14 @@ class JudgeBar extends StatelessWidget {
       builder: (context, state) {
         var judge = state.currentJudge;
         var isWinner = state.game.turn?.winnerId != null && state.game.turn?.winnerId == judge?.id;
+        var hasDownvoted = state.game.turn?.downvotes?.contains(state.userId) ?? false;
         if (judge != null) {
-          return _buildHeader(context, judge, isWinner: isWinner);
+          return _buildHeader(
+            context,
+            judge,
+            isWinner: isWinner,
+            hasDownvoted: hasDownvoted,
+          );
         } else {
           return Container(height: 72);
         }
@@ -21,7 +27,7 @@ class JudgeBar extends StatelessWidget {
     );
   }
 
-  Widget _buildHeader(BuildContext context, Player player, {bool isWinner = false}) {
+  Widget _buildHeader(BuildContext context, Player player, {bool isWinner = false, bool hasDownvoted = false}) {
     return ListTile(
       contentPadding: const EdgeInsets.symmetric(horizontal: 12),
       title: Text(player.name),
@@ -32,8 +38,8 @@ class JudgeBar extends StatelessWidget {
       trailing: !isWinner
           ? IconButton(
               icon: Icon(
-                Icons.thumb_down,
-                color: Colors.white,
+                hasDownvoted ? MdiIcons.thumbDown : MdiIcons.thumbDownOutline,
+                color: hasDownvoted ? AppColors.secondary : Colors.white,
               ),
               onPressed: () {
                 context.bloc<GameBloc>().add(DownvotePrompt());
@@ -69,11 +75,11 @@ class JudgeBar extends StatelessWidget {
   }
 
   Widget _buildJudgeAvatar(BuildContext context, Player player) {
-      return Container(
-          width: 52,
-          padding: const EdgeInsets.only(left: 12),
-          child: _buildCircleAvatar(context, player),
-      );
+    return Container(
+      width: 52,
+      padding: const EdgeInsets.only(left: 12),
+      child: _buildCircleAvatar(context, player),
+    );
   }
 
   Widget _buildCircleAvatar(BuildContext context, Player player) {

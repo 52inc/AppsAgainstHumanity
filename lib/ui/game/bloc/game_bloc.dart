@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:appsagainsthumanity/data/features/cards/model/prompt_special.dart';
 import 'package:appsagainsthumanity/data/features/game/game_repository.dart';
 import 'package:appsagainsthumanity/data/features/game/model/game.dart';
 import 'package:appsagainsthumanity/ui/game/bloc/game_event.dart';
@@ -34,6 +35,12 @@ class GameBloc extends Bloc<GameEvent, GameViewState> {
       yield* _mapStartGameToState();
     } else if (event is ClearError) {
       yield* _mapClearErrorToState();
+    } else if (event is DownvotePrompt) {
+      yield* _mapDownvoteToState();
+    } else if (event is PickResponseCard) {
+      yield* _mapPickResponseCardToState(event);
+    } else if (event is SubmitResponses) {
+      yield* _mapSubmitResponsesToState();
     }
   }
 
@@ -80,5 +87,58 @@ class GameBloc extends Bloc<GameEvent, GameViewState> {
 
   Stream<GameViewState> _mapClearErrorToState() async* {
     yield state.copyWith(error: null);
+  }
+
+  Stream<GameViewState> _mapDownvoteToState() async* {
+    try {
+      await gameRepository.downVoteCurrentPrompt(state.game.id);
+    } catch (e) {
+      yield state.copyWith(error: "$e");
+    }
+  }
+
+  Stream<GameViewState> _mapPickResponseCardToState(PickResponseCard event) async* {
+    // Check prompt special to determine if we allow the user to pick tow
+    var special = promptSpecial(state.game.turn?.promptCard?.special);
+    if (special != null) {
+      // With a special there is the opportunity to submit more than 1 card. If the user attempts to select more than
+      // the allotted amount for a give prompt special, it will clear the selected and set the picked card as the only one
+      // effectively starting the selection over.
+      var currentSelection = state.selectedCards;
+      switch (special) {
+        case PromptSpecial.pick2:
+          // Selected size limit is 2 here.
+          if (currentSelection.length < 2) {
+            yield state.copyWith(selectedCards: currentSelection..add(event.card));
+          } else {
+            yield state.copyWith(selectedCards: [event.card]);
+          }
+          break;
+        case PromptSpecial.draw2pick3:
+          // Selected size limit is 3 here. The firebase function that deals with churning-turns will auto-matically
+          // deal out an extra 2 cards to the user at turn start
+          if (currentSelection.length < 3) {
+            yield state.copyWith(selectedCards: currentSelection..add(event.card));
+          } else {
+            yield state.copyWith(selectedCards: [event.card]);
+          }
+          break;
+      }
+    } else {
+      // The lack of a special is an indication of PICK 1 only
+      yield state.copyWith(selectedCards: [event.card]);
+    }
+  }
+
+  Stream<GameViewState> _mapSubmitResponsesToState() async* {
+    var responses = state.selectedCards;
+    if (responses != null && responses.isNotEmpty) {
+      try {
+        await gameRepository.submitResponse(state.game.id, responses);
+        yield state.copyWith(selectedCards: []);
+      } catch (e) {
+        yield state.copyWith(error: "$e");
+      }
+    }
   }
 }

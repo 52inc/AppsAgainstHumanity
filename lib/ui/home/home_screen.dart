@@ -72,7 +72,6 @@ class _HomeScreenState extends State<HomeScreen> {
                       context: context,
                       margin: const EdgeInsets.only(left: 24, top: 16, right: 4, bottom: 16),
                       icon: MdiIcons.gamepad,
-                      color: AppColors.primaryVariant,
                       label: "START GAME",
                       onTap: () {
                         Navigator.of(context).push(MaterialPageRoute(builder: (context) => CreateGameScreen()));
@@ -82,7 +81,6 @@ class _HomeScreenState extends State<HomeScreen> {
                       context: context,
                       margin: const EdgeInsets.only(left: 12, top: 16, right: 12, bottom: 16),
                       icon: MdiIcons.gamepadVariantOutline,
-                      color: AppColors.secondaryLight,
                       label: "JOIN GAME",
                       onTap: () => _joinGame(),
                     ),
@@ -163,10 +161,12 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ),
               Divider(
+                height: 1,
                 color: Colors.black12,
               ),
               Expanded(
                 child: ListView.builder(
+                  padding: const EdgeInsets.symmetric(vertical: 8),
                     itemCount: state.games.length,
                     itemBuilder: (context, index) {
                       var game = state.games[index];

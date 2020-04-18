@@ -2,8 +2,9 @@ import 'package:appsagainsthumanity/data/features/cards/model/response_card.dart
 import 'package:appsagainsthumanity/internal.dart';
 import 'package:appsagainsthumanity/ui/game/bloc/bloc.dart';
 import 'package:appsagainsthumanity/ui/game/screens/gameplay/widget/game_bottom_sheet.dart';
-import 'package:appsagainsthumanity/ui/game/screens/gameplay/widget/judge_bar.dart';
+import 'package:appsagainsthumanity/ui/game/screens/gameplay/widget/judge/judge_bar.dart';
 import 'package:appsagainsthumanity/ui/game/screens/gameplay/widget/player_list.dart';
+import 'package:appsagainsthumanity/ui/game/screens/gameplay/widget/player_response_picker.dart';
 import 'package:appsagainsthumanity/ui/game/screens/gameplay/widget/prompt_container.dart';
 import 'package:appsagainsthumanity/ui/game/screens/gameplay/widget/response_card_view.dart';
 import 'package:flutter/material.dart';
@@ -36,34 +37,51 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
                 child: IconButton(
                   icon: Icon(Icons.close),
                   color: Colors.black87,
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
                 ),
               ),
+
+              // TODO: Abstract into it's own widget so that it can implement it's
+              // TODO: own conditional BlocBuilder
               Container(
                 margin: const EdgeInsets.only(left: 16),
-                child: Builder(
-                  builder: (context) {
-                    return IconButton(
-                      icon: Icon(MdiIcons.accountGroup),
-                      color: Colors.black87,
-                      onPressed: () {
+                child: Text(
+                  "Waiting for responses",
+                  style: context.theme.textTheme.headline6.copyWith(
+                    color: Colors.black87
+                  ),
+                ),
+              ),
 
-                        /*
-                         * This is kind of hacky since we have to add a new GameBloc provider since the modal
-                         * is a different view tree
-                         */
-                        showModalBottomSheet(
-                            context: context,
-                            backgroundColor: Colors.transparent,
-                            builder: (context) {
-                              return GameBottomSheet(
-                                child: PlayerList(widget.state.game)
-                              );
-                            }
-                        );
-                      },
-                    );
-                  },
+              Expanded(
+                child: Container(
+                  margin: const EdgeInsets.only(left: 16, right: 16),
+                  alignment: Alignment.centerRight,
+                  child: Builder(
+                    builder: (context) {
+                      return IconButton(
+                        icon: Icon(MdiIcons.accountGroup),
+                        color: Colors.black87,
+                        onPressed: () {
+                          /*
+                           * This is kind of hacky since we have to add a new GameBloc provider since the modal
+                           * is a different view tree
+                           */
+                          showModalBottomSheet(
+                              context: context,
+                              backgroundColor: Colors.transparent,
+                              builder: (context) {
+                                return GameBottomSheet(
+                                  child: PlayerList(widget.state.game)
+                                );
+                              }
+                          );
+                        },
+                      );
+                    },
+                  ),
                 ),
               )
             ],
@@ -76,23 +94,17 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
           children: [
             JudgeBar(),
             Expanded(
-              child: PromptContainer(
-                child: ResponseCardView(
-                  card: ResponseCard(
-                      id: "1",
-                      text: "Several Michael Keatons",
-                      set: "",
-                      source: ""
-                  ),
-                  child: ResponseCardView(
-                    card: ResponseCard(
-                        id: "1",
-                        text: "AND MY AXE",
-                        set: "",
-                        source: ""
+              child: Stack(
+                children: <Widget>[
+                  PromptContainer(),
+                  Align(
+                    alignment: Alignment.bottomCenter,
+                    child: Container(
+                      height: 256,
+                      child: PlayerResponsePicker(),
                     ),
-                  ),
-                ),
+                  )
+                ],
               ),
             )
           ],

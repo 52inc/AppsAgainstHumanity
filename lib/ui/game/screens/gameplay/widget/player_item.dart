@@ -1,5 +1,6 @@
 import 'package:appsagainsthumanity/data/features/game/model/player.dart';
 import 'package:appsagainsthumanity/internal.dart';
+import 'package:appsagainsthumanity/ui/widgets/player_circle_avatar.dart';
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
@@ -42,15 +43,7 @@ class PlayerItem extends StatelessWidget {
             ],
           ),
         ),
-        leading: player.isRandoCardrissian
-            ? CircleAvatar(backgroundImage: AssetImage("assets/rando_cardrissian.png"))
-            : CircleAvatar(
-                radius: 20,
-                backgroundImage: player.avatarUrl != null ? NetworkImage(player.avatarUrl) : null,
-                backgroundColor: AppColors.primary,
-                child: player.avatarUrl == null
-                    ? Text(player.name.split(' ').map((e) => e[0]).join().toUpperCase())
-                    : null,
-              ));
+        leading: PlayerCircleAvatar(player: player)
+    );
   }
 }

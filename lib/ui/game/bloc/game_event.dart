@@ -1,3 +1,4 @@
+import 'package:appsagainsthumanity/data/features/cards/model/response_card.dart';
 import 'package:appsagainsthumanity/data/features/game/model/game.dart';
 import 'package:appsagainsthumanity/data/features/game/model/player.dart';
 import 'package:meta/meta.dart';
@@ -59,3 +60,15 @@ class PlayersUpdated extends GameEvent {
 }
 
 class DownvotePrompt extends GameEvent { }
+
+@immutable
+class PickResponseCard extends GameEvent {
+  final ResponseCard card;
+
+  PickResponseCard(this.card);
+
+  @override
+  List<Object> get props => [card];
+}
+
+class SubmitResponses extends GameEvent { }

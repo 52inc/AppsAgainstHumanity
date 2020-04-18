@@ -140,13 +140,61 @@ class FirestoreGameRepository extends GameRepository {
   }
 
   @override
-  Future<Function> submitResponse(List<ResponseCard> cards) {}
+  Future<void> submitResponse(String gameDocumentId, List<ResponseCard> cards) {
+    // 1. Remove the cards from the player's hand
+    // 2. Add the cards as a response to the current game's turn
+    return currentUserOrThrow((firebaseUser) async {
+      var gameDocument = db
+          .collection(FirebaseConstants.COLLECTION_GAMES)
+          .document(gameDocumentId);
+
+      var playerDocument = gameDocument
+          .collection(FirebaseConstants.COLLECTION_PLAYERS)
+          .document(firebaseUser.uid);
+
+      var cardData = cards.map((e) => e.toJson()).toList();
+
+      await db.runTransaction((transaction) async {
+        await transaction.update(playerDocument, {
+          'hand': FieldValue.arrayRemove(cardData)
+        });
+
+        await transaction.update(gameDocument, {
+          'turn.responses.${firebaseUser.uid}': cardData
+        });
+      });
+    });
+  }
 
   @override
-  Future<Function> downVoteCurrentPrompt() {}
+  Future<void> downVoteCurrentPrompt(String gameDocumentId) {
+    // TODO: Add cloud function w/ firestore trigger to monitor this and re-draw prompt once downvotes >= 2/3 majority
+    return currentUserOrThrow((firebaseUser) async {
+      var gameDocument = db
+          .collection(FirebaseConstants.COLLECTION_GAMES)
+          .document(gameDocumentId);
+
+      await db.runTransaction((transaction) async {
+        var snapshot = await transaction.get(gameDocument);
+        var game = Game.fromDocument(snapshot);
+        Set<String> downvotes = game.turn?.downvotes ?? Set();
+        downvotes.add(firebaseUser.uid);
+        if (game.turn != null) {
+          game = game.copyWith(
+            turn: game.turn.copyWith(
+              downvotes: downvotes
+            )
+          );
+        }
+        await transaction.set(gameDocument, game.toJson());
+      });
+    });
+  }
 
   @override
-  Future<Function> pickWinner(String playerId) {}
+  Future<void> pickWinner(String playerId) async {
+    // TODO: Create callable cloud function to handle the setting of this and the eventual turn of state
+  }
 
   Future<void> _addSelfToGame(String gameDocumentId, Game game) async {
     var user = await userRepository.getUser();

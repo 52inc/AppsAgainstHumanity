@@ -9,20 +9,16 @@ part 'turn.g.dart';
 @immutable
 @JsonSerializable()
 class Turn {
-  @nonNull
   final String judgeId;
 
-  @nonNull
+  @JsonKey(toJson: _promptCardToJson)
   final PromptCard promptCard;
 
-  @nonNull
+  @JsonKey(toJson: _responsesToJson)
   final Map<String, Set<ResponseCard>> responses;
 
-  @nonNull
   @JsonKey(nullable: true)
   final Set<String> downvotes;
-
-  @nullable
   final String winnerId;
 
   Turn({
@@ -36,4 +32,25 @@ class Turn {
   factory Turn.fromJson(Map<String, dynamic> json) => _$TurnFromJson(json);
 
   Map<String, dynamic> toJson() => _$TurnToJson(this);
+
+  Turn copyWith({
+    String judgeId,
+    PromptCard promptCard,
+    Map<String, Set<ResponseCard>> responses,
+    Set<String> downvotes,
+    String winnerId,
+  }) {
+    return Turn(
+        judgeId: judgeId ?? this.judgeId,
+        promptCard: promptCard ?? this.promptCard,
+        responses: responses ?? this.responses,
+        downvotes: downvotes ?? this.downvotes,
+        winnerId: winnerId ?? this.winnerId);
+  }
+}
+
+Map<String, dynamic> _promptCardToJson(PromptCard card) => card.toJson();
+
+Map<String, dynamic> _responsesToJson(Map<String, Set<ResponseCard>> responses) {
+  return responses?.map((k, e) => MapEntry(k, e.map((e) => e.toJson()).toList()));
 }

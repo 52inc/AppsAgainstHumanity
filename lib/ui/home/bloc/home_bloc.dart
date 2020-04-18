@@ -42,6 +42,6 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   }
 
   Stream<HomeState> _mapJoinedGamesUpdatedToState(JoinedGamesUpdated event) async* {
-    yield state.copyWith(games: event.games..sort((a, b) => a.joinedAt.compareTo(b.joinedAt)));
+    yield state.copyWith(games: event.games..sort((a, b) => b.joinedAt.compareTo(a.joinedAt)));
   }
 }

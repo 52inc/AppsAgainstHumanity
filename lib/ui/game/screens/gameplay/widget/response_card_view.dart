@@ -9,9 +9,10 @@ class ResponseCardView extends StatelessWidget {
   static const textPadding = 20.0;
 
   ResponseCardView({
+    Key key,
     @required this.card,
     this.child,
-  });
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -55,5 +56,21 @@ class ResponseCardView extends StatelessWidget {
         ),
       ),
     );
+  }
+}
+
+Widget buildResponseCardStack(List<ResponseCard> cards) {
+  if (cards.isNotEmpty) {
+    var nextCard = cards.first;
+    var remaining = cards.sublist(1);
+    return ResponseCardView(
+      key: ValueKey(nextCard),
+      card: nextCard,
+      child: remaining.isNotEmpty
+        ? buildResponseCardStack(remaining)
+        : null,
+    );
+  } else {
+    return null;
   }
 }

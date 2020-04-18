@@ -38,11 +38,11 @@ abstract class GameRepository {
 
     /// Submit your responses for the current turn, if you are not a judge, and
     /// you haven't submitted your response already
-    Future<void> submitResponse(List<ResponseCard> cards);
+    Future<void> submitResponse(String gameDocumentId, List<ResponseCard> cards);
 
     /// Downvote the current prompt card. If enough downvotes are casted
     /// then a new prompt is drawn for this turn and the current judge remains
-    Future<void> downVoteCurrentPrompt();
+    Future<void> downVoteCurrentPrompt(String gameDocumentId);
 
     //////////////////////
     // Judge Methods
