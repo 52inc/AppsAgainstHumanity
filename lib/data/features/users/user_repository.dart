@@ -80,6 +80,12 @@ class UserRepository {
     await _auth.signOut();
   }
 
+  Future<void> deleteAccount() async {
+    await AppPreferences().clear();
+    var user = await _auth.currentUser();
+    await user.delete();
+  }
+
   DocumentReference _userDocument(FirebaseUser user) {
     return _db.collection(FirebaseConstants.COLLECTION_USERS)
         .document(user.uid);

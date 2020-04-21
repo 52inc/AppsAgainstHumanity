@@ -5,7 +5,6 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 import 'package:appsagainsthumanity/internal.dart';
 
 class UserPreference extends StatelessWidget {
-
   final void Function(UserInfo) onTap;
 
   UserPreference({this.onTap});
@@ -15,21 +14,23 @@ class UserPreference extends StatelessWidget {
     return StreamBuilder<FirebaseUser>(
       stream: FirebaseAuth.instance.currentUser().asStream(),
       builder: (context, snapshot) {
-        var twitterProviderData = snapshot?.data?.providerData
-            ?.firstWhere((element) => element.providerId.contains("twitter"));
-        return _buildPreference(twitterProviderData);
+        return _buildPreference(context, snapshot?.data);
       },
     );
   }
 
-  Widget _buildPreference(@nullable UserInfo user) {
+  Widget _buildPreference(BuildContext context, @nullable UserInfo user) {
     if (user != null) {
       print("${user.displayName}, ${user.uid}, ${user.providerId}, ${user.photoUrl}");
     }
     return ListTile(
       leading: _avatar(user),
-      title: Text(user?.displayName != null ? "@${user.displayName}" : "Loading..."),
-      subtitle: Text(user?.providerId ?? ""),
+      title: Text(
+        user?.displayName != null ? "@${user.displayName}" : "Loading...",
+        style: context.theme.textTheme.subtitle1.copyWith(
+          color: Colors.black87,
+        ),
+      ),
       onTap: onTap != null ? () => onTap(user) : null,
     );
   }
