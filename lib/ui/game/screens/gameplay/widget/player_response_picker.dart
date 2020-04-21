@@ -20,22 +20,35 @@ class _PlayerResponsePickerState extends State<PlayerResponsePicker> {
         // Determine if we need to show the response picker, or to hide this part
         if (!state.areWeJudge && !state.haveWeSubmittedResponse) {
           // Get the player's current hand, omitting any card's they MAY have submitted
-          var hand = state.currentHand;
+
+          var hand = state.currentHand.reversed.toList();
           return Stack(
             children: <Widget>[
-              PageView.builder(
-                controller: _pageController,
-                itemCount: hand.length,
-                itemBuilder: (context, index) {
-                  var card = hand[index];
-                  return HandCard(
-                    key: ValueKey(card),
-                    card: card,
-                  );
-                },
+              AnimatedOpacity(
+                opacity: state.isSubmitting ? 0 : 1,
+                duration: Duration(milliseconds: 150),
+                curve: Curves.easeIn,
+                child: PageView.builder(
+                  controller: _pageController,
+                  itemCount: hand.length,
+                  itemBuilder: (context, index) {
+                    var card = hand[index];
+                    return HandCard(
+                      key: ValueKey(card),
+                      card: card,
+                    );
+                  },
+                ),
               ),
-
-              if (state.selectCardsMeetPromptRequirement)
+              if (state.isSubmitting)
+                Align(
+                  alignment: Alignment.bottomCenter,
+                  child: Container(
+                    margin: const EdgeInsets.only(bottom: 24),
+                    child: _buildSubmittingWidget(context),
+                  ),
+                ),
+              if (state.selectCardsMeetPromptRequirement && !state.isSubmitting)
                 Align(
                   alignment: Alignment.bottomCenter,
                   child: Container(
@@ -51,14 +64,40 @@ class _PlayerResponsePickerState extends State<PlayerResponsePicker> {
     );
   }
 
+  Widget _buildSubmittingWidget(BuildContext context) {
+    return RaisedButton.icon(
+      padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+      shape: StadiumBorder(),
+      color: AppColors.secondary,
+      disabledColor: AppColors.secondary,
+      onPressed: null,
+      icon: Container(
+        width: 24,
+        height: 24,
+        child: CircularProgressIndicator(
+          valueColor: AlwaysStoppedAnimation<Color>(AppColors.primary),
+        ),
+      ),
+      label: Container(
+        margin: const EdgeInsets.only(left: 8, right: 20),
+        child: Text(
+          "SUBMITTING...",
+          style: context.theme.textTheme.button.copyWith(
+            color: Colors.black87,
+            letterSpacing: 1,
+          ),
+        ),
+      ),
+    );
+  }
+
   Widget _buildSubmitCardsButton(BuildContext context) {
     return RaisedButton.icon(
       padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
       shape: StadiumBorder(),
       color: AppColors.secondary,
       onPressed: () async {
-        context.bloc<GameBloc>()
-            .add(SubmitResponses());
+        context.bloc<GameBloc>().add(SubmitResponses());
       },
       icon: Icon(
         MdiIcons.uploadMultiple,

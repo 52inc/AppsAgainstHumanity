@@ -124,6 +124,7 @@ class PromptContainer extends StatelessWidget {
 
   Widget _buildPromptText(BuildContext context, PromptCard card) {
     return Container(
+      width: double.maxFinite,
       margin: const EdgeInsets.symmetric(vertical: textPadding, horizontal: textPadding + 16),
       child: Text(
         card.text,

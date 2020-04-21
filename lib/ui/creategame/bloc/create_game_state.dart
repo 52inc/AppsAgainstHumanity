@@ -15,10 +15,10 @@ class CreateGameState {
     this.error,
   });
 
-  factory CreateGameState.loading() {
+  factory CreateGameState.loading({Set<String> sets}) {
     return CreateGameState(
       cardSets: emptyList(),
-      selectedSets: emptySet(),
+      selectedSets: sets.toImmutableSet() ?? emptySet(),
       isLoading: true,
     );
   }

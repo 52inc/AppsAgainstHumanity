@@ -55,7 +55,13 @@ class _JudgeDreddState extends State<JudgeDredd> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
                       _buildPageButton(context: context, iconData: Icons.keyboard_arrow_left, isVisible: showLeft),
-                      _buildPickWinnerButton(context),
+
+                      if (widget.state.isSubmitting)
+                        _buildPickingWinnerIndicator(context),
+
+                      if (!widget.state.isSubmitting)
+                        _buildPickWinnerButton(context),
+
                       _buildPageButton(
                           context: context, iconData: Icons.keyboard_arrow_right, isLeft: false, isVisible: showRight),
                     ],
@@ -76,8 +82,8 @@ class _JudgeDreddState extends State<JudgeDredd> {
         var currentPlayerResponse = controller.currentPlayerResponse;
         if (currentPlayerResponse != null) {
           print("Winner selected! ${currentPlayerResponse.playerId}");
-          await context.repository<GameRepository>()
-              .pickWinner(currentPlayerResponse.playerId);
+          context.bloc<GameBloc>()
+              .add(PickWinner(currentPlayerResponse.playerId));
         }
       },
       icon: Icon(
@@ -88,6 +94,32 @@ class _JudgeDreddState extends State<JudgeDredd> {
         margin: const EdgeInsets.only(left: 16, right: 40),
         child: Text(
           "WINNER",
+          style: context.theme.textTheme.button.copyWith(
+            color: Colors.black87,
+            letterSpacing: 1,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildPickingWinnerIndicator(BuildContext context) {
+    return RaisedButton.icon(
+      padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+      shape: StadiumBorder(),
+      color: AppColors.secondary,
+      disabledColor: AppColors.secondary,
+      icon: Container(
+        width: 24,
+        height: 24,
+        child: CircularProgressIndicator(
+          valueColor: AlwaysStoppedAnimation<Color>(AppColors.primary),
+        ),
+      ),
+      label: Container(
+        margin: const EdgeInsets.only(left: 16, right: 40),
+        child: Text(
+          "SUBMITTING...",
           style: context.theme.textTheme.button.copyWith(
             color: Colors.black87,
             letterSpacing: 1,

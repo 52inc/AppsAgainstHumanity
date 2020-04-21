@@ -52,5 +52,5 @@ abstract class GameRepository {
     /// A. You are not the judge
     /// B. All responses are not in yet
     /// C. The turn hasn't been rotated yet and your previous pick still persists
-    Future<void> pickWinner(String playerId);
+    Future<void> pickWinner(String gameDocumentId, String playerId);
 }

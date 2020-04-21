@@ -70,4 +70,4 @@ class Game {
   }
 }
 
-Map<String, dynamic> _turnToJson(Turn turn) => turn.toJson();
+Map<String, dynamic> _turnToJson(Turn turn) => turn?.toJson();

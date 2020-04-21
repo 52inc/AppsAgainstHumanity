@@ -104,10 +104,10 @@ class WaitingRoomScreen extends StatelessWidget {
   /// that needs to update to the change in game state
   Widget _buildPlayerList(BuildContext context, GameViewState state) {
     var players = state.players ?? [];
-    var hasRandoBeenInvited = state.players?.any((element) => element.isRandoCardrissian) ?? false;
+    var hasRandoBeenInvitedOrNotOwner = (state.players?.any((element) => element.isRandoCardrissian) ?? false) || !state.isOurGame;
     return ListView.builder(
         padding: const EdgeInsets.symmetric(vertical: 8),
-        itemCount: hasRandoBeenInvited ? players.length : players.length + 1,
+        itemCount: hasRandoBeenInvitedOrNotOwner ? players.length : players.length + 1,
         itemBuilder: (context, index) {
           if (index < players.length) {
             var player = players[index];

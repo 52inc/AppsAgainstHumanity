@@ -41,6 +41,10 @@ class GameBloc extends Bloc<GameEvent, GameViewState> {
       yield* _mapPickResponseCardToState(event);
     } else if (event is SubmitResponses) {
       yield* _mapSubmitResponsesToState();
+    } else if (event is PickWinner) {
+      yield* _mapPickWinnerToState(event);
+    } else if (event is ClearSubmitting) {
+      yield* _mapClearSubmittingToState();
     }
   }
 
@@ -64,7 +68,7 @@ class GameBloc extends Bloc<GameEvent, GameViewState> {
   }
 
   Stream<GameViewState> _mapGameUpdatedToState(GameUpdated event) async* {
-    yield state.copyWith(game: event.game, isLoading: false);
+    yield state.copyWith(game: event.game, isLoading: false, isSubmitting: false);
   }
 
   Stream<GameViewState> _mapPlayersUpdatedToState(PlayersUpdated event) async* {
@@ -73,13 +77,14 @@ class GameBloc extends Bloc<GameEvent, GameViewState> {
 
   Stream<GameViewState> _mapStartGameToState() async* {
     try {
+      yield state.copyWith(isSubmitting: true);
       await gameRepository.startGame(state.game.id);
     } catch (e) {
       if (e is PlatformException) {
         print(e);
         if (e.code == 'functionsError') {
           final Map<String, dynamic> details = Map<String, dynamic>.from(e.details);
-          yield state.copyWith(error: details['message']);
+          yield state.copyWith(error: details['message'], isSubmitting: false);
         }
       }
     }
@@ -134,11 +139,26 @@ class GameBloc extends Bloc<GameEvent, GameViewState> {
     var responses = state.selectedCards;
     if (responses != null && responses.isNotEmpty) {
       try {
+        yield state.copyWith(isSubmitting: true);
         await gameRepository.submitResponse(state.game.id, responses);
-        yield state.copyWith(selectedCards: []);
+        yield state.copyWith(selectedCards: [], isSubmitting: false);
       } catch (e) {
-        yield state.copyWith(error: "$e");
+        yield state.copyWith(error: "$e", isSubmitting: false);
       }
     }
+  }
+
+  Stream<GameViewState> _mapPickWinnerToState(PickWinner event) async* {
+    try {
+      yield state.copyWith(isSubmitting: true);
+      await gameRepository.pickWinner(state.game.id, event.winningPlayerId);
+      yield state.copyWith(isSubmitting: false);
+    } catch (e) {
+      yield state.copyWith(error: "$e", isSubmitting: false);
+    }
+  }
+
+  Stream<GameViewState> _mapClearSubmittingToState() async* {
+    yield state.copyWith(isSubmitting: false);
   }
 }

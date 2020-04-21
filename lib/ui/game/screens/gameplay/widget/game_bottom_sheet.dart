@@ -2,9 +2,11 @@ import 'package:appsagainsthumanity/internal.dart';
 import 'package:flutter/material.dart';
 
 class GameBottomSheet extends StatelessWidget {
+  final String title;
   final Widget child;
+  final List<Widget> actions;
 
-  GameBottomSheet({@required this.child});
+  GameBottomSheet({this.title, @required this.child, this.actions});
 
   @override
   Widget build(BuildContext context) {
@@ -24,6 +26,7 @@ class GameBottomSheet extends StatelessWidget {
             appBar: AppBar(
               backgroundColor: Colors.transparent,
               elevation: 0,
+              actions: actions,
               leading: Container(
                 margin: const EdgeInsets.only(left: 8),
                 child: IconButton(
@@ -33,10 +36,10 @@ class GameBottomSheet extends StatelessWidget {
                   },
                 ),
               ),
-              title: Container(
+              title: title != null ? Container(
                 margin: const EdgeInsets.only(left: 8),
-                child: Text("Players"),
-              ),
+                child: Text(title),
+              ) : null,
             ),
             body: child,
           ),

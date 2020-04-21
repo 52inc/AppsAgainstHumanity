@@ -6,15 +6,15 @@ part 'prompt_card.g.dart';
 
 @immutable
 @JsonSerializable()
-class PromptCard extends Equatable{
-  final String id;
+class PromptCard extends Equatable {
+  final String cid;
   final String text;
   final String special;
   final String set;
   final String source;
 
   PromptCard({
-    @required this.id,
+    @required this.cid,
     @required this.text,
     @required this.special,
     @required this.set,
@@ -26,5 +26,7 @@ class PromptCard extends Equatable{
   Map<String, dynamic> toJson() => _$PromptCardToJson(this);
 
   @override
-  List<Object> get props => [id, text, special, set, source];
+  List<Object> get props => [cid, text, special, set, source];
 }
+
+Map<String, dynamic> promptCardToJson(PromptCard card) => card?.toJson();

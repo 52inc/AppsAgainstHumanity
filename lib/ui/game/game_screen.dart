@@ -1,6 +1,7 @@
 import 'package:appsagainsthumanity/data/features/game/model/game.dart';
 import 'package:appsagainsthumanity/data/features/game/model/game_state.dart';
 import 'package:appsagainsthumanity/ui/game/bloc/bloc.dart';
+import 'package:appsagainsthumanity/ui/game/screens/complete/completed_game_screen.dart';
 import 'package:appsagainsthumanity/ui/game/screens/gameplay/game_play_screen.dart';
 import 'package:appsagainsthumanity/ui/game/screens/starting/starting_room_screen.dart';
 import 'package:appsagainsthumanity/ui/game/screens/waiting/waiting_room_screen.dart';
@@ -23,18 +24,23 @@ class GameScreen extends StatelessWidget {
       create: (context) => GameBloc(game, context.repository())
         ..add(Subscribe(game.id)),
       child: BlocBuilder<GameBloc, GameViewState>(
-        condition: (previousState, currentState) {
-          return previousState.game.state != currentState.game.state;
+        condition: (previous, current) {
+          return previous.game.state != current.game.state || 
+              (previous.game.state == GameState.waitingRoom &&
+                  current.game.state == GameState.waitingRoom &&
+                  previous.isSubmitting != current.isSubmitting);
         },
         builder: (context, state) {
           if (state.game.state == GameState.waitingRoom) {
-            return WaitingRoomScreen();
+            return state.isSubmitting
+                ? StartingRoomScreen(state)
+                : WaitingRoomScreen();
           } else if (state.game.state == GameState.starting) {
             return StartingRoomScreen(state);
           } else if (state.game.state == GameState.inProgress) {
             return GamePlayScreen(state);
           } else if (state.game.state == GameState.completed) {
-            throw 'Show Game Completed Ui';
+            return CompletedGameScreen();
           } else {
             return Container();
           }

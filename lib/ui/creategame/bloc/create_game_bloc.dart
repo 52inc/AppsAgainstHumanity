@@ -6,13 +6,14 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:kt_dart/kt.dart';
 
 class CreateGameBloc extends Bloc<CreateGameEvent, CreateGameState> {
+  final Set<String> cardSets;
   final CardsRepository cardsRepository;
   final GameRepository gameRepository;
 
-  CreateGameBloc(this.cardsRepository, this.gameRepository);
+  CreateGameBloc(this.cardSets, this.cardsRepository, this.gameRepository,);
 
   @override
-  CreateGameState get initialState => CreateGameState.loading();
+  CreateGameState get initialState => CreateGameState.loading(sets: cardSets);
 
   @override
   Stream<CreateGameState> mapEventToState(CreateGameEvent event) async* {

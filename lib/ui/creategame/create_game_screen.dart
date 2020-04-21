@@ -7,6 +7,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:kt_dart/kt.dart';
 
 class CreateGameScreen extends StatefulWidget {
+  final Set<String> cardSets;
+
+  CreateGameScreen({Set<String> sets}) : cardSets = sets ?? [];
+
   @override
   State<StatefulWidget> createState() => _CreateGameScreenState();
 }
@@ -15,7 +19,11 @@ class _CreateGameScreenState extends State<CreateGameScreen> {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => CreateGameBloc(context.repository(), context.repository())..add(ScreenLoaded()),
+      create: (context) => CreateGameBloc(
+        widget.cardSets,
+        context.repository(),
+        context.repository(),
+      )..add(ScreenLoaded()),
       child: _buildScaffold(),
     );
   }
@@ -74,12 +82,9 @@ class _CreateGameScreenState extends State<CreateGameScreen> {
           onPressed: state.selectedSets.isNotEmpty()
               ? () async {
                   // Start game?
-                  var newGame = await context.repository<GameRepository>()
-                      .createGame(state.selectedSets);
+                  var newGame = await context.repository<GameRepository>().createGame(state.selectedSets);
 
-                  Navigator.of(context).pushReplacement(MaterialPageRoute(
-                      builder: (_) => GameScreen(newGame)
-                  ));
+                  Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => GameScreen(newGame)));
                 }
               : null,
         ),
@@ -92,9 +97,7 @@ class _CreateGameScreenState extends State<CreateGameScreen> {
     return Column(
       children: [
         Expanded(
-          child: state.isLoading
-              ? _buildLoading()
-              : _buildList(state.cardSets, state.selectedSets),
+          child: state.isLoading ? _buildLoading() : _buildList(state.cardSets, state.selectedSets),
         ),
       ],
     );

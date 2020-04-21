@@ -155,8 +155,15 @@ class FirestoreGameRepository extends GameRepository {
       var cardData = cards.map((e) => e.toJson()).toList();
 
       await db.runTransaction((transaction) async {
+        var playerSnapshot = await transaction.get(playerDocument);
+        var player = Player.fromDocument(playerSnapshot);
+
+        player.hand.removeWhere((element) {
+          return cards.firstWhere((c) => c.cid == element.cid, orElse: () => null) != null;
+        });
+
         await transaction.update(playerDocument, {
-          'hand': FieldValue.arrayRemove(cardData)
+          'hand': player.hand.map((e) => e.toJson()).toList()
         });
 
         await transaction.update(gameDocument, {
@@ -168,32 +175,26 @@ class FirestoreGameRepository extends GameRepository {
 
   @override
   Future<void> downVoteCurrentPrompt(String gameDocumentId) {
-    // TODO: Add cloud function w/ firestore trigger to monitor this and re-draw prompt once downvotes >= 2/3 majority
     return currentUserOrThrow((firebaseUser) async {
       var gameDocument = db
           .collection(FirebaseConstants.COLLECTION_GAMES)
           .document(gameDocumentId);
 
-      await db.runTransaction((transaction) async {
-        var snapshot = await transaction.get(gameDocument);
-        var game = Game.fromDocument(snapshot);
-        Set<String> downvotes = game.turn?.downvotes ?? Set();
-        downvotes.add(firebaseUser.uid);
-        if (game.turn != null) {
-          game = game.copyWith(
-            turn: game.turn.copyWith(
-              downvotes: downvotes
-            )
-          );
-        }
-        await transaction.set(gameDocument, game.toJson());
+      await gameDocument.updateData({
+        'turn.downvotes': FieldValue.arrayUnion([firebaseUser.uid])
       });
     });
   }
 
   @override
-  Future<void> pickWinner(String playerId) async {
-    // TODO: Create callable cloud function to handle the setting of this and the eventual turn of state
+  Future<void> pickWinner(String gameDocumentId, String playerId) async {
+    final HttpsCallable callable = CloudFunctions.instance.getHttpsCallable(functionName: 'pickWinner');
+    dynamic response = await callable.call(<String, dynamic>{
+      'game_id': gameDocumentId,
+      'player_id': playerId
+    });
+
+    print("Winner picked Successful! $response");
   }
 
   Future<void> _addSelfToGame(String gameDocumentId, Game game) async {

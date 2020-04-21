@@ -11,6 +11,7 @@ class GameViewState {
     final Game game;
     final List<Player> players;
     final List<ResponseCard> selectedCards;
+    final bool isSubmitting;
     final bool isLoading;
     final String error;
 
@@ -20,6 +21,8 @@ class GameViewState {
     Player get currentJudge => players?.firstWhere((p) => p.id == game.turn?.judgeId);
 
     Player get currentPlayer => players?.firstWhere((p) => p.id == userId);
+
+    Player get winner => players?.firstWhere((p) => p.id == game.winner);
 
     List<ResponseCard> get currentHand => currentPlayer?.hand?.where((c) => !selectedCards.contains(c))?.toList() ?? [];
 
@@ -60,6 +63,7 @@ class GameViewState {
         this.game,
         this.players,
         List<ResponseCard> selectedCards,
+        this.isSubmitting = false,
         this.isLoading = true,
         this.error,
     }) : selectedCards = selectedCards ?? [];
@@ -69,6 +73,7 @@ class GameViewState {
         Game game,
         List<Player> players,
         List<ResponseCard> selectedCards,
+        bool isSubmitting,
         bool isLoading,
         String error,
     }) {
@@ -77,6 +82,7 @@ class GameViewState {
             game: game ?? this.game,
             players: players ?? this.players,
             selectedCards: selectedCards ?? this.selectedCards,
+            isSubmitting: isSubmitting ?? this.isSubmitting,
             isLoading: isLoading ?? this.isLoading,
             error: error ?? this.error,
         );
@@ -89,6 +95,7 @@ class GameViewState {
           game: ${game?.gid}, 
           players: $players, 
           selectedCards: $selectedCards,
+          isSubmitting: $isSubmitting,
           isLoading: $isLoading, 
           error: $error,
           isOurGame: $isOurGame,

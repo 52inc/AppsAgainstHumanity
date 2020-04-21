@@ -70,7 +70,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   children: [
                     _buildMenuAction(
                       context: context,
-                      margin: const EdgeInsets.only(left: 24, top: 16, right: 4, bottom: 16),
+                      margin: const EdgeInsets.only(left: 24, top: 16, right: 8, bottom: 16),
                       icon: MdiIcons.gamepad,
                       label: "START GAME",
                       onTap: () {
@@ -79,18 +79,18 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                     _buildMenuAction(
                       context: context,
-                      margin: const EdgeInsets.only(left: 12, top: 16, right: 12, bottom: 16),
+                      margin: const EdgeInsets.only(left: 8, top: 16, right: 24, bottom: 16),
                       icon: MdiIcons.gamepadVariantOutline,
                       label: "JOIN GAME",
                       onTap: () => _joinGame(),
                     ),
-                    _buildMenuAction(
-                      context: context,
-                      margin: const EdgeInsets.only(left: 4, top: 16, right: 24, bottom: 16),
-                      icon: MdiIcons.cogOutline,
-                      label: "SETTINGS",
-                      onTap: () {},
-                    ),
+//                    _buildMenuAction(
+//                      context: context,
+//                      margin: const EdgeInsets.only(left: 4, top: 16, right: 24, bottom: 16),
+//                      icon: MdiIcons.cogOutline,
+//                      label: "SETTINGS",
+//                      onTap: () {},
+//                    ),
                   ],
                 ),
               )
@@ -115,13 +115,30 @@ class _HomeScreenState extends State<HomeScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Container(
-                margin: const EdgeInsets.all(24),
-                child: Text(
-                  context.strings.appNameDisplay,
-                  style: context.theme.textTheme.headline3
-                      .copyWith(color: Colors.black87, fontWeight: FontWeight.bold, fontSize: 48),
-                ),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Container(
+                    margin: const EdgeInsets.all(24),
+                    child: Text(
+                      context.strings.appNameDisplay,
+                      style: context.theme.textTheme.headline3
+                          .copyWith(color: Colors.black87, fontWeight: FontWeight.bold, fontSize: 48),
+                    ),
+                  ),
+                  Expanded(
+                    child: Align(
+                      alignment: Alignment.topRight,
+                      child: IconButton(
+                        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
+                        icon: Icon(MdiIcons.cog, color: Colors.black87,),
+                        onPressed: () {
+                          // TODO: Open Settings
+                        },
+                      ),
+                    ),
+                  )
+                ],
               ),
               Expanded(
                 child: Align(
