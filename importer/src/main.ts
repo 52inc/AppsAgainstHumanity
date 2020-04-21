@@ -11,11 +11,14 @@ admin.initializeApp({
 });
 const db = admin.firestore();
 
+const argv = require('minimist')(process.argv.slice(2));
+console.log(argv);
+
 // Sheet Variables
-const promptLength = 6792;
-const responseLength = 24413;
 
-
+const promptLength = argv.pl || 6792;
+const responseLength = argv.rl || 24413;
+const documentId = argv.doc || '1lsy7lIwBe-DWOi2PALZPf5DgXHx9MEvKfRw1GaWQkzg';
 
 // @ts-ignore
 async function loadAndSavePromptCards(sheet: GoogleSpreadsheetWorksheet) {
@@ -165,4 +168,4 @@ async function run(docId: String) {
     console.log("Finished loading all CaH cards into firestore")
 }
 
-run('1lsy7lIwBe-DWOi2PALZPf5DgXHx9MEvKfRw1GaWQkzg');
+run(documentId);

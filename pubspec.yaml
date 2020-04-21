@@ -51,6 +51,7 @@ dependencies:
   cloud_firestore: ^0.13.4+1
   cloud_functions: ^0.4.2+3
   google_sign_in: ^4.4.1
+  apple_sign_in: ^0.1.0
 
   # UI
   material_design_icons_flutter: ^3.4.5045

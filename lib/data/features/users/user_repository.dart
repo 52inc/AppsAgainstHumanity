@@ -74,6 +74,10 @@ class UserRepository {
     }
   }
 
+  Future<User> signInWithApple() async {
+
+  }
+
   /// Sign-out of the user's account
   Future<void> signOut() async {
     await AppPreferences().clear();
