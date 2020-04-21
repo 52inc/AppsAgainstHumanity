@@ -1,0 +1,17 @@
+{
+  "set": "52inc App Pack",
+  "sheet": "52inc Cards",
+  "prompts": [
+    {
+      "text": "Oh no! The server is down again, if only the architecture wasn't ______.",
+      "special": null
+    }, {
+      "text": "Dammit {JUDGE_NAME}! The scooter is for ______ not ______.",
+      "special": "PICK 2"
+    }
+  ],
+  "responses": [
+    "Vision quest with Mike Myers",
+    "AND MY AXE!"
+  ]
+}

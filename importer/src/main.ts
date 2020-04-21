@@ -1,6 +1,8 @@
+import {PromptCard, ResponseCard} from "./models";
+import {computeCardId, cleanPath, hashDocumentId} from "./utils";
+
 const { GoogleSpreadsheet, GoogleSpreadsheetWorksheet } = require('google-spreadsheet');
 import * as admin from 'firebase-admin';
-const crypto = require('crypto');
 
 const serviceAccount = require("../config/firebase_admin_sdk.json");
 admin.initializeApp({
@@ -13,36 +15,7 @@ const db = admin.firestore();
 const promptLength = 6792;
 const responseLength = 24413;
 
-function cleanPath(input: string): string {
-    return input.replace('/', '_');
-}
 
-function computeCardId(set: string, cardText: string): string {
-    const hash = crypto.createHash('sha256');
-    hash.update(set + cardText);
-    return hash.digest('hex');
-}
-
-function hashDocumentId(input: string): string {
-    const hash = crypto.createHash('sha256');
-    hash.update(input);
-    return hash.digest('hex');
-}
-
-type PromptCard = {
-    cid: string;
-    text: string;
-    special: string;
-    set: string;
-    source: string;
-}
-
-type ResponseCard = {
-    cid: string;
-    text: string;
-    set: string;
-    source: string;
-}
 
 // @ts-ignore
 async function loadAndSavePromptCards(sheet: GoogleSpreadsheetWorksheet) {

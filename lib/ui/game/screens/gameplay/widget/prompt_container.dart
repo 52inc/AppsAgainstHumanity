@@ -34,7 +34,7 @@ class PromptContainer extends StatelessWidget {
                     ),
                     Column(
                       children: [
-                        _buildPromptText(context, prompt),
+                        _buildPromptText(context, state),
                         Expanded(
                           child: _buildPromptChild(context, state),
                         )
@@ -122,12 +122,12 @@ class PromptContainer extends StatelessWidget {
     );
   }
 
-  Widget _buildPromptText(BuildContext context, PromptCard card) {
+  Widget _buildPromptText(BuildContext context, GameViewState state) {
     return Container(
       width: double.maxFinite,
       margin: const EdgeInsets.symmetric(vertical: textPadding, horizontal: textPadding + 16),
       child: Text(
-        card.text,
+        state.currentPromptText,
         style: context.theme.textTheme.headline5.copyWith(
           color: Colors.white,
         ),
