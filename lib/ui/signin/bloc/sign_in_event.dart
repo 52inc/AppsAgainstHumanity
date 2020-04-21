@@ -8,3 +8,4 @@ abstract class SignInEvent extends Equatable {
 }
 
 class LoginWithGooglePressed extends SignInEvent {}
+class LoginWithApplePressed extends SignInEvent {}

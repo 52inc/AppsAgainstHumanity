@@ -313,7 +313,7 @@ class _HomeScreenState extends State<HomeScreen> {
     return ListTile(
       contentPadding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
       title: Text(
-        user.name,
+        user.name ?? "John \"I need a name\" Smith",
         style: context.theme.textTheme.subtitle1.copyWith(color: Colors.black87),
       ),
       subtitle: Text(
@@ -322,7 +322,7 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       leading: CircleAvatar(
         radius: 20,
-        backgroundImage: NetworkImage(user.avatarUrl),
+        backgroundImage: user.avatarUrl != null ? NetworkImage(user.avatarUrl) : null,
         backgroundColor: AppColors.primary,
       ),
     );

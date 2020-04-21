@@ -26,7 +26,7 @@ class UserPreference extends StatelessWidget {
     return ListTile(
       leading: _avatar(user),
       title: Text(
-        user?.displayName != null ? "@${user.displayName}" : "Loading...",
+        user?.displayName != null ? "${user.displayName}" : "Loading...",
         style: context.theme.textTheme.subtitle1.copyWith(
           color: Colors.black87,
         ),
@@ -37,8 +37,8 @@ class UserPreference extends StatelessWidget {
 
   Widget _avatar(@nullable UserInfo user) {
     return CircleAvatar(
-      child: user?.photoUrl != null ? null : Icon(MdiIcons.account),
-      backgroundColor: user?.photoUrl != null ? Colors.black12 : AppColors.secondary,
+      child: user?.photoUrl != null ? null : Icon(MdiIcons.account, color: Colors.black87,),
+      backgroundColor: user?.photoUrl != null ? Colors.black12 : AppColors.primary,
       backgroundImage: user?.photoUrl != null ? NetworkImage(user.photoUrl) : null,
       radius: 20,
     );

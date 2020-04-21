@@ -1,6 +1,7 @@
 import 'package:appsagainsthumanity/authentication_bloc/authentication_bloc.dart';
 import 'package:appsagainsthumanity/internal.dart';
 import 'package:appsagainsthumanity/ui/signin/bloc/bloc.dart';
+import 'package:appsagainsthumanity/ui/signin/widgets/apple_sign_in.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -59,11 +60,8 @@ class _SignInScreen extends State<SignInScreen> {
                         margin: const EdgeInsets.all(24),
                         child: Text(
                           context.strings.appNameDisplay,
-                          style: context.theme.textTheme.headline3.copyWith(
-                              color: Colors.black87,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 48
-                          ),
+                          style: context.theme.textTheme.headline3
+                              .copyWith(color: Colors.black87, fontWeight: FontWeight.bold, fontSize: 48),
                         ),
                       )
                     ],
@@ -74,34 +72,36 @@ class _SignInScreen extends State<SignInScreen> {
             Container(
               width: double.infinity,
               alignment: Alignment.topCenter,
+              margin: const EdgeInsets.only(left: 24, right: 24, top: 24),
+              child: AppleSignIn(),
+            ),
+            Container(
+              width: double.infinity,
+              alignment: Alignment.topCenter,
               margin: const EdgeInsets.all(24),
               child: Material(
                 type: MaterialType.button,
-                color: Colors.transparent,
+                color: Colors.white,
                 clipBehavior: Clip.hardEdge,
-                borderRadius: BorderRadius.circular(32),
+                borderRadius: BorderRadius.circular(6),
                 child: InkWell(
                   onTap: () {
-                    context.bloc<SignInBloc>()
-                        .add(LoginWithGooglePressed());
+                    context.bloc<SignInBloc>().add(LoginWithGooglePressed());
                   },
                   child: Container(
                     width: double.maxFinite,
-                    padding: const EdgeInsets.all(16),
+                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                     alignment: Alignment.center,
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(32),
-                        border: Border.all(color: AppColors.primary)
-                    ),
                     child: Row(
                       children: <Widget>[
                         Image.asset('assets/google_logo.png', width: 24, height: 24),
                         Expanded(
                           child: Text(
-                            context.strings.actionSignIn.toUpperCase(),
+                            context.strings.actionSignIn,
                             textAlign: TextAlign.center,
-                            style: context.theme.textTheme.button.copyWith(
-                                color: Colors.white
+                            style: context.theme.textTheme.subtitle1.copyWith(
+                              color: Colors.black87,
+                              fontWeight: FontWeight.w600
                             ),
                           ),
                         ),
@@ -110,7 +110,7 @@ class _SignInScreen extends State<SignInScreen> {
                   ),
                 ),
               ),
-            )
+            ),
           ],
         );
       },

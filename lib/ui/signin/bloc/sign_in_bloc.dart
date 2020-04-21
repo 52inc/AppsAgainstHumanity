@@ -21,6 +21,8 @@ class SignInBloc extends Bloc<SignInEvent, SignInState> {
   Stream<SignInState> mapEventToState(SignInEvent event) async* {
     if (event is LoginWithGooglePressed) {
       yield* _mapLoginWithGooglePressedToState();
+    } else if (event is LoginWithApplePressed) {
+      yield* _mapLoginWithApplePressedToState();
     }
   }
 
@@ -28,6 +30,18 @@ class SignInBloc extends Bloc<SignInEvent, SignInState> {
     yield SignInState.loading();
     try {
       await _userRepository.signInWithGoogle();
+      //await Analytics.firebaseAnalytics.logLogin(loginMethod: "google");
+      yield SignInState.success();
+    } catch (e, stacktrace) {
+      Logger("SignInBloc").fine("Error signing in: $e\n$stacktrace");
+      yield SignInState.failure();
+    }
+  }
+
+  Stream<SignInState> _mapLoginWithApplePressedToState() async* {
+    yield SignInState.loading();
+    try {
+      await _userRepository.signInWithApple();
       //await Analytics.firebaseAnalytics.logLogin(loginMethod: "google");
       yield SignInState.success();
     } catch (e, stacktrace) {
