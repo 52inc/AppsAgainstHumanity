@@ -3,7 +3,7 @@ import 'package:appsagainsthumanity/ui/home/home_screen.dart';
 import 'package:appsagainsthumanity/ui/routes.dart';
 import 'package:appsagainsthumanity/ui/signin/sign_in_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:firebase_analytics/observer.dart';
+//import 'package:firebase_analytics/observer.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'authentication_bloc/authentication_bloc.dart';
@@ -13,7 +13,7 @@ class App extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Apps Against Humanity',
-      theme: AppThemes.light,
+      theme: AppThemes.app,
 //      darkTheme: AppThemes.dark,
       localizationsDelegates: [
         AppLocalizationsDelegate(),
@@ -25,7 +25,7 @@ class App extends StatelessWidget {
         const Locale('en'), // English
       ],
       navigatorObservers: [
-        FirebaseAnalyticsObserver(analytics: Analytics.firebaseAnalytics),
+//        FirebaseAnalyticsObserver(analytics: Analytics.firebaseAnalytics),
         Routes.routeObserver
       ],
       home: BlocBuilder<AuthenticationBloc, AuthenticationState>(

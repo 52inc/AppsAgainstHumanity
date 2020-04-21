@@ -103,7 +103,7 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
 
   Widget _buildBody() {
     return Container(
-      margin: EdgeInsets.only(top: MediaQuery.of(context).systemGestureInsets.top),
+      margin: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
       child: Column(
         children: [
           JudgeBar(),

@@ -55,7 +55,7 @@ class AuthenticationBloc
 
   Stream<AuthenticationState> _mapLoggedOutToState() async* {
     yield Unauthenticated();
-    await Analytics.firebaseAnalytics.logEvent(name: "logout");
+//    await Analytics.firebaseAnalytics.logEvent(name: "logout");
     _userRepository.signOut();
   }
 }

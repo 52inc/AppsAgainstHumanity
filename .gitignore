@@ -34,6 +34,7 @@
 # Misc tools
 credentials.json
 *.g.dart
+web/firebase_config.js
 
 # Web related
 lib/generated_plugin_registrant.dart

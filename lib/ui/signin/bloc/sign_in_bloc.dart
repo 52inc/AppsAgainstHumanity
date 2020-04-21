@@ -28,7 +28,7 @@ class SignInBloc extends Bloc<SignInEvent, SignInState> {
     yield SignInState.loading();
     try {
       await _userRepository.signInWithGoogle();
-      await Analytics.firebaseAnalytics.logLogin(loginMethod: "google");
+      //await Analytics.firebaseAnalytics.logLogin(loginMethod: "google");
       yield SignInState.success();
     } catch (e, stacktrace) {
       Logger("SignInBloc").fine("Error signing in: $e\n$stacktrace");

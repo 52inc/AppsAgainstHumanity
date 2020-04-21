@@ -23,7 +23,7 @@ class WaitingPlayerResponses extends StatelessWidget {
                 padding: const EdgeInsets.only(left: 12, right: 12, top: 8),
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 3,
-                  childAspectRatio: 88 / 124,
+                  childAspectRatio: 88 / 130,
                 ),
                 itemCount: players.length,
                 itemBuilder: (context, index) {
@@ -61,7 +61,7 @@ class PlayerResponseCard extends StatelessWidget {
             ),
             Expanded(
               child: Container(
-                margin: const EdgeInsets.only(top: 8),
+                margin: const EdgeInsets.only(top: 8, left: 8, right: 8),
                 child: Text(
                   player.name,
                   textAlign: TextAlign.center,

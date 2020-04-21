@@ -27,6 +27,7 @@ class GameBottomSheet extends StatelessWidget {
               backgroundColor: Colors.transparent,
               elevation: 0,
               actions: actions,
+              centerTitle: false,
               leading: Container(
                 margin: const EdgeInsets.only(left: 8),
                 child: IconButton(

@@ -50,10 +50,15 @@ class StartingRoomScreen extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Container(
-            width: double.maxFinite,
-            height: double.maxFinite,
-            child: CircularProgressIndicator(),
+          Row(
+            mainAxisSize: MainAxisSize.max,
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+              Container(
+                child: CircularProgressIndicator(),
+              ),
+            ],
           ),
         ],
       ),

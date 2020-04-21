@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:appsagainsthumanity/data/features/game/game_repository.dart';
 import 'package:appsagainsthumanity/data/features/users/model/user.dart';
 import 'package:appsagainsthumanity/data/features/game/model/game_state.dart';
@@ -5,6 +7,7 @@ import 'package:appsagainsthumanity/ui/creategame/create_game_screen.dart';
 import 'package:appsagainsthumanity/ui/game/game_screen.dart';
 import 'package:appsagainsthumanity/ui/home/bloc/bloc.dart';
 import 'package:appsagainsthumanity/ui/home/widgets/join_room_dialog.dart';
+import 'package:appsagainsthumanity/ui/settings/settings_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:appsagainsthumanity/internal.dart';
@@ -52,53 +55,61 @@ class _HomeScreenState extends State<HomeScreen> {
       },
       builder: (context, state) {
         return Scaffold(
-          body: Column(
-            children: [
-              if (state.games.isNotEmpty)
-                AspectRatio(
-                  aspectRatio: 312 / 436,
-                  child: PageView(
-                    controller: _pageController,
-                    children: [_buildTitleCard(state, includeMargin: false), _buildPastGamesCard(state)],
+          body: Padding(
+            padding: EdgeInsets.only(bottom: MediaQuery.of(context).padding.bottom),
+            child: Column(
+              children: [
+                if (state.games.isNotEmpty)
+                  AspectRatio(
+                    aspectRatio: 312 / 436,
+                    child: PageView(
+                      controller: _pageController,
+                      children: [
+                        _buildTitleCard(context, state, includeMargin: false),
+                        _buildPastGamesCard(context, state),
+                      ],
+                    ),
                   ),
-                ),
-              if (state.games.isEmpty)
-                _buildTitleCard(state),
-              Expanded(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    _buildMenuAction(
-                      context: context,
-                      margin: const EdgeInsets.only(left: 24, top: 16, right: 8, bottom: 16),
-                      icon: MdiIcons.gamepad,
-                      label: "START GAME",
-                      onTap: () {
-                        Navigator.of(context).push(MaterialPageRoute(builder: (context) => CreateGameScreen()));
-                      },
-                    ),
-                    _buildMenuAction(
-                      context: context,
-                      margin: const EdgeInsets.only(left: 8, top: 16, right: 24, bottom: 16),
-                      icon: MdiIcons.gamepadVariantOutline,
-                      label: "JOIN GAME",
-                      onTap: () => _joinGame(),
-                    ),
-                  ],
-                ),
-              )
-            ],
+                if (state.games.isEmpty) _buildTitleCard(context, state),
+                Expanded(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      _buildMenuAction(
+                        context: context,
+                        margin: const EdgeInsets.only(left: 24, top: 16, right: 8, bottom: 16),
+                        icon: MdiIcons.gamepad,
+                        label: "START GAME",
+                        onTap: () {
+                          Navigator.of(context).push(MaterialPageRoute(builder: (context) => CreateGameScreen()));
+                        },
+                      ),
+                      Builder(builder: (context) {
+                        return _buildMenuAction(
+                          context: context,
+                          margin: const EdgeInsets.only(left: 8, top: 16, right: 24, bottom: 16),
+                          icon: MdiIcons.gamepadVariantOutline,
+                          label: "JOIN GAME",
+                          onTap: () => _joinGame(context),
+                        );
+                      }),
+                    ],
+                  ),
+                )
+              ],
+            ),
           ),
         );
       },
     );
   }
 
-  Widget _buildTitleCard(HomeState state, {bool includeMargin = true}) {
+  Widget _buildTitleCard(BuildContext context, HomeState state, {bool includeMargin = true}) {
+    var topMargin = MediaQuery.of(context).padding.top + (Platform.isAndroid ? 24 : 0);
     return Container(
       margin: includeMargin
-          ? const EdgeInsets.only(left: 24, right: 24, top: 48)
-          : const EdgeInsets.only(left: 8, right: 8, top: 48),
+          ? EdgeInsets.only(left: 24, right: 24, top: topMargin)
+          : EdgeInsets.only(left: 8, right: 8, top: topMargin),
       child: AspectRatio(
         aspectRatio: 312 / 436,
         child: Material(
@@ -108,8 +119,7 @@ class _HomeScreenState extends State<HomeScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
+              Stack(
                 children: <Widget>[
                   Container(
                     margin: const EdgeInsets.all(24),
@@ -119,16 +129,17 @@ class _HomeScreenState extends State<HomeScreen> {
                           .copyWith(color: Colors.black87, fontWeight: FontWeight.bold, fontSize: 48),
                     ),
                   ),
-                  Expanded(
-                    child: Align(
-                      alignment: Alignment.topRight,
-                      child: IconButton(
-                        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
-                        icon: Icon(MdiIcons.cog, color: Colors.black87,),
-                        onPressed: () {
-                          // TODO: Open Settings
-                        },
+                  Align(
+                    alignment: Alignment.topRight,
+                    child: IconButton(
+                      padding: const EdgeInsets.all(24),
+                      icon: Icon(
+                        MdiIcons.cog,
+                        color: Colors.black87,
                       ),
+                      onPressed: () {
+                        Navigator.of(context).push(MaterialPageRoute(builder: (_) => SettingsScreen()));
+                      },
                     ),
                   )
                 ],
@@ -149,9 +160,10 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _buildPastGamesCard(HomeState state) {
+  Widget _buildPastGamesCard(BuildContext context, HomeState state) {
+    var topMargin = MediaQuery.of(context).padding.top + (Platform.isAndroid ? 24 : 0);
     return Container(
-      margin: const EdgeInsets.only(left: 8, right: 8, top: 48),
+      margin: EdgeInsets.only(left: 8, right: 8, top: topMargin),
       child: AspectRatio(
         aspectRatio: 312 / 436,
         child: Material(
@@ -176,7 +188,7 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               Expanded(
                 child: ListView.builder(
-                  padding: const EdgeInsets.symmetric(vertical: 8),
+                    padding: const EdgeInsets.symmetric(vertical: 8),
                     itemCount: state.games.length,
                     itemBuilder: (context, index) {
                       var game = state.games[index];
@@ -316,7 +328,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  void _joinGame() async {
+  void _joinGame(BuildContext context) async {
     var gameId = await showJoinRoomDialog(context);
     if (gameId != null) {
       try {

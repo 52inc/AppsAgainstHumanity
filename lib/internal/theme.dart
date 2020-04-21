@@ -18,7 +18,7 @@ class AppColors {
 class AppThemes {
     AppThemes._();
 
-    static ThemeData get light =>
+    static ThemeData get app =>
         ThemeData(
             brightness: Brightness.dark,
             primaryColor: AppColors.primary,
@@ -27,30 +27,6 @@ class AppThemes {
             accentColor: AppColors.secondary,
             canvasColor: AppColors.surface
         );
-
-    static ThemeData get dark =>
-        ThemeData(
-            brightness: Brightness.dark
-        );
-
-    static AppBarTheme get darkAppBarTheme {
-        return AppBarTheme(
-            textTheme: TextTheme(
-                headline6: TextStyle(
-                    color: AppColors.primaryVariant,
-                    fontSize: 20,
-                    fontWeight: FontWeight.w500
-                )
-            )
-        );
-    }
-
-    static Color inverseBackgroundColor(BuildContext context) {
-        var brightness = context.theme.brightness;
-        return brightness == Brightness.dark
-            ? light.backgroundColor
-            : dark.backgroundColor;
-    }
 }
 
 extension ThemeExt on BuildContext {

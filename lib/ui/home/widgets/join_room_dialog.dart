@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:appsagainsthumanity/internal.dart';
 import 'package:flutter/material.dart';
 
@@ -80,13 +82,25 @@ class _JoinRoomDialogState extends State<JoinRoomDialog> {
 }
 
 Future<String> showJoinRoomDialog(BuildContext context) {
-  return showDialog<String>(
-      context: context,
-      builder: (builderContext) {
-        return AlertDialog(
-          title: Text('Join a game'),
-          content: JoinRoomDialog(),
+  if (!Platform.isAndroid && !Platform.isIOS) {
+    return showGeneralDialog<String>(
+        context: context,
+        pageBuilder: (context, _, __) {
+          return AlertDialog(
+            title: Text('Join a game'),
+            content: JoinRoomDialog(),
             contentPadding: const EdgeInsets.all(0),
-        );
-      });
+          );
+        });
+  } else {
+    return showDialog<String>(
+        context: context,
+        builder: (builderContext) {
+          return AlertDialog(
+            title: Text('Join a game'),
+            content: JoinRoomDialog(),
+            contentPadding: const EdgeInsets.all(0),
+          );
+        });
+  }
 }
