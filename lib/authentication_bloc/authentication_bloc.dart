@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:appsagainsthumanity/data/app_preferences.dart';
 import 'package:appsagainsthumanity/data/features/users/model/user.dart';
 import 'package:appsagainsthumanity/data/features/users/user_repository.dart';
 import 'package:appsagainsthumanity/internal.dart';
@@ -8,15 +9,18 @@ import 'package:logging/logging.dart';
 import 'package:meta/meta.dart';
 
 part 'authentication_event.dart';
+
 part 'authentication_state.dart';
 
-class AuthenticationBloc
-    extends Bloc<AuthenticationEvent, AuthenticationState> {
+class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> {
   final UserRepository _userRepository;
+  final AppPreferences _preferences;
 
-  AuthenticationBloc({@required UserRepository userRepository})
+  AuthenticationBloc({@required UserRepository userRepository, @required AppPreferences preferences})
       : assert(userRepository != null),
-        _userRepository = userRepository;
+        assert(preferences != null),
+        _userRepository = userRepository,
+        _preferences = preferences;
 
   @override
   AuthenticationState get initialState => Uninitialized();
@@ -31,6 +35,8 @@ class AuthenticationBloc
       yield* _mapLoggedInToState();
     } else if (event is LoggedOut) {
       yield* _mapLoggedOutToState();
+    } else if (event is AgreeToTerms) {
+      yield* _mapAgreeToTermsToState();
     }
   }
 
@@ -40,7 +46,11 @@ class AuthenticationBloc
       if (isSignedIn) {
         Logger("authentication_bloc").fine("User is signed-in!");
         final user = await _userRepository.getUser();
-        yield Authenticated(user);
+        if (_preferences.agreedToTermsOfService) {
+          yield Authenticated(user);
+        } else {
+          yield NeedsAgreeToTerms();
+        }
       } else {
         yield Unauthenticated();
       }
@@ -50,6 +60,15 @@ class AuthenticationBloc
   }
 
   Stream<AuthenticationState> _mapLoggedInToState() async* {
+    if (_preferences.agreedToTermsOfService) {
+      yield Authenticated(await _userRepository.getUser());
+    } else {
+      yield NeedsAgreeToTerms();
+    }
+  }
+
+  Stream<AuthenticationState> _mapAgreeToTermsToState() async* {
+    _preferences.agreedToTermsOfService = true;
     yield Authenticated(await _userRepository.getUser());
   }
 

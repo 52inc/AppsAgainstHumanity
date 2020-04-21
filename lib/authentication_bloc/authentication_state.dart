@@ -21,4 +21,6 @@ class Authenticated extends AuthenticationState {
     String toString() => 'Authenticated { displayName: ${user.name} }';
 }
 
+class NeedsAgreeToTerms extends AuthenticationState {}
+
 class Unauthenticated extends AuthenticationState {}

@@ -190,12 +190,14 @@ class SettingsScreen extends StatelessWidget {
       try {
         await userRepository.deleteAccount();
         context.bloc<AuthenticationBloc>().add(LoggedOut());
+        Navigator.of(context).pop();
       } catch (e) {
         if (e is PlatformException) {
           if (e.code == 'ERROR_REQUIRES_RECENT_LOGIN') {
             await userRepository.signInWithGoogle();
             await userRepository.deleteAccount();
             context.bloc<AuthenticationBloc>().add(LoggedOut());
+            Navigator.of(context).pop();
           }
         }
       }
@@ -206,6 +208,7 @@ class SettingsScreen extends StatelessWidget {
     var userRepository = context.repository<UserRepository>();
     await userRepository.signOut();
     context.bloc<AuthenticationBloc>().add(LoggedOut());
+    Navigator.of(context).pop();
   }
 }
 

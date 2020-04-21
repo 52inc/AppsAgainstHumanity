@@ -2,7 +2,9 @@ import 'package:appsagainsthumanity/internal.dart';
 import 'package:appsagainsthumanity/ui/home/home_screen.dart';
 import 'package:appsagainsthumanity/ui/routes.dart';
 import 'package:appsagainsthumanity/ui/signin/sign_in_screen.dart';
+import 'package:appsagainsthumanity/ui/terms_screen.dart';
 import 'package:flutter/material.dart';
+
 //import 'package:firebase_analytics/observer.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -32,6 +34,8 @@ class App extends StatelessWidget {
         builder: (context, state) {
           if (state is Unauthenticated) {
             return SignInScreen();
+          } else if (state is NeedsAgreeToTerms) {
+            return TermsOfServiceScreen();
           } else if (state is Authenticated) {
             return HomeScreen();
           } else {
