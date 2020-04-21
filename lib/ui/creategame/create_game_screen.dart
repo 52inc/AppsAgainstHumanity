@@ -9,7 +9,7 @@ import 'package:kt_dart/kt.dart';
 class CreateGameScreen extends StatefulWidget {
   final Set<String> cardSets;
 
-  CreateGameScreen({Set<String> sets}) : cardSets = sets ?? [];
+  CreateGameScreen({Set<String> sets}) : cardSets = sets ?? Set();
 
   @override
   State<StatefulWidget> createState() => _CreateGameScreenState();

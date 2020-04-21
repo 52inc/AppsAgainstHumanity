@@ -187,6 +187,18 @@ class FirestoreGameRepository extends GameRepository {
   }
 
   @override
+  Future<void> reDealHand(String gameDocumentId) {
+    return currentUserOrThrow((firebaseUser) async {
+      final HttpsCallable callable = CloudFunctions.instance.getHttpsCallable(functionName: 'reDealHand');
+      dynamic response = await callable.call(<String, dynamic>{
+        'game_id': gameDocumentId
+      });
+
+      print("Hand re-dealt successfully! $response");
+    });
+  }
+
+  @override
   Future<void> pickWinner(String gameDocumentId, String playerId) async {
     final HttpsCallable callable = CloudFunctions.instance.getHttpsCallable(functionName: 'pickWinner');
     dynamic response = await callable.call(<String, dynamic>{

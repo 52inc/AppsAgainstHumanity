@@ -41,5 +41,19 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
+	<!-- Google Sign-in Section -->
+  <key>CFBundleURLTypes</key>
+  <array>
+  	<dict>
+  		<key>CFBundleTypeRole</key>
+  		<string>Editor</string>
+  		<key>CFBundleURLSchemes</key>
+  		<array>
+  			<!-- Copied from GoogleService-Info.plist key REVERSED_CLIENT_ID -->
+  			<string>com.googleusercontent.apps.100898335413-vidl0d8b8k41qtkom7b964e7utr1r29c</string>
+  		</array>
+  	</dict>
+  </array>
+  <!-- End of the Google Sign-in Section -->
 </dict>
 </plist>

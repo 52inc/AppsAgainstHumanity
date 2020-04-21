@@ -35,7 +35,7 @@ class App extends StatelessWidget {
           } else if (state is Authenticated) {
             return HomeScreen();
           } else {
-            return Container(color: AppColors.primary);
+            return Container(color: AppColors.surface);
           }
         },
       ),

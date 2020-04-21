@@ -1,4 +1,5 @@
 import 'package:appsagainsthumanity/data/features/cards/model/response_card.dart';
+import 'package:appsagainsthumanity/data/features/game/game_repository.dart';
 import 'package:appsagainsthumanity/internal.dart';
 import 'package:appsagainsthumanity/ui/game/bloc/bloc.dart';
 import 'package:appsagainsthumanity/ui/game/screens/gameplay/widget/game_bottom_sheet.dart';
@@ -7,6 +8,7 @@ import 'package:appsagainsthumanity/ui/game/screens/gameplay/widget/judge/judge_
 import 'package:appsagainsthumanity/ui/game/screens/gameplay/widget/player_list.dart';
 import 'package:appsagainsthumanity/ui/game/screens/gameplay/widget/player_response_picker.dart';
 import 'package:appsagainsthumanity/ui/game/screens/gameplay/widget/prompt_container.dart';
+import 'package:appsagainsthumanity/ui/game/screens/gameplay/widget/re_deal_button.dart';
 import 'package:appsagainsthumanity/ui/game/screens/gameplay/widget/response_card_view.dart';
 import 'package:appsagainsthumanity/ui/game/screens/gameplay/widget/turn_winner_sheet.dart';
 import 'package:flutter/material.dart';
@@ -44,54 +46,30 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
                   },
                 ),
               ),
-
-              // TODO: Abstract into it's own widget so that it can implement it's
-              // TODO: own conditional BlocBuilder
-              Container(
-                margin: const EdgeInsets.only(left: 16),
-                child: GameStatusTitle(),
-              ),
-
               Expanded(
                 child: Container(
-                  margin: const EdgeInsets.only(left: 16, right: 16),
-                  alignment: Alignment.centerRight,
-                  child: Builder(
-                    builder: (context) {
-                      return IconButton(
-                        icon: Icon(MdiIcons.accountGroup),
-                        color: Colors.black87,
-                        onPressed: () {
-                          /*
-                           * This is kind of hacky since we have to add a new GameBloc provider since the modal
-                           * is a different view tree
-                           */
-                          showModalBottomSheet(
-                              context: context,
-                              backgroundColor: Colors.transparent,
-                              builder: (context) {
-                                return GameBottomSheet(
-                                  title: "Players",
-                                  actions: [
-                                    Container(
-                                      margin: const EdgeInsets.symmetric(horizontal: 24),
-                                      height: 56,
-                                      alignment: Alignment.center,
-                                      child: Text(
-                                        widget.state.game.gid,
-                                        style: context.theme.textTheme.headline6.copyWith(
-                                          color: AppColors.secondary,
-                                        ),
-                                      ),
-                                    )
-                                  ],
-                                  child: PlayerList(widget.state.game),
-                                );
-                              });
-                        },
-                      );
-                    },
-                  ),
+                  margin: const EdgeInsets.only(left: 16),
+                  child: GameStatusTitle(),
+                ),
+              ),
+              Container(
+                margin: const EdgeInsets.only(left: 16, right: 16),
+                alignment: Alignment.centerRight,
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Container(
+                      margin: const EdgeInsets.only(right: 8),
+                      child: ReDealButton(),
+                    ),
+                    IconButton(
+                      icon: Icon(MdiIcons.accountGroup),
+                      color: Colors.black87,
+                      onPressed: () {
+                        _showPlayerBottomSheet(context);
+                      },
+                    )
+                  ],
                 ),
               )
             ],
@@ -146,5 +124,30 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
         ],
       ),
     );
+  }
+
+  void _showPlayerBottomSheet(BuildContext context) {
+    showModalBottomSheet(
+        context: context,
+        backgroundColor: Colors.transparent,
+        builder: (context) {
+          return GameBottomSheet(
+            title: "Players",
+            actions: [
+              Container(
+                margin: const EdgeInsets.symmetric(horizontal: 24),
+                height: 56,
+                alignment: Alignment.center,
+                child: Text(
+                  widget.state.game.gid,
+                  style: context.theme.textTheme.headline6.copyWith(
+                    color: AppColors.secondary,
+                  ),
+                ),
+              )
+            ],
+            child: PlayerList(widget.state.game),
+          );
+        });
   }
 }

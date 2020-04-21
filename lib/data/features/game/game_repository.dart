@@ -44,6 +44,9 @@ abstract class GameRepository {
     /// then a new prompt is drawn for this turn and the current judge remains
     Future<void> downVoteCurrentPrompt(String gameDocumentId);
 
+    /// Re-deal your hand in exchange for one prize card, if you have one
+    Future<void> reDealHand(String gameDocumentId);
+
     //////////////////////
     // Judge Methods
     //////////////////////

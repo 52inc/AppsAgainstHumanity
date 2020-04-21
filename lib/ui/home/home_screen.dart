@@ -84,13 +84,6 @@ class _HomeScreenState extends State<HomeScreen> {
                       label: "JOIN GAME",
                       onTap: () => _joinGame(),
                     ),
-//                    _buildMenuAction(
-//                      context: context,
-//                      margin: const EdgeInsets.only(left: 4, top: 16, right: 24, bottom: 16),
-//                      icon: MdiIcons.cogOutline,
-//                      label: "SETTINGS",
-//                      onTap: () {},
-//                    ),
                   ],
                 ),
               )
