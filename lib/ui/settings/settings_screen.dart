@@ -4,10 +4,12 @@ import 'package:appsagainsthumanity/internal.dart';
 import 'package:appsagainsthumanity/ui/settings/widgets/preference.dart';
 import 'package:appsagainsthumanity/ui/settings/widgets/preference_header.dart';
 import 'package:appsagainsthumanity/ui/settings/widgets/user_preference.dart';
+import 'package:appsagainsthumanity/ui/widgets/web_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:package_info/package_info.dart';
 
 class SettingsScreen extends StatelessWidget {
   @override
@@ -57,7 +59,11 @@ class SettingsScreen extends StatelessWidget {
                   color: Colors.black54,
                 ),
                 onTap: () {
-                  // TODO: Open web browser
+                  showWebView(
+                    context,
+                    "Privacy Policy",
+                    Config.privacyPolicyUrl,
+                  );
                 },
               ),
               Preference(
@@ -67,7 +73,11 @@ class SettingsScreen extends StatelessWidget {
                   color: Colors.black54,
                 ),
                 onTap: () {
-                  // TODO: Open web browser
+                  showWebView(
+                    context,
+                    "Terms of service",
+                    Config.termsOfServiceUrl,
+                  );
                 },
               ),
               Preference(
@@ -81,6 +91,60 @@ class SettingsScreen extends StatelessWidget {
                 },
               ),
             ],
+          ),
+          PreferenceCategory(
+            title: "About",
+            children: [
+              Preference(
+                title: "Contribute",
+                subtitle: "Checkout the source code on GitHub!",
+                icon: Icon(
+                  MdiIcons.github,
+                  color: Colors.black54,
+                ),
+                onTap: () {
+                  showWebView(
+                    context,
+                    "Contribute",
+                    Config.sourceUrl,
+                  );
+                },
+              ),
+              Preference(
+                title: "Built by 52inc",
+                icon: Image.asset('assets/ic_logo.png', color: Colors.black54,),
+                onTap: () {
+                  showWebView(
+                    context,
+                    "Author",
+                    "https://52inc.com",
+                  );
+                },
+              ),
+              StreamBuilder<PackageInfo>(
+                  stream: PackageInfo.fromPlatform().asStream(),
+                  builder: (context, snapshot) {
+                    var packageInfo = snapshot.data;
+                    return Preference(
+                      title: "Version",
+                      icon: Icon(
+                        MdiIcons.application,
+                        color: Colors.black54,
+                      ),
+                      subtitle:
+                          packageInfo != null ? "${packageInfo.version}+${packageInfo.buildNumber}" : "Loading...",
+                    );
+                  }),
+            ],
+          ),
+          Container(
+            height: 56,
+            alignment: Alignment.center,
+            child: Text(
+              "Made with 💙 by 52inc",
+              textAlign: TextAlign.center,
+              style: context.theme.textTheme.subtitle1.copyWith(color: Colors.white54),
+            ),
           )
         ],
       ),
@@ -99,7 +163,7 @@ class SettingsScreen extends StatelessWidget {
             content: Text(
               "Are you sure you want to delete your account? This is permenant and cannot be undone.",
               style: context.theme.textTheme.subtitle1.copyWith(
-                  fontWeight: FontWeight.bold,
+                fontWeight: FontWeight.bold,
               ),
             ),
             actions: [
@@ -125,15 +189,13 @@ class SettingsScreen extends StatelessWidget {
       var userRepository = context.repository<UserRepository>();
       try {
         await userRepository.deleteAccount();
-        context.bloc<AuthenticationBloc>()
-            .add(LoggedOut());
+        context.bloc<AuthenticationBloc>().add(LoggedOut());
       } catch (e) {
         if (e is PlatformException) {
           if (e.code == 'ERROR_REQUIRES_RECENT_LOGIN') {
             await userRepository.signInWithGoogle();
             await userRepository.deleteAccount();
-            context.bloc<AuthenticationBloc>()
-                .add(LoggedOut());
+            context.bloc<AuthenticationBloc>().add(LoggedOut());
           }
         }
       }
@@ -143,8 +205,7 @@ class SettingsScreen extends StatelessWidget {
   void _signOut(BuildContext context) async {
     var userRepository = context.repository<UserRepository>();
     await userRepository.signOut();
-    context.bloc<AuthenticationBloc>()
-      .add(LoggedOut());
+    context.bloc<AuthenticationBloc>().add(LoggedOut());
   }
 }
 

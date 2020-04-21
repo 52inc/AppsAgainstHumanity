@@ -55,6 +55,7 @@ dependencies:
   # UI
   material_design_icons_flutter: ^3.4.5045
   timeago: ^2.0.26
+  webview_flutter: ^0.3.20+2
 
   json_annotation: ^3.0.0
 

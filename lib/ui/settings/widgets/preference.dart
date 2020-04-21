@@ -30,7 +30,7 @@ class Preference extends StatelessWidget {
       subtitle: subtitle != null
           ? Text(
               subtitle,
-              style: context.theme.textTheme.bodyText1.copyWith(color: Colors.black54),
+              style: context.theme.textTheme.bodyText1.copyWith(color: Colors.black38),
             )
           : null,
       leading: Padding(
