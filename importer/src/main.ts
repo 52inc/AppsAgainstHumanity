@@ -19,6 +19,7 @@ console.log(argv);
 const promptLength = argv.pl || 6792;
 const responseLength = argv.rl || 24413;
 const documentId = argv.doc || '1lsy7lIwBe-DWOi2PALZPf5DgXHx9MEvKfRw1GaWQkzg';
+const sheetId = argv.sheet || '2018240023';
 
 // @ts-ignore
 async function loadAndSavePromptCards(sheet: GoogleSpreadsheetWorksheet) {
@@ -33,20 +34,22 @@ async function loadAndSavePromptCards(sheet: GoogleSpreadsheetWorksheet) {
         const promptSpecial = sheet.getCellByA1(`B${i}`).value;
         const promptSet = sheet.getCellByA1(`C${i}`).value;
         const sourceSheet = sheet.getCellByA1(`D${i}`).value;
-        const cid = computeCardId(promptSet, promptText);
 
-        let cards = prompts.get(promptSet);
-        if (!cards) {
-            cards = [];
+        if (promptText && promptText.length > 0) {
+            const cid = computeCardId(promptSet, promptText);
+            let cards = prompts.get(promptSet);
+            if (!cards) {
+                cards = [];
+            }
+            cards.push({
+                cid: cid,
+                text: promptText,
+                special: promptSpecial,
+                set: promptSet,
+                source: sourceSheet
+            });
+            prompts.set(promptSet, cards);
         }
-        cards.push({
-            cid: cid,
-            text: promptText,
-            special: promptSpecial,
-            set: promptSet,
-            source: sourceSheet
-        });
-        prompts.set(promptSet, cards);
     }
 
     for (let [promptSet, cards] of prompts) {
@@ -93,22 +96,24 @@ async function loadAndSaveResponseCards(sheet: GoogleSpreadsheetWorksheet) {
     const responses = new Map<string, ResponseCard[]>();
 
     for (let i=2; i<=responseLength; i++) {
-        const responseText = sheet.getCellByA1(`G${i}`).value.toString();
+        const responseText = sheet.getCellByA1(`G${i}`).value?.toString();
         const responseSet = sheet.getCellByA1(`H${i}`).value;
         const sourceSheet = sheet.getCellByA1(`I${i}`).value;
-        const cid = computeCardId(responseSet, responseText);
 
-        let cards = responses.get(responseSet);
-        if (!cards) {
-            cards = [];
+        if (responseText && responseText.length > 0) {
+            const cid = computeCardId(responseSet, responseText);
+            let cards = responses.get(responseSet);
+            if (!cards) {
+                cards = [];
+            }
+            cards.push({
+                cid: cid,
+                text: responseText,
+                set: responseSet,
+                source: sourceSheet
+            });
+            responses.set(responseSet, cards);
         }
-        cards.push({
-            cid: cid,
-            text: responseText,
-            set: responseSet,
-            source: sourceSheet
-        });
-        responses.set(responseSet, cards);
     }
 
     for (let [responseSet, cards] of responses) {
@@ -152,7 +157,7 @@ async function run(docId: String) {
     console.log(doc.title);
 
     // Master Cards List Sheet
-    const sheet = doc.sheetsById['2018240023'];
+    const sheet = doc.sheetsById[sheetId];
     console.log(sheet.title);
     console.log(sheet.rowCount);
 

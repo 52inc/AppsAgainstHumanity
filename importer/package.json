@@ -6,6 +6,7 @@
   "scripts": {
     "build": "tsc",
     "import": "tsc && node build/main.js",
+    "import52Pack": "tsc && node build/main.js --doc 1EtXldfg_GlGoM22WguM_oS_s0-SndA4QF2xnClfh2C0 --sheet 2018240023 --pl 40 --rl 85",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
