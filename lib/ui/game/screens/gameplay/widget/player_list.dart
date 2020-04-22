@@ -22,9 +22,11 @@ class PlayerList extends StatelessWidget {
             itemBuilder: (context, index) {
               var player = players[index];
               var isJudge = player.id == state.game.turn?.judgeId;
+              var hasDownvoted = state.game.turn?.downvotes?.contains(player.id) ?? false;
               return PlayerItem(
                 player,
                 isJudge: isJudge,
+                hasDownvoted: hasDownvoted,
               );
             },
           );

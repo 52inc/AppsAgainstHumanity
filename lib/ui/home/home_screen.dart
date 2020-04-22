@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:appsagainsthumanity/data/features/game/game_repository.dart';
+import 'package:appsagainsthumanity/data/features/game/model/player.dart';
 import 'package:appsagainsthumanity/data/features/users/model/user.dart';
 import 'package:appsagainsthumanity/data/features/game/model/game_state.dart';
 import 'package:appsagainsthumanity/ui/creategame/create_game_screen.dart';
@@ -313,7 +314,7 @@ class _HomeScreenState extends State<HomeScreen> {
     return ListTile(
       contentPadding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
       title: Text(
-        user.name ?? "John \"I need a name\" Smith",
+        user.name ?? Player.DEFAULT_NAME,
         style: context.theme.textTheme.subtitle1.copyWith(color: Colors.black87),
       ),
       subtitle: Text(

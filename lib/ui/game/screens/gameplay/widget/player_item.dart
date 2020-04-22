@@ -7,8 +7,9 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 class PlayerItem extends StatelessWidget {
   final Player player;
   final bool isJudge;
+  final bool hasDownvoted;
 
-  PlayerItem(this.player, {this.isJudge = false});
+  PlayerItem(this.player, {this.isJudge = false, this.hasDownvoted = false});
 
   @override
   Widget build(BuildContext context) {
@@ -16,7 +17,7 @@ class PlayerItem extends StatelessWidget {
         contentPadding: const EdgeInsets.symmetric(horizontal: 24, vertical: 4),
         onTap: () {},
         title: Text(
-          player.name,
+          player.name ?? Player.DEFAULT_NAME,
           style: context.theme.textTheme.subtitle1.copyWith(color: Colors.white),
         ),
         subtitle: isJudge
@@ -32,6 +33,14 @@ class PlayerItem extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
+              if (hasDownvoted)
+                Container(
+                    margin: const EdgeInsets.only(right: 16),
+                  child: Icon(
+                    MdiIcons.thumbDown,
+                    color: AppColors.secondary,
+                  ),
+                ),
               Icon(MdiIcons.cardsPlayingOutline),
               Container(
                 padding: const EdgeInsets.only(left: 16),
@@ -43,7 +52,6 @@ class PlayerItem extends StatelessWidget {
             ],
           ),
         ),
-        leading: PlayerCircleAvatar(player: player)
-    );
+        leading: PlayerCircleAvatar(player: player));
   }
 }

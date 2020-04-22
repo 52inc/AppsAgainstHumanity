@@ -1,5 +1,6 @@
 import 'package:apple_sign_in/apple_sign_in.dart';
 import 'package:appsagainsthumanity/data/app_preferences.dart';
+import 'package:appsagainsthumanity/data/features/game/model/player.dart';
 import 'package:appsagainsthumanity/data/features/users/model/user.dart';
 import 'package:appsagainsthumanity/data/firestore.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -70,7 +71,7 @@ class UserRepository {
                     accessToken: String.fromCharCodes(appleIdCredential.authorizationCode),
                 );
 
-                var name = "John \"I need a name\" Smith";
+                var name = Player.DEFAULT_NAME;
                 if (appleIdCredential.fullName != null) {
                     var nameComponents = appleIdCredential.fullName;
                     name = nameComponents.nickname ??

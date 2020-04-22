@@ -89,13 +89,7 @@ class WaitingRoomScreen extends StatelessWidget {
               );
           }
         },
-        child: Column(
-          children: [
-            Expanded(
-              child: _buildPlayerList(context, state),
-            )
-          ],
-        ),
+        child: _buildPlayerList(context, state),
       ),
     );
   }
@@ -123,7 +117,7 @@ class WaitingRoomScreen extends StatelessWidget {
         contentPadding: const EdgeInsets.symmetric(horizontal: 24, vertical: 4),
         onTap: () {},
         title: Text(
-          player.name,
+          player.name ?? Player.DEFAULT_NAME,
           style: context.theme.textTheme.subtitle1.copyWith(color: Colors.white),
         ),
         leading: player.isRandoCardrissian

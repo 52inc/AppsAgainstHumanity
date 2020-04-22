@@ -19,7 +19,9 @@ class PlayerCircleAvatar extends StatelessWidget {
             radius: this.radius,
             backgroundImage: player.avatarUrl != null ? NetworkImage(player.avatarUrl) : null,
             backgroundColor: AppColors.primary,
-            child: player.avatarUrl == null ? Text(player.name.split(' ').map((e) => e[0]).join().toUpperCase()) : null,
+            child: player.avatarUrl == null
+                ? player.name != null ? Text(player.name.split(' ').map((e) => e[0]).join().toUpperCase()) : null
+                : null,
           );
   }
 }

@@ -9,6 +9,8 @@ part 'player.g.dart';
 @immutable
 @JsonSerializable()
 class Player {
+  static const DEFAULT_NAME = "John \"I need a name\" Smith";
+
   final String id;
   final String name;
   final String avatarUrl;

@@ -3,10 +3,11 @@ import 'package:flutter/material.dart';
 
 class GameBottomSheet extends StatelessWidget {
   final String title;
+  final String subtitle;
   final Widget child;
   final List<Widget> actions;
 
-  GameBottomSheet({this.title, @required this.child, this.actions});
+  GameBottomSheet({this.title, this.subtitle, @required this.child, this.actions});
 
   @override
   Widget build(BuildContext context) {
@@ -37,15 +38,39 @@ class GameBottomSheet extends StatelessWidget {
                   },
                 ),
               ),
-              title: title != null ? Container(
-                margin: const EdgeInsets.only(left: 8),
-                child: Text(title),
-              ) : null,
+              title: _buildTitle(context),
             ),
             body: child,
           ),
         ),
       ),
     );
+  }
+
+  Widget _buildTitle(BuildContext context) {
+    if (title != null) {
+      if (subtitle != null) {
+        return Container(
+          margin: const EdgeInsets.only(left: 8),
+          child: Column(
+            children: [
+              Text(title),
+              Text(
+                subtitle,
+                style: context.theme.textTheme.bodyText1.copyWith(
+                  color: Colors.black38,
+                ),
+              )
+            ],
+          ),
+        );
+      } else {
+        return Container(
+          margin: const EdgeInsets.only(left: 8),
+          child: Text(title),
+        );
+      }
+    }
+    return null;
   }
 }
