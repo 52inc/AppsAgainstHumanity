@@ -78,11 +78,15 @@ class PlayerResponseCard extends StatelessWidget {
                 alignment: Alignment.topCenter,
                 child: hasSubmittedResponse
                     ? Icon(
-                        MdiIcons.checkDecagram,
+                        MdiIcons.checkboxMarkedCircleOutline,
                         color: AppColors.primary,
                         size: 32,
                       )
-                    : Container(width: 32, height: 32, child: CircularProgressIndicator()),
+                    : Icon(
+                        MdiIcons.checkboxBlankCircleOutline,
+                        color: AppColors.primary,
+                        size: 32,
+                      ),
               ),
             ),
           ],

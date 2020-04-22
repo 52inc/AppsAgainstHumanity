@@ -126,11 +126,15 @@ class PromptContainer extends StatelessWidget {
     return Container(
       width: double.maxFinite,
       margin: const EdgeInsets.symmetric(vertical: textPadding, horizontal: textPadding + 16),
-      child: Text(
-        state.currentPromptText,
-        style: context.theme.textTheme.headline5.copyWith(
-          color: Colors.white,
-        ),
+      child: BlocBuilder<GameBloc, GameViewState>(
+        builder: (context, state) {
+          return Text(
+            state.currentPromptText,
+            style: context.theme.textTheme.headline5.copyWith(
+              color: Colors.white,
+            ),
+          );
+        },
       ),
     );
   }
