@@ -29,9 +29,35 @@ firebase.initializeApp(firebaseConfig);
 firebase.analytics();
 ```
 
+### Setup Config
+
+Add your own configuration file to the `/lib` folder. Use this example: `example.config.json`
+
+```json
+{
+  "privacyPolicyUrl": "https://example.com/privacy.html",
+  "termsOfServiceUrl": "https://example.com/tos.html",
+  "sourceUrl": "https://github.com/52inc/AppsAgainstHumanity"
+}
+```
+
+Then run
+
+```shell
+flutter generate
+```
+
+### Generate JSON models
+
+Just run this:
+
+```shell
+flutter packages pub run build_runner build --delete-conflicting-outputs
+```
+
 ### Setup Functions
 
-Fork the repository here: https://github.com/52inc/AppsAgainstHumanity-Firebase and deploy the function to your firebase project using:
+Fork the repository here: https://github.com/52inc/AppsAgainstHumanity-Firebase and deploy the functions to your firebase project using:
 
 ```bash
 firebase deploy --only functions
