@@ -5,7 +5,7 @@ import 'package:appsagainsthumanity/ui/signin/sign_in_screen.dart';
 import 'package:appsagainsthumanity/ui/terms_screen.dart';
 import 'package:flutter/material.dart';
 
-//import 'package:firebase_analytics/observer.dart';
+import 'package:firebase_analytics/observer.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'authentication_bloc/authentication_bloc.dart';
@@ -27,7 +27,7 @@ class App extends StatelessWidget {
         const Locale('en'), // English
       ],
       navigatorObservers: [
-//        FirebaseAnalyticsObserver(analytics: Analytics.firebaseAnalytics),
+        FirebaseAnalyticsObserver(analytics: Analytics()),
         Routes.routeObserver
       ],
       home: BlocBuilder<AuthenticationBloc, AuthenticationState>(
