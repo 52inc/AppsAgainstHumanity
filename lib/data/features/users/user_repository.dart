@@ -1,8 +1,10 @@
 import 'package:apple_sign_in/apple_sign_in.dart';
 import 'package:appsagainsthumanity/data/app_preferences.dart';
+import 'package:appsagainsthumanity/data/features/devices/device_repository.dart';
 import 'package:appsagainsthumanity/data/features/game/model/player.dart';
 import 'package:appsagainsthumanity/data/features/users/model/user.dart';
 import 'package:appsagainsthumanity/data/firestore.dart';
+import 'package:appsagainsthumanity/internal/push.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -117,6 +119,9 @@ class UserRepository {
                 Logger("UserRepository").fine(
                     "Signed-in! User(id=${result.user.uid}, name=${result.user.displayName}, photoUrl=${result.user
                         .photoUrl})");
+
+                // Excellent! Let's create our device
+                await PushNotifications().checkAndUpdateToken();
 
                 return User(
                     id: result.user.uid,
