@@ -11,7 +11,8 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
-
+    container:
+      image:  google/dart:latest
     steps:
     - uses: actions/checkout@v2
 
@@ -29,6 +30,8 @@ jobs:
   deploy-android:
     needs: test
     runs-on: ubuntu-latest
+    container:
+      image:  google/dart:latest
     steps:
       - uses: actions/checkout@v2
 
