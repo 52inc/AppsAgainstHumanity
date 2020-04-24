@@ -113,8 +113,9 @@ class GameViewState {
   String toString() {
     return '''GameViewState { 
           userId: $userId,
-          game: ${game?.gid}, 
-          players: $players, 
+          game: ${game?.gid},
+          turn: ${game?.turn?.winner}, 
+          players: ${players?.length}, 
           downvotes: $downvotes,
           selectedCards: $selectedCards,
           isSubmitting: $isSubmitting,

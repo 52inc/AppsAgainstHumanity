@@ -4,10 +4,12 @@ import 'package:appsagainsthumanity/data/features/game/game_repository.dart';
 import 'package:appsagainsthumanity/data/features/game/model/player.dart';
 import 'package:appsagainsthumanity/data/features/users/model/user.dart';
 import 'package:appsagainsthumanity/data/features/game/model/game_state.dart';
+import 'package:appsagainsthumanity/internal/push.dart';
 import 'package:appsagainsthumanity/ui/creategame/create_game_screen.dart';
 import 'package:appsagainsthumanity/ui/game/game_screen.dart';
 import 'package:appsagainsthumanity/ui/home/bloc/bloc.dart';
 import 'package:appsagainsthumanity/ui/home/widgets/join_room_dialog.dart';
+import 'package:appsagainsthumanity/ui/routes.dart';
 import 'package:appsagainsthumanity/ui/settings/settings_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -82,6 +84,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         icon: MdiIcons.gamepad,
                         label: "START GAME",
                         onTap: () {
+                          PushNotifications().checkPermissions();
                           Navigator.of(context).push(MaterialPageRoute(builder: (context) => CreateGameScreen()));
                         },
                       ),
@@ -91,7 +94,10 @@ class _HomeScreenState extends State<HomeScreen> {
                           margin: const EdgeInsets.only(left: 8, top: 16, right: 24, bottom: 16),
                           icon: MdiIcons.gamepadVariantOutline,
                           label: "JOIN GAME",
-                          onTap: () => _joinGame(context),
+                          onTap: () {
+                            PushNotifications().checkPermissions();
+                            _joinGame(context);
+                          },
                         );
                       }),
                     ],
@@ -193,7 +199,6 @@ class _HomeScreenState extends State<HomeScreen> {
                     itemCount: state.games.length,
                     itemBuilder: (context, index) {
                       var game = state.games[index];
-                      print("Render ${game.gid}");
                       return ListTile(
                         title: Text(
                           game.gid,
@@ -213,9 +218,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                 // Fetch and load game
                                 try {
                                   var existingGame = await context.repository<GameRepository>().findGame(game.gid);
-
                                   Navigator.of(context)
-                                      .push(MaterialPageRoute(builder: (_) => GameScreen(existingGame)));
+                                      .push(GamePageRoute(existingGame));
                                 } catch (e) {
                                   Scaffold.of(context)
                                     ..hideCurrentSnackBar()
@@ -334,8 +338,7 @@ class _HomeScreenState extends State<HomeScreen> {
     if (gameId != null) {
       try {
         var game = await context.repository<GameRepository>().joinGame(gameId);
-
-        Navigator.of(context).push(MaterialPageRoute(builder: (_) => GameScreen(game)));
+        Navigator.of(context).push(GamePageRoute(game));
       } catch (e) {
         Scaffold.of(context)
           ..hideCurrentSnackBar()

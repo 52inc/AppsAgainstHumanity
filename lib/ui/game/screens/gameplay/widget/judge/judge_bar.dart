@@ -27,9 +27,13 @@ class JudgeBar extends StatelessWidget {
   }
 
   Widget _buildHeader(BuildContext context, Player player, {bool hasDownvoted = false}) {
+    var playerName = player.name ?? Player.DEFAULT_NAME;
+    if (playerName.trim().isEmpty) {
+      playerName = Player.DEFAULT_NAME;
+    }
     return ListTile(
       contentPadding: const EdgeInsets.symmetric(horizontal: 12),
-      title: Text(player.name),
+      title: Text(playerName),
       subtitle: Text("Current judge", style: context.theme.textTheme.bodyText2.copyWith(color: Colors.white60)),
       leading: _buildJudgeAvatar(context, player),
       trailing: IconButton(

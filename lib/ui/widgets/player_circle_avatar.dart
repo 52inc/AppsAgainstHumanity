@@ -6,6 +6,24 @@ class PlayerCircleAvatar extends StatelessWidget {
   final Player player;
   final double radius;
 
+  String get playerInitials {
+      var splitName = player.name.split(' ');
+      if (splitName != null && splitName.isNotEmpty) {
+          var nonEmptyCharacters = splitName
+              .where((e) => e.isNotEmpty);
+          if (nonEmptyCharacters.isNotEmpty) {
+              return nonEmptyCharacters
+                  .map((e) => e[0])
+                  .join()
+                  .toUpperCase();
+          } else {
+              return "";
+          }
+      } else {
+          return "";
+      }
+  }
+
   PlayerCircleAvatar({@required this.player, this.radius = 20});
 
   @override
@@ -20,7 +38,9 @@ class PlayerCircleAvatar extends StatelessWidget {
             backgroundImage: player.avatarUrl != null ? NetworkImage(player.avatarUrl) : null,
             backgroundColor: AppColors.primary,
             child: player.avatarUrl == null
-                ? player.name != null ? Text(player.name.split(' ').map((e) => e[0]).join().toUpperCase()) : null
+                ? player.name != null
+                    ? Text(playerInitials)
+                    : null
                 : null,
           );
   }

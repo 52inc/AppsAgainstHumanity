@@ -2,6 +2,7 @@ import 'package:appsagainsthumanity/data/features/game/game_repository.dart';
 import 'package:appsagainsthumanity/ui/creategame/bloc/bloc.dart';
 import 'package:appsagainsthumanity/internal.dart';
 import 'package:appsagainsthumanity/ui/game/game_screen.dart';
+import 'package:appsagainsthumanity/ui/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:kt_dart/kt.dart';
@@ -83,8 +84,8 @@ class _CreateGameScreenState extends State<CreateGameScreen> {
               ? () async {
                   // Start game?
                   var newGame = await context.repository<GameRepository>().createGame(state.selectedSets);
-
-                  Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (_) => GameScreen(newGame)));
+                  Navigator.of(context)
+                      .pushReplacement(GamePageRoute(newGame));
                 }
               : null,
         ),

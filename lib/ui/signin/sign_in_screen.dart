@@ -45,10 +45,10 @@ class _SignInScreen extends State<SignInScreen> {
       builder: (context, state) {
         return Column(
           children: [
-            Container(
-              margin: const EdgeInsets.only(left: 24, right: 24, top: 48),
-              child: AspectRatio(
-                aspectRatio: 312 / 436,
+            Expanded(
+              child: Container(
+                width: double.maxFinite,
+                margin: const EdgeInsets.only(left: 24, right: 24, top: 48),
                 child: Material(
                   elevation: 4.0,
                   borderRadius: BorderRadius.circular(16),

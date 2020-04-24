@@ -13,11 +13,15 @@ class PlayerItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var playerName = player.name ?? Player.DEFAULT_NAME;
+    if (playerName.trim().isEmpty) {
+      playerName = Player.DEFAULT_NAME;
+    }
     return ListTile(
         contentPadding: const EdgeInsets.symmetric(horizontal: 24, vertical: 4),
         onTap: () {},
         title: Text(
-          player.name ?? Player.DEFAULT_NAME,
+          playerName,
           style: context.theme.textTheme.subtitle1.copyWith(color: Colors.white),
         ),
         subtitle: isJudge
@@ -35,7 +39,7 @@ class PlayerItem extends StatelessWidget {
             children: [
               if (hasDownvoted)
                 Container(
-                    margin: const EdgeInsets.only(right: 16),
+                  margin: const EdgeInsets.only(right: 16),
                   child: Icon(
                     MdiIcons.thumbDown,
                     color: AppColors.secondary,

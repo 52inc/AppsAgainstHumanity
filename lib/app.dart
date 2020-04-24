@@ -1,4 +1,5 @@
 import 'package:appsagainsthumanity/internal.dart';
+import 'package:appsagainsthumanity/internal/push.dart';
 import 'package:appsagainsthumanity/ui/home/home_screen.dart';
 import 'package:appsagainsthumanity/ui/routes.dart';
 import 'package:appsagainsthumanity/ui/signin/sign_in_screen.dart';
@@ -28,20 +29,23 @@ class App extends StatelessWidget {
       ],
       navigatorObservers: [
         FirebaseAnalyticsObserver(analytics: Analytics()),
-        Routes.routeObserver
+        Routes.routeObserver,
+        Routes.routeTracer
       ],
-      home: BlocBuilder<AuthenticationBloc, AuthenticationState>(
-        builder: (context, state) {
-          if (state is Unauthenticated) {
-            return SignInScreen();
-          } else if (state is NeedsAgreeToTerms) {
-            return TermsOfServiceScreen();
-          } else if (state is Authenticated) {
-            return HomeScreen();
-          } else {
-            return Container(color: AppColors.surface);
-          }
-        },
+      home: PushNavigator(
+        child: BlocBuilder<AuthenticationBloc, AuthenticationState>(
+          builder: (context, state) {
+            if (state is Unauthenticated) {
+              return SignInScreen();
+            } else if (state is NeedsAgreeToTerms) {
+              return TermsOfServiceScreen();
+            } else if (state is Authenticated) {
+              return HomeScreen();
+            } else {
+              return Container(color: AppColors.surface);
+            }
+          },
+        ),
       ),
     );
   }
