@@ -34,7 +34,6 @@
 # Misc tools
 lib/config.json
 lib/config.dart
-credentials.json
 *.g.dart
 web/firebase_config.js
 
