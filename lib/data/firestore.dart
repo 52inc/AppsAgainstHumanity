@@ -12,6 +12,8 @@ class FirebaseConstants {
 
     static const DOCUMENT_RANDO_CARDRISSIAN = "rando-cardrissian";
     static const DOCUMENT_TALLY = "tally";
+
+    static const MAX_GID_SIZE = 5;
 }
 
 class UserNotFoundException { }

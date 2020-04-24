@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:appsagainsthumanity/data/firestore.dart';
 import 'package:appsagainsthumanity/internal.dart';
 import 'package:flutter/material.dart';
 
@@ -33,7 +34,7 @@ class _JoinRoomDialogState extends State<JoinRoomDialog> {
                 border: OutlineInputBorder(),
                 labelText: 'Game ID',
               ),
-              maxLength: 5,
+              maxLength: FirebaseConstants.MAX_GID_SIZE,
               maxLengthEnforced: true,
               keyboardType: TextInputType.text,
               autofocus: true,
@@ -43,7 +44,7 @@ class _JoinRoomDialogState extends State<JoinRoomDialog> {
                 Navigator.of(context).pop(value);
               },
               validator: (value) {
-                if (value.length != 5) {
+                if (value.length != FirebaseConstants.MAX_GID_SIZE) {
                   return 'Please enter a valid game id';
                 }
                 return null;
