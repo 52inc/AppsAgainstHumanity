@@ -6,8 +6,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 class PlayerList extends StatelessWidget {
   final Game initialGame;
+  final ScrollController scrollController;
 
-  PlayerList(this.initialGame);
+  PlayerList(this.initialGame, this.scrollController);
 
   @override
   Widget build(BuildContext context) {
@@ -17,6 +18,7 @@ class PlayerList extends StatelessWidget {
         builder: (context, state) {
           var players = (state.players ?? []).where((element) => element.isInactive != true).toList();
           return ListView.builder(
+            controller: scrollController,
             padding: const EdgeInsets.symmetric(vertical: 8),
             itemCount: players.length,
             itemBuilder: (context, index) {
