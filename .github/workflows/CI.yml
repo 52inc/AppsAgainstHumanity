@@ -1,0 +1,69 @@
+name: Flutter CI
+
+on:
+  push:
+    branches: 
+      - master
+  pull_request:
+    branches: 
+      - master
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Install Flutter
+      uses: subosito/flutter-action@v1
+      with:
+        channel: 'dev' # or: 'dev' or 'beta'
+        
+    - name: Fetch dependencies
+      run: flutter pub get
+      
+    - name: Run Tests
+      run: flutter test
+      
+  deploy-android:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Install Flutter
+        uses: subosito/flutter-action@v1
+        with:
+          channel: 'dev' # or: 'dev' or 'beta'
+
+      - name: Fetch dependencies
+        run: flutter pub get
+        
+      - name: Setup Secrets
+        run: |
+          echo $GOOGLE_SERVICES_JSON | tee android/app/google-services.json
+          echo $CONFIG_JSON | tee lib/config.json
+          echo $KEY_PROPERTIES | tee android/key.properties
+          echo $SIGNING_KEY | base64 --decode > android/distribution/aah.jks
+        env:
+          GOOGLE_SERVICES_JSON: ${{ secrets.GOOGLE_SERVICES_JSON }}
+          CONFIG_JSON: ${{ secrets.CONFIG }}
+          KEY_PROPERTIES: ${{ secrets.KEY_PROPERTIES }}
+          SIGNING_KEY: ${{ secrets.SIGNING_KEY }}
+          
+      - name: Run Code Generate
+        run: ./regenerate.sh
+        
+      - name: Build APK
+        run: flutter build apk
+        
+      - name: Upload to Firebase App Distribution
+        uses: wzieba/Firebase-Distribution-Github-Action@v1.2.1
+        with:
+          appId: ${{secrets.ANDROID_FIREBASE_APP_ID}}
+          token: ${{secrets.FIREBASE_TOKEN}}
+          groups: 52inc,friends-&-family
+          releaseNotesFile: android/distribution/release_notes.txt
+          file: ${{ env.SIGNED_RELEASE_FILE }}
+          
