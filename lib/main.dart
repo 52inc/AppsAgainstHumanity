@@ -6,6 +6,7 @@ import 'package:appsagainsthumanity/data/features/game/firestore_game_repository
 import 'package:appsagainsthumanity/data/features/game/game_repository.dart';
 import 'package:appsagainsthumanity/data/features/users/user_repository.dart';
 import 'package:appsagainsthumanity/internal/logging_bloc_delegate.dart';
+import 'package:appsagainsthumanity/internal/push.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:logging/logging.dart';
@@ -21,6 +22,9 @@ void main() async {
   Logger.root.onRecord.listen((LogRecord rec) {
     print('${rec.level.name}: ${rec.time}: ${rec.message}');
   });
+
+  // Setup Push Notifications
+  PushNotifications().setup();
 
   runApp(buildRepositoryProvider(BlocProvider(
     create: (context) {
