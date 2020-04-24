@@ -25,10 +25,9 @@ class FirestoreGameRepository extends GameRepository {
   Future<Game> createGame(KtSet<String> cardSets, {int prizesToWin = 10}) {
     return currentUserOrThrow((firebaseUser) async {
       var newGameDoc = db.collection(FirebaseConstants.COLLECTION_GAMES).document();
-
       var game = Game(
         id: newGameDoc.documentID,
-        gid: generateId(),
+        gid: generateId(length: FirebaseConstants.MAX_GID_SIZE),
         ownerId: firebaseUser.uid,
         state: GameState.waitingRoom,
         prizesToWin: prizesToWin,
@@ -271,8 +270,8 @@ class FirestoreGameRepository extends GameRepository {
         .setData(userGame.toJson());
   }
 
-  String generateId({int length = 5}) {
-    String source = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+  String generateId({int length = 7}) {
+    String source = "ACEFHJKLMNPQRTUVWXY3479";
     StringBuffer builder = StringBuffer();
     for (var i = 0; i < length; i++) {
       builder.write(source[Random().nextInt(source.length)]);
