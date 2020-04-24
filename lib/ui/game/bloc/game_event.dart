@@ -59,6 +59,16 @@ class PlayersUpdated extends GameEvent {
   List<Object> get props => [players];
 }
 
+@immutable
+class DownvotesUpdated extends GameEvent {
+  final List<String> downvotes;
+
+  DownvotesUpdated(this.downvotes);
+
+  @override
+  List<Object> get props => [downvotes];
+}
+
 class DownvotePrompt extends GameEvent { }
 
 @immutable

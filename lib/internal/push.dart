@@ -2,7 +2,6 @@ import 'dart:convert';
 
 import 'package:appsagainsthumanity/data/app_preferences.dart';
 import 'package:appsagainsthumanity/data/features/devices/device_repository.dart';
-import 'package:appsagainsthumanity/ui/settings/widgets/preference.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:logging/logging.dart';
 

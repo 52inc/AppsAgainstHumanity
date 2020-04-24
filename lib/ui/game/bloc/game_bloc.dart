@@ -15,6 +15,7 @@ class GameBloc extends Bloc<GameEvent, GameViewState> {
 
   StreamSubscription _gameSubscription;
   StreamSubscription _playersSubscription;
+  StreamSubscription _downvoteSubscription;
 
   GameBloc(this.initialGame, this.gameRepository);
 
@@ -31,6 +32,8 @@ class GameBloc extends Bloc<GameEvent, GameViewState> {
       yield* _mapGameUpdatedToState(event);
     } else if (event is PlayersUpdated) {
       yield* _mapPlayersUpdatedToState(event);
+    } else if (event is DownvotesUpdated) {
+      yield* _mapDownvotesUpdatedToState(event);
     } else if (event is StartGame) {
       yield* _mapStartGameToState();
     } else if (event is ClearError) {
@@ -61,6 +64,11 @@ class GameBloc extends Bloc<GameEvent, GameViewState> {
     _playersSubscription = gameRepository.observePlayers(event.gameId).listen((players) { 
       add(PlayersUpdated(players));
     });
+
+    _downvoteSubscription?.cancel();
+    _downvoteSubscription = gameRepository.observeDownvotes(event.gameId).listen((downvotes) {
+      add(DownvotesUpdated(downvotes));
+    });
   }
 
   Stream<GameViewState> _mapUserUpdatedToState(UserUpdated event) async* {
@@ -73,6 +81,10 @@ class GameBloc extends Bloc<GameEvent, GameViewState> {
 
   Stream<GameViewState> _mapPlayersUpdatedToState(PlayersUpdated event) async* {
     yield state.copyWith(players: event.players, isLoading: false);
+  }
+
+  Stream<GameViewState> _mapDownvotesUpdatedToState(DownvotesUpdated event) async* {
+    yield state.copyWith(downvotes: event.downvotes, isLoading: false);
   }
 
   Stream<GameViewState> _mapStartGameToState() async* {

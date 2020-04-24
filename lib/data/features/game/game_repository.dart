@@ -27,6 +27,9 @@ abstract class GameRepository {
     /// [gameDocumentId]
     Stream<List<Player>> observePlayers(String gameDocumentId);
 
+    /// Observe any changes to the downvote tally by it's [gameDocumentId]
+    Stream<List<String>> observeDownvotes(String gameDocumentId);
+
     /// Add Rando Cardrissian to the game
     /// [gid] the game to add him to
     Future<void> addRandoCardrissian(String gameDocumentId);

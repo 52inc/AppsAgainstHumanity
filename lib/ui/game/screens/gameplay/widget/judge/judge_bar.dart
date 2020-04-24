@@ -12,7 +12,7 @@ class JudgeBar extends StatelessWidget {
     return BlocBuilder<GameBloc, GameViewState>(
       builder: (context, state) {
         var judge = state.currentJudge;
-        var hasDownvoted = state.game.turn?.downvotes?.contains(state.userId) ?? false;
+        var hasDownvoted = state.downvotes?.contains(state.userId) ?? false;
         if (judge != null) {
           return _buildHeader(
             context,

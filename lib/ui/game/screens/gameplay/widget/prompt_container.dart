@@ -2,7 +2,6 @@ import 'package:appsagainsthumanity/data/features/cards/model/prompt_card.dart';
 import 'package:appsagainsthumanity/ui/game/bloc/bloc.dart';
 import 'package:appsagainsthumanity/internal.dart';
 import 'package:appsagainsthumanity/ui/game/screens/gameplay/widget/judge/judge_dredd.dart';
-import 'package:appsagainsthumanity/ui/game/screens/gameplay/widget/judge/judging_pager.dart';
 import 'package:appsagainsthumanity/ui/game/screens/gameplay/widget/response_card_view.dart';
 import 'package:appsagainsthumanity/ui/game/screens/gameplay/widget/waiting_player_responses.dart';
 import 'package:flutter/material.dart';

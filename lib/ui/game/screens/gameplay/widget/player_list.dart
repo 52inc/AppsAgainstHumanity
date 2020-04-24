@@ -15,14 +15,14 @@ class PlayerList extends StatelessWidget {
       create: (context) => GameBloc(null, context.repository())..add(Subscribe(initialGame.id)),
       child: BlocBuilder<GameBloc, GameViewState>(
         builder: (context, state) {
-          var players = state.players ?? [];
+          var players = (state.players ?? []).where((element) => element.isInactive != true).toList();
           return ListView.builder(
             padding: const EdgeInsets.symmetric(vertical: 8),
             itemCount: players.length,
             itemBuilder: (context, index) {
               var player = players[index];
               var isJudge = player.id == state.game.turn?.judgeId;
-              var hasDownvoted = state.game.turn?.downvotes?.contains(player.id) ?? false;
+              var hasDownvoted = state.downvotes?.contains(player.id) ?? false;
               return PlayerItem(
                 player,
                 isJudge: isJudge,

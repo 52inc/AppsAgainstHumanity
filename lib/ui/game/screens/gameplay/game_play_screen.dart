@@ -1,5 +1,3 @@
-import 'package:appsagainsthumanity/data/features/cards/model/response_card.dart';
-import 'package:appsagainsthumanity/data/features/game/game_repository.dart';
 import 'package:appsagainsthumanity/internal.dart';
 import 'package:appsagainsthumanity/ui/game/bloc/bloc.dart';
 import 'package:appsagainsthumanity/ui/game/screens/gameplay/widget/game_bottom_sheet.dart';
@@ -9,7 +7,6 @@ import 'package:appsagainsthumanity/ui/game/screens/gameplay/widget/player_list.
 import 'package:appsagainsthumanity/ui/game/screens/gameplay/widget/player_response_picker.dart';
 import 'package:appsagainsthumanity/ui/game/screens/gameplay/widget/prompt_container.dart';
 import 'package:appsagainsthumanity/ui/game/screens/gameplay/widget/re_deal_button.dart';
-import 'package:appsagainsthumanity/ui/game/screens/gameplay/widget/response_card_view.dart';
 import 'package:appsagainsthumanity/ui/game/screens/gameplay/widget/turn_winner_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

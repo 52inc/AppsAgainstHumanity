@@ -1,7 +1,6 @@
 import 'package:appsagainsthumanity/data/features/game/model/turn_winner.dart';
 import 'package:appsagainsthumanity/internal.dart';
 import 'package:appsagainsthumanity/ui/game/screens/gameplay/widget/response_card_view.dart';
-import 'package:appsagainsthumanity/ui/widgets/player_circle_avatar.dart';
 import 'package:flutter/material.dart';
 
 class TurnWinnerSheet extends StatelessWidget {
