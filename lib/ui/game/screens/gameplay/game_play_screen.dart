@@ -132,23 +132,29 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
     showModalBottomSheet(
         context: context,
         backgroundColor: Colors.transparent,
+        isScrollControlled: true,
         builder: (context) {
-          return GameBottomSheet(
-            title: "Players",
-            actions: [
-              Container(
-                margin: const EdgeInsets.symmetric(horizontal: 24),
-                height: 56,
-                alignment: Alignment.center,
-                child: Text(
-                  widget.state.game.gid,
-                  style: context.theme.textTheme.headline6.copyWith(
-                    color: AppColors.secondary,
-                  ),
-                ),
-              )
-            ],
-            child: PlayerList(widget.state.game),
+          return DraggableScrollableSheet(
+            maxChildSize: 0.885,
+            builder: (context, scrollController) {
+              return GameBottomSheet(
+                title: "Players",
+                actions: [
+                  Container(
+                    margin: const EdgeInsets.symmetric(horizontal: 24),
+                    height: 56,
+                    alignment: Alignment.center,
+                    child: Text(
+                      widget.state.game.gid,
+                      style: context.theme.textTheme.headline6.copyWith(
+                        color: AppColors.secondary,
+                      ),
+                    ),
+                  )
+                ],
+                child: PlayerList(widget.state.game, scrollController),
+              );
+            },
           );
         });
   }
