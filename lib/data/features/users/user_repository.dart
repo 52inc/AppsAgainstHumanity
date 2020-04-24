@@ -1,6 +1,5 @@
 import 'package:apple_sign_in/apple_sign_in.dart';
 import 'package:appsagainsthumanity/data/app_preferences.dart';
-import 'package:appsagainsthumanity/data/features/devices/device_repository.dart';
 import 'package:appsagainsthumanity/data/features/game/model/player.dart';
 import 'package:appsagainsthumanity/data/features/users/model/user.dart';
 import 'package:appsagainsthumanity/data/firestore.dart';

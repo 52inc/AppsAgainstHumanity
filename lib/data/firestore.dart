@@ -8,8 +8,10 @@ class FirebaseConstants {
     static const COLLECTION_CARD_SETS = "cardSets";
     static const COLLECTION_GAMES = "games";
     static const COLLECTION_PLAYERS = "players";
+    static const COLLECTION_DOWNVOTES = "downvotes";
 
     static const DOCUMENT_RANDO_CARDRISSIAN = "rando-cardrissian";
+    static const DOCUMENT_TALLY = "tally";
 }
 
 class UserNotFoundException { }

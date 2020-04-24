@@ -112,6 +112,18 @@ class FirestoreGameRepository extends GameRepository {
   }
 
   @override
+  Stream<List<String>> observeDownvotes(String gameDocumentId) {
+    var collection = db
+        .collection(FirebaseConstants.COLLECTION_GAMES)
+        .document(gameDocumentId)
+        .collection(FirebaseConstants.COLLECTION_DOWNVOTES)
+        .document(FirebaseConstants.DOCUMENT_TALLY);
+
+    return collection.snapshots()
+        .map((snapshot) => List<String>.from(snapshot['votes'] ?? []));
+  }
+
+  @override
   Future<void> addRandoCardrissian(String gameDocumentId) async {
     var document = db
         .collection(FirebaseConstants.COLLECTION_GAMES)
@@ -178,10 +190,12 @@ class FirestoreGameRepository extends GameRepository {
     return currentUserOrThrow((firebaseUser) async {
       var gameDocument = db
           .collection(FirebaseConstants.COLLECTION_GAMES)
-          .document(gameDocumentId);
+          .document(gameDocumentId)
+          .collection(FirebaseConstants.COLLECTION_DOWNVOTES)
+          .document(FirebaseConstants.DOCUMENT_TALLY);
 
       await gameDocument.updateData({
-        'turn.downvotes': FieldValue.arrayUnion([firebaseUser.uid])
+        'votes': FieldValue.arrayUnion([firebaseUser.uid])
       });
     });
   }

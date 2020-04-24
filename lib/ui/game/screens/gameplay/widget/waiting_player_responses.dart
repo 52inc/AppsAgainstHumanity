@@ -12,7 +12,10 @@ class WaitingPlayerResponses extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var players = state.players?.where((element) => element.id != state.game.turn?.judgeId)?.toList() ?? [];
+    var players = state.players?.where((element) {
+      return element.id != state.game.turn?.judgeId && element.isInactive != true;
+    })?.toList() ?? [];
+
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 16),
       child: Column(
