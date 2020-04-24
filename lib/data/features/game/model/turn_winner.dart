@@ -33,6 +33,11 @@ class TurnWinner extends Equatable {
   Map<String, dynamic> toJson() => _$TurnWinnerToJson(this);
 
   @override
+  String toString() {
+    return 'TurnWinner{playerId: $playerId, playerName: $playerName, playerAvatarUrl: $playerAvatarUrl, isRandoCardrissian: $isRandoCardrissian, promptCard: $promptCard, response: $response}';
+  }
+
+  @override
   List<Object> get props => [playerId, playerName, playerAvatarUrl, isRandoCardrissian, promptCard, response];
 }
 

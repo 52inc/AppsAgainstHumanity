@@ -1,4 +1,4 @@
-export 'internal/localization.dart';
-export 'internal/theme.dart';
-export 'internal/analytics.dart';
-export 'config.dart';
+export 'package:appsagainsthumanity/internal/localization.dart';
+export 'package:appsagainsthumanity/internal/theme.dart';
+export 'package:appsagainsthumanity/internal/analytics.dart';
+export 'package:appsagainsthumanity/config.dart';

@@ -47,7 +47,10 @@ class FirestoreGameRepository extends GameRepository {
   Future<Game> joinGame(String gid) {
     return currentUserOrThrow((firebaseUser) async {
       var snapshot =
-          await db.collection(FirebaseConstants.COLLECTION_GAMES).where('gid', isEqualTo: gid).limit(1).getDocuments();
+          await db.collection(FirebaseConstants.COLLECTION_GAMES)
+              .where('gid', isEqualTo: gid)
+              .limit(1)
+              .getDocuments();
 
       if (snapshot != null && snapshot.documents.isNotEmpty) {
         var gameDocument = snapshot.documents.first;
@@ -80,6 +83,15 @@ class FirestoreGameRepository extends GameRepository {
     } else {
       throw 'Unable to find a game for $gid';
     }
+  }
+
+  @override
+  Future<Game> getGame(String gameDocumentId) async {
+    var gameDocument = db.collection(FirebaseConstants.COLLECTION_GAMES)
+        .document(gameDocumentId);
+
+    var snapshot = await gameDocument.get();
+    return Game.fromDocument(snapshot);
   }
 
   @override
@@ -120,7 +132,13 @@ class FirestoreGameRepository extends GameRepository {
         .document(FirebaseConstants.DOCUMENT_TALLY);
 
     return collection.snapshots()
-        .map((snapshot) => List<String>.from(snapshot['votes'] ?? []));
+        .map((snapshot) {
+          if (snapshot.data != null) {
+            return List<String>.from(snapshot.data['votes'] ?? []);
+          } else {
+            return [];
+          }
+        });
   }
 
   @override
@@ -194,7 +212,7 @@ class FirestoreGameRepository extends GameRepository {
           .collection(FirebaseConstants.COLLECTION_DOWNVOTES)
           .document(FirebaseConstants.DOCUMENT_TALLY);
 
-      await gameDocument.updateData({
+      await gameDocument.setData({
         'votes': FieldValue.arrayUnion([firebaseUser.uid])
       });
     });

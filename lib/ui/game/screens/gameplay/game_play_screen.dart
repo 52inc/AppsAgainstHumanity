@@ -75,12 +75,17 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
       ),
       body: BlocListener<GameBloc, GameViewState>(
         condition: (previous, current) {
+          print("Winner Check:");
+          print("  current=${current.game.turn?.winner}");
+          print("  previous=${previous.game.turn?.winner}");
+          print("  hasChange=${current.game.turn?.winner != previous.game.turn?.winner}");
           return current.game.turn?.winner != previous.game.turn?.winner;
         },
         listener: (context, state) {
           // Show bottom sheet modal for the winner
           var turnWinner = state.game.turn?.winner;
           if (turnWinner != null) {
+            print("Showing winner sheet");
             showModalBottomSheet(
               context: context,
               backgroundColor: Colors.transparent,

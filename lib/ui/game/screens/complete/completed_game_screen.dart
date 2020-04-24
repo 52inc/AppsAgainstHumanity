@@ -56,7 +56,7 @@ class CompletedGameScreen extends StatelessWidget {
             Container(
               margin: const EdgeInsets.only(top: 24),
               child: Text(
-                state.winner?.name,
+                state.winner?.name ?? Player.DEFAULT_NAME,
                 style: context.theme.textTheme.headline4.copyWith(
                   color: Colors.white,
                 ),

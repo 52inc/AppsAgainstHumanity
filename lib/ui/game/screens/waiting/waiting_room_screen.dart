@@ -2,6 +2,7 @@ import 'package:appsagainsthumanity/data/features/game/game_repository.dart';
 import 'package:appsagainsthumanity/data/features/game/model/player.dart';
 import 'package:appsagainsthumanity/internal.dart';
 import 'package:appsagainsthumanity/ui/game/bloc/bloc.dart';
+import 'package:appsagainsthumanity/ui/widgets/player_circle_avatar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
@@ -112,23 +113,19 @@ class WaitingRoomScreen extends StatelessWidget {
   }
 
   Widget _buildPlayerTile(BuildContext context, Player player, int index) {
+    var playerName = player.name ?? Player.DEFAULT_NAME;
+    if (playerName.trim().isEmpty) {
+      playerName = Player.DEFAULT_NAME;
+    }
     return ListTile(
         contentPadding: const EdgeInsets.symmetric(horizontal: 24, vertical: 4),
         onTap: () {},
         title: Text(
-          player.name ?? Player.DEFAULT_NAME,
+          playerName,
           style: context.theme.textTheme.subtitle1.copyWith(color: Colors.white),
         ),
-        leading: player.isRandoCardrissian
-            ? CircleAvatar(backgroundImage: AssetImage("assets/rando_cardrissian.png"))
-            : CircleAvatar(
-                radius: 20,
-                backgroundImage: player.avatarUrl != null ? NetworkImage(player.avatarUrl) : null,
-                backgroundColor: AppColors.primary,
-                child: player.avatarUrl == null
-                    ? Text(player.name.split(' ').map((e) => e[0]).join().toUpperCase())
-                    : null,
-              ));
+        leading: PlayerCircleAvatar(player: player)
+    );
   }
 
   Widget _buildRandoCardrissianInvite(BuildContext context, String gameDocumentId) {
