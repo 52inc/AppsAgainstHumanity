@@ -1,11 +1,13 @@
 import 'package:appsagainsthumanity/data/features/game/game_repository.dart';
 import 'package:appsagainsthumanity/data/features/game/model/player.dart';
 import 'package:appsagainsthumanity/internal.dart';
+import 'package:appsagainsthumanity/internal/dynamic_links.dart';
 import 'package:appsagainsthumanity/ui/game/bloc/bloc.dart';
 import 'package:appsagainsthumanity/ui/widgets/player_circle_avatar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:share/share.dart';
 
 class WaitingRoomScreen extends StatelessWidget {
   @override
@@ -58,8 +60,9 @@ class WaitingRoomScreen extends StatelessWidget {
         actions: [
           IconButton(
             icon: Icon(Icons.group_add),
-            onPressed: () {
-              // TODO: Share link (or game code) to system share mechanisms
+            onPressed: () async {
+              var link = await DynamicLinks.createLink(state.game.id);
+              await Share.share(link.toString());
             },
           )
         ],
