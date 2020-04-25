@@ -18,7 +18,7 @@ abstract class GameRepository {
     Future<Game> findGame(String gid);
 
     /// Get a game by it's actual document id
-    Future<Game> getGame(String gameDocumentId);
+    Future<Game> getGame(String gameDocumentId, {bool andJoin = false});
 
     /// Return a list of games that you have joined in the past
     Stream<List<UserGame>> observeJoinedGames();

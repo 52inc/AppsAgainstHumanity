@@ -42,6 +42,7 @@ class FirestoreGameRepository extends GameRepository {
     });
   }
 
+
   @override
   Future<Game> joinGame(String gid) {
     return currentUserOrThrow((firebaseUser) async {
@@ -85,12 +86,21 @@ class FirestoreGameRepository extends GameRepository {
   }
 
   @override
-  Future<Game> getGame(String gameDocumentId) async {
+  Future<Game> getGame(String gameDocumentId, {bool andJoin = false}) async {
     var gameDocument = db.collection(FirebaseConstants.COLLECTION_GAMES)
         .document(gameDocumentId);
 
     var snapshot = await gameDocument.get();
-    return Game.fromDocument(snapshot);
+    var game = Game.fromDocument(snapshot);
+
+    // TODO: Update this to be joinable at anypoint in hte game if the game is setup for it
+    if (andJoin && game.state == GameState.waitingRoom) {
+      await _addSelfToGame(gameDocumentId, game);
+    } else if (andJoin) {
+      throw 'You cannot join a game that has already started';
+    }
+
+    return game;
   }
 
   @override
@@ -211,9 +221,16 @@ class FirestoreGameRepository extends GameRepository {
           .collection(FirebaseConstants.COLLECTION_DOWNVOTES)
           .document(FirebaseConstants.DOCUMENT_TALLY);
 
-      await gameDocument.setData({
-        'votes': FieldValue.arrayUnion([firebaseUser.uid])
-      });
+      var snapshot = await gameDocument.get();
+      if (snapshot.exists) {
+        await gameDocument.updateData({
+          'votes': FieldValue.arrayUnion([firebaseUser.uid])
+        });
+      } else {
+        await gameDocument.setData({
+          'votes': [firebaseUser.uid]
+        });
+      }
     });
   }
 
@@ -245,7 +262,7 @@ class FirestoreGameRepository extends GameRepository {
     var player = Player(
       id: user.id,
       name: user.name,
-      avatarUrl: user.avatarUrl,
+      avatarUrl: user.avatarUrl
     );
 
     // Write self to game's players

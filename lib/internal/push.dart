@@ -5,6 +5,7 @@ import 'package:appsagainsthumanity/data/app_preferences.dart';
 import 'package:appsagainsthumanity/data/features/devices/device_repository.dart';
 import 'package:appsagainsthumanity/data/features/game/game_repository.dart';
 import 'package:appsagainsthumanity/data/features/game/model/turn.dart';
+import 'package:appsagainsthumanity/internal/dynamic_links.dart';
 import 'package:appsagainsthumanity/ui/routes.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
@@ -90,6 +91,9 @@ class _PushNavigatorState extends State<PushNavigator> {
         handleNotificationClick(message);
       },
     );
+
+    /// let's go ahead and sign up here to handle dynamic links
+    DynamicLinks.initDynamicLinks(context, (gameId) => navigateToGame(gameId, andJoin: true));
   }
 
   @override
@@ -100,6 +104,12 @@ class _PushNavigatorState extends State<PushNavigator> {
   void handleNotificationClick(Map<String, dynamic> message) async {
     var gameId = Platform.isAndroid ? message['data']['gameId'] : message['gameId'];
     if (gameId != null && gameId is String && gameId.isNotEmpty) {
+      navigateToGame(gameId);
+    }
+  }
+
+  void navigateToGame(String gameId, {bool andJoin = false}) async {
+    if (gameId != null && gameId.isNotEmpty) {
       var currentRoute = Routes.routeTracer.currentRoute;
       print(currentRoute);
       if (currentRoute.settings.arguments == gameId) {
@@ -108,7 +118,7 @@ class _PushNavigatorState extends State<PushNavigator> {
         return;
       }
       try {
-        var game = await _gameRepository.getGame(gameId);
+        var game = await _gameRepository.getGame(gameId, andJoin: andJoin);
         if (game != null) {
           /*
            * Neuter the turn winner out of the otherwise the winner bottom sheet will never show
@@ -135,8 +145,8 @@ class _PushNavigatorState extends State<PushNavigator> {
           } else if (currentRoute is MaterialPageRoute){
             print("User is not in a game or homescreen");
             currentRoute.navigator
-                ..popUntil((route) => route.settings.name == "/")
-                ..push(GamePageRoute(game));
+              ..popUntil((route) => route.settings.name == "/")
+              ..push(GamePageRoute(game));
           }
         }
       } catch (e) {
@@ -144,6 +154,5 @@ class _PushNavigatorState extends State<PushNavigator> {
       }
     }
   }
-
 
 }
