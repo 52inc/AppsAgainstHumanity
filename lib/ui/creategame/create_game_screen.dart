@@ -7,8 +7,6 @@ import 'package:appsagainsthumanity/ui/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:kt_dart/kt.dart';
-import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-import 'package:stepper_counter_swipe/stepper_counter_swipe.dart';
 
 class CreateGameScreen extends StatefulWidget {
   @override
