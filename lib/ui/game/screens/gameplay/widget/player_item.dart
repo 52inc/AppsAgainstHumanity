@@ -28,7 +28,7 @@ class PlayerItem extends StatelessWidget {
             ? Text(
                 "Judge",
                 style: context.theme.textTheme.bodyText2.copyWith(
-                  color: AppColors.secondary,
+                  color: AppColors.primaryVariant,
                 ),
               )
             : null,
@@ -42,7 +42,7 @@ class PlayerItem extends StatelessWidget {
                   margin: const EdgeInsets.only(right: 16),
                   child: Icon(
                     MdiIcons.thumbDown,
-                    color: AppColors.secondary,
+                    color: AppColors.primaryVariant,
                   ),
                 ),
               Icon(MdiIcons.cardsPlayingOutline),

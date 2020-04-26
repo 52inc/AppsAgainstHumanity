@@ -14,47 +14,44 @@ class ReDealButton extends StatelessWidget {
           return IconButton(
             icon: Icon(MdiIcons.cardsVariant),
             tooltip: "Re-deal your hand",
-            color: Colors.black87,
+            color: Colors.white,
             onPressed: () async {
               var result = await showDialog<bool>(
-                context: context,
+                  context: context,
                   builder: (context) {
                     return AlertDialog(
-                        title: Text('Deal new hand?'),
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(16),
+                      title: Text('Deal new hand?'),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                      content: RichText(
+                        text: TextSpan(text: 'Spend ', children: [
+                          TextSpan(
+                              text: '1 of ${state.currentPlayer.prizes.length} prize cards',
+                              style: TextStyle(fontWeight: FontWeight.bold)),
+                          TextSpan(text: ' to deal you a new hand?')
+                        ]),
+                      ),
+                      actions: [
+                        FlatButton(
+                          child: Text('CANCEL'),
+                          textColor: AppColors.secondary,
+                          onPressed: () {
+                            Navigator.of(context).pop(false);
+                          },
                         ),
-                        content: RichText(
-                            text: TextSpan(
-                                text: 'Spend ',
-                                children: [
-                                    TextSpan(text: '1 of ${state.currentPlayer.prizes.length} prize cards', style: TextStyle(fontWeight: FontWeight.bold)),
-                                    TextSpan(text: ' to deal you a new hand?')
-                                ]
-                            ),
+                        FlatButton(
+                          child: Text('DEAL'),
+                          textColor: AppColors.secondary,
+                          onPressed: () {
+                            Navigator.of(context).pop(true);
+                          },
                         ),
-                        actions: [
-                            FlatButton(
-                                child: Text('CANCEL'),
-                                textColor: AppColors.secondary,
-                                onPressed: () {
-                                    Navigator.of(context).pop(false);
-                                },
-                            ),
-                            FlatButton(
-                                child: Text('DEAL'),
-                                textColor: AppColors.secondary,
-                                onPressed: () {
-                                    Navigator.of(context).pop(true);
-                                },
-                            ),
-                        ],
+                      ],
                     );
-                  }
-              );
+                  });
               if (result ?? false) {
-                  await context.repository<GameRepository>()
-                      .reDealHand(state.game.id);
+                await context.repository<GameRepository>().reDealHand(state.game.id);
               }
             },
           );

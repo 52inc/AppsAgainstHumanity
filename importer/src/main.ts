@@ -15,11 +15,17 @@ const argv = require('minimist')(process.argv.slice(2));
 console.log(argv);
 
 // Sheet Variables
-
 const promptLength = argv.pl || 6792;
 const responseLength = argv.rl || 24413;
 const documentId = argv.doc || '1lsy7lIwBe-DWOi2PALZPf5DgXHx9MEvKfRw1GaWQkzg';
 const sheetId = argv.sheet || '2018240023';
+const cardSetOnly = argv['set-only'] || false;
+
+type CardSet = {
+    id: string;
+    set: string;
+    source: string;
+}
 
 // @ts-ignore
 async function loadAndSavePromptCards(sheet: GoogleSpreadsheetWorksheet) {
@@ -27,7 +33,7 @@ async function loadAndSavePromptCards(sheet: GoogleSpreadsheetWorksheet) {
     await sheet.loadCells(`A2:D${promptLength}`);
     console.log("Prompt cells loaded");
 
-    const prompts = new Map<string, PromptCard[]>();
+    const prompts = new Map<string, [CardSet, PromptCard[]]>();
 
     for (let i=2; i<=promptLength; i++) {
         const promptText = sheet.getCellByA1(`A${i}`).value;
@@ -39,9 +45,14 @@ async function loadAndSavePromptCards(sheet: GoogleSpreadsheetWorksheet) {
             const cid = computeCardId(promptSet, promptText);
             let cards = prompts.get(promptSet);
             if (!cards) {
-                cards = [];
+                const newSet: CardSet = {
+                    id: cleanPath(promptSet),
+                    set: promptSet,
+                    source: sourceSheet
+                };
+                cards = [newSet, []];
             }
-            cards.push({
+            cards[1].push({
                 cid: cid,
                 text: promptText,
                 special: promptSpecial,
@@ -59,31 +70,32 @@ async function loadAndSavePromptCards(sheet: GoogleSpreadsheetWorksheet) {
         // Set the set master document
         await cardSetDocument.set({
             name: promptSet,
-            prompts: cards.length,
-            promptIndexes: cards.map((card) => card.cid)
+            source: cards[0].source,
+            prompts: cards[1].length,
+            promptIndexes: cards[1].map((card) => card.cid)
         }, { merge: true });
 
-        const promptsCollection = cardSetDocument.collection('prompts');
-
-        let currentBatchCount = 0;
-        let batch = db.batch();
-        for (let prompt of cards) {
-            try {
-                const document = promptsCollection.doc(hashDocumentId(prompt.text));
-                if (currentBatchCount >= 500) {
-                    await batch.commit();
-                    batch = db.batch();
-                    currentBatchCount = 0;
-                    console.log("Batch committed to Firebase");
+        if (!cardSetOnly) {
+            const promptsCollection = cardSetDocument.collection('prompts');
+            let currentBatchCount = 0;
+            let batch = db.batch();
+            for (let prompt of cards[1]) {
+                try {
+                    const document = promptsCollection.doc(hashDocumentId(prompt.text));
+                    if (currentBatchCount >= 500) {
+                        await batch.commit();
+                        batch = db.batch();
+                        currentBatchCount = 0;
+                        console.log("Batch committed to Firebase");
+                    }
+                    batch.set(document, prompt);
+                    currentBatchCount += 1;
+                } catch (e) {
+                    console.log("Error processing prompt card: " + e);
                 }
-                batch.set(document, prompt);
-                currentBatchCount += 1;
-            } catch (e) {
-                console.log("Error processing prompt card: " + e);
             }
+            await batch.commit();
         }
-
-        await batch.commit();
     }
 }
 
@@ -93,7 +105,7 @@ async function loadAndSaveResponseCards(sheet: GoogleSpreadsheetWorksheet) {
     await sheet.loadCells(`G2:I${responseLength}`);
     console.log("Response cells loaded");
 
-    const responses = new Map<string, ResponseCard[]>();
+    const responses = new Map<string, [CardSet, PromptCard[]]>();
 
     for (let i=2; i<=responseLength; i++) {
         const responseText = sheet.getCellByA1(`G${i}`).value?.toString();
@@ -104,9 +116,14 @@ async function loadAndSaveResponseCards(sheet: GoogleSpreadsheetWorksheet) {
             const cid = computeCardId(responseSet, responseText);
             let cards = responses.get(responseSet);
             if (!cards) {
-                cards = [];
+                const newSet: CardSet = {
+                    id: cleanPath(responseSet),
+                    set: responseSet,
+                    source: sourceSheet
+                };
+                cards = [newSet, []];
             }
-            cards.push({
+            cards[1].push({
                 cid: cid,
                 text: responseText,
                 set: responseSet,
@@ -122,31 +139,32 @@ async function loadAndSaveResponseCards(sheet: GoogleSpreadsheetWorksheet) {
 
         await cardSetDocument.set({
             name: responseSet,
-            responses: cards.length,
-            responseIndexes: cards.map((card) => card.cid)
+            source: cards[0].source,
+            responses: cards[1].length,
+            responseIndexes: cards[1].map((card) => card.cid)
         }, { merge: true });
 
-        const responsesCollection = cardSetDocument.collection('responses');
-
-        let currentBatchCount = 0;
-        let batch = db.batch();
-        for (let response of cards) {
-            try {
-                const document = responsesCollection.doc(hashDocumentId(response.text));
-                if (currentBatchCount >= 500) {
-                    await batch.commit();
-                    batch = db.batch();
-                    currentBatchCount = 0;
-                    console.log("Batch committed to Firebase");
+        if (!cardSetOnly) {
+            const responsesCollection = cardSetDocument.collection('responses');
+            let currentBatchCount = 0;
+            let batch = db.batch();
+            for (let response of cards[1]) {
+                try {
+                    const document = responsesCollection.doc(hashDocumentId(response.text));
+                    if (currentBatchCount >= 500) {
+                        await batch.commit();
+                        batch = db.batch();
+                        currentBatchCount = 0;
+                        console.log("Batch committed to Firebase");
+                    }
+                    batch.set(document, response);
+                    currentBatchCount += 1;
+                } catch (e) {
+                    console.log("Error processing response card: " + e);
                 }
-                batch.set(document, response);
-                currentBatchCount += 1;
-            } catch (e) {
-                console.log("Error processing response card: " + e);
             }
+            await batch.commit();
         }
-
-        await batch.commit();
     }
 }
 

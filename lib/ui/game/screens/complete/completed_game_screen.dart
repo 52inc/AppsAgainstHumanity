@@ -75,7 +75,7 @@ class CompletedGameScreen extends StatelessWidget {
                   ),
                   onPressed: () {
                     Navigator.of(context).pushReplacement(MaterialPageRoute(
-                      builder: (context) => CreateGameScreen(sets: state.game.cardSets,)
+                      builder: (context) => CreateGameScreen()
                     ));
                   },
                 ),

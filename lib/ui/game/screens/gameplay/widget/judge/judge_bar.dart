@@ -39,7 +39,7 @@ class JudgeBar extends StatelessWidget {
       trailing: IconButton(
         icon: Icon(
           hasDownvoted ? MdiIcons.thumbDown : MdiIcons.thumbDownOutline,
-          color: hasDownvoted ? AppColors.secondary : Colors.white,
+          color: hasDownvoted ? AppColors.primary : Colors.white,
         ),
         onPressed: () {
           context.bloc<GameBloc>().add(DownvotePrompt());

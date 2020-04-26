@@ -62,18 +62,18 @@ class _HomeScreenState extends State<HomeScreen> {
             padding: EdgeInsets.only(bottom: MediaQuery.of(context).padding.bottom),
             child: Column(
               children: [
-                if (state.games.isNotEmpty)
-                  AspectRatio(
-                    aspectRatio: 312 / 436,
-                    child: PageView(
-                      controller: _pageController,
-                      children: [
-                        _buildTitleCard(context, state, includeMargin: false),
+                AspectRatio(
+                  aspectRatio: 312 / 436,
+                  child: PageView(
+                    controller: _pageController,
+                    children: [
+                      _buildTitleCard(context, state, includeMargin: false),
+
+                      if (state.games.isNotEmpty)
                         _buildPastGamesCard(context, state),
-                      ],
-                    ),
+                    ],
                   ),
-                if (state.games.isEmpty) _buildTitleCard(context, state),
+                ),
                 Expanded(
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -203,7 +203,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         title: Text(
                           game.gid,
                           style: context.theme.textTheme.subtitle1
-                              .copyWith(color: AppColors.secondary, fontWeight: FontWeight.w500),
+                              .copyWith(color: AppColors.primary, fontWeight: FontWeight.w500),
                         ),
                         subtitle: Text(
                           game.state.label,

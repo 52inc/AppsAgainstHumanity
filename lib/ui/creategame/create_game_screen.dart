@@ -1,17 +1,16 @@
+import 'package:appsagainsthumanity/data/features/cards/model/card_set.dart';
 import 'package:appsagainsthumanity/data/features/game/game_repository.dart';
 import 'package:appsagainsthumanity/ui/creategame/bloc/bloc.dart';
 import 'package:appsagainsthumanity/internal.dart';
-import 'package:appsagainsthumanity/ui/game/game_screen.dart';
+import 'package:appsagainsthumanity/ui/creategame/widgets/CountPreference.dart';
 import 'package:appsagainsthumanity/ui/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:kt_dart/kt.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:stepper_counter_swipe/stepper_counter_swipe.dart';
 
 class CreateGameScreen extends StatefulWidget {
-  final Set<String> cardSets;
-
-  CreateGameScreen({Set<String> sets}) : cardSets = sets ?? Set();
-
   @override
   State<StatefulWidget> createState() => _CreateGameScreenState();
 }
@@ -21,7 +20,6 @@ class _CreateGameScreenState extends State<CreateGameScreen> {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) => CreateGameBloc(
-        widget.cardSets,
         context.repository(),
         context.repository(),
       )..add(ScreenLoaded()),
@@ -45,60 +43,125 @@ class _CreateGameScreenState extends State<CreateGameScreen> {
           );
       }
     }, builder: (context, state) {
-      return Scaffold(
-        appBar: AppBar(
-          title: Text(context.strings.titleNewGame),
-          leading: IconButton(
-            icon: Icon(Icons.arrow_back),
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-          ),
-        ),
-        bottomNavigationBar: BottomAppBar(
-          notchMargin: 8,
-          color: AppColors.primary,
-          shape: CircularNotchedRectangle(),
-          child: Container(
-            height: 56,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Expanded(
-                  child: Container(
-                    margin: const EdgeInsets.symmetric(horizontal: 16),
-                    child: Text(
-                      "${state.selectedSets.size} Selected",
-                      style: context.theme.textTheme.headline6,
-                    ),
-                  ),
-                ),
+      return DefaultTabController(
+        length: 2,
+        child: Scaffold(
+          appBar: AppBar(
+            title: Text(context.strings.titleNewGame),
+            backgroundColor: AppColors.surfaceDark,
+            leading: IconButton(
+              icon: Icon(Icons.arrow_back),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            bottom: TabBar(
+              tabs: [
+                Tab(text: "CARDS"),
+                Tab(text: "OPTIONS"),
               ],
             ),
           ),
-        ),
-        floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
-        floatingActionButton: FloatingActionButton(
-          child: Icon(Icons.play_arrow),
-          onPressed: state.selectedSets.isNotEmpty()
-              ? () async {
-                  // Start game?
-                  var newGame = await context.repository<GameRepository>().createGame(state.selectedSets);
-                  Navigator.of(context)
-                      .pushReplacement(GamePageRoute(newGame));
-                }
+          bottomNavigationBar: BottomAppBar(
+            notchMargin: 8,
+            color: AppColors.surfaceDark,
+            shape: CircularNotchedRectangle(),
+            child: Container(
+              height: 56,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Expanded(
+                    child: Container(
+                      margin: const EdgeInsets.symmetric(horizontal: 16),
+                      child: Text(
+                        "${state.selectedSets.size} Selected",
+                        style: context.theme.textTheme.headline6,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
+          floatingActionButton: state.selectedSets.isNotEmpty()
+              ? FloatingActionButton(
+                  child: Icon(Icons.check),
+                  onPressed: () async {
+                    // Start game?
+                    var newGame = await context.repository<GameRepository>().createGame(
+                          state.selectedSets,
+                          prizesToWin: state.prizesToWin,
+                          playerLimit: state.playerLimit,
+                          pick2Enabled: state.pick2Enabled,
+                          draw2Pick3Enabled: state.draw2pick3Enabled,
+                        );
+                    Navigator.of(context).pushReplacement(GamePageRoute(newGame));
+                  },
+                )
               : null,
+          body: TabBarView(
+            children: [
+              _buildCardSetLists(state),
+              _buildGameOptions(context, state),
+            ],
+          ),
         ),
-        body: _buildBody(state),
       );
     });
   }
 
-  Widget _buildBody(CreateGameState state) {
+  Widget _buildCardSetLists(CreateGameState state) {
     return Column(
       children: [
         Expanded(
           child: state.isLoading ? _buildLoading() : _buildList(state.cardSets, state.selectedSets),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildGameOptions(BuildContext context, CreateGameState state) {
+    return Column(
+      children: [
+        CountPreference(
+          state.prizesToWin,
+          title: "Prizes to win",
+          subtitle: "Choose the number of prize cards it would take to win",
+          min: 1,
+          max: 15,
+          onValueChanged: (value) {
+            context.bloc<CreateGameBloc>().add(ChangePrizesToWin(value));
+          },
+        ),
+        CountPreference(
+          state.playerLimit,
+          title: "Max # of players",
+          subtitle: "Pick the number of players allowed to join your game",
+          min: 5,
+          max: 30,
+          onValueChanged: (value) {
+            context.bloc<CreateGameBloc>().add(ChangePlayerLimit(value));
+          },
+        ),
+        SwitchListTile(
+          title: Text("Enable \"PICK 2\""),
+          subtitle: Text("Allow \"PICK 2\" prompt cards"),
+          activeColor: AppColors.primary,
+          value: state.pick2Enabled,
+          onChanged: (value) {
+            context.bloc<CreateGameBloc>().add(ChangePick2Enabled(value));
+          },
+        ),
+        SwitchListTile(
+          title: Text("Enable \"DRAW 2, PICK 3\""),
+          subtitle: Text("Allow \"DRAW 2, PICK 3\" prompt cards"),
+          activeColor: AppColors.primary,
+          value: state.draw2pick3Enabled,
+          onChanged: (value) {
+            context.bloc<CreateGameBloc>().add(ChangeDraw2Pick3Enabled(value));
+          },
         ),
       ],
     );
@@ -112,26 +175,122 @@ class _CreateGameScreenState extends State<CreateGameScreen> {
     );
   }
 
-  Widget _buildList(KtList<String> sets, KtSet<String> selected) {
+  Widget _buildList(KtList<CardSet> sets, KtSet<CardSet> selected) {
+    var groupedSets = sets.groupBy((cs) => cs.source);
+    print("Sets: $sets");
+    print("Grouped Sets: $groupedSets");
+    var widgets = groupedSets.keys.toList().sortedWith((a, b) {
+      var aW = keyWeight(a);
+      var bW = keyWeight(b);
+      if (aW.compareTo(bW) == 0) {
+        return a.compareTo(b);
+      } else {
+        return aW.compareTo(bW);
+      }
+    }).flatMap((key) {
+      var items = groupedSets.get(key).map((cs) => CardSetListItem(cs, selected.contains(cs)));
+      var allItemsSelected = items.all((i) => i.isSelected);
+      var noItemsSelected = items.none((i) => i.isSelected);
+      return mutableListOf<Widget>(
+        HeaderItem(key, allItemsSelected ? true : noItemsSelected ? false : null),
+      )..addAll(items);
+    });
+
     return ListView.builder(
-      itemCount: sets.size,
-      itemBuilder: (context, index) {
-        var item = sets[index];
-        var isSelected = selected.contains(item);
-        return ListTile(
-          title: Text(item),
-          contentPadding: const EdgeInsets.symmetric(horizontal: 6),
-          leading: Checkbox(
-            value: isSelected,
-            activeColor: AppColors.secondary,
-            onChanged: (value) {
-              context.bloc<CreateGameBloc>().add(CardSetSelected(item));
-            },
+      itemCount: widgets.size,
+      itemBuilder: (context, index) => widgets[index],
+    );
+  }
+
+  int keyWeight(String key) {
+    if (key == "Developer") {
+      return 0;
+    } else if (key == "CAH Main Deck") {
+      return 1;
+    } else if (key == "CAH Expansions") {
+      return 2;
+    } else if (key == "CAH Packs") {
+      return 3;
+    } else if (key.startsWith('CAH Packs/')) {
+      return 4;
+    } else {
+      return 5;
+    }
+  }
+}
+
+class HeaderItem extends StatelessWidget {
+  final String title;
+  final bool isChecked;
+
+  HeaderItem(this.title, [this.isChecked]);
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: () {
+        context.bloc<CreateGameBloc>().add(CardSourceSelected(title, isChecked));
+      },
+      child: Column(
+        children: [
+          Divider(
+            height: 1,
           ),
-          onTap: () {
-            context.bloc<CreateGameBloc>().add(CardSetSelected(item));
-          },
-        );
+          Container(
+            height: 48,
+            alignment: Alignment.centerLeft,
+            padding: const EdgeInsets.symmetric(horizontal: 6),
+            child: Row(
+              children: <Widget>[
+                Checkbox(
+                  value: isChecked,
+                  tristate: true,
+                  onChanged: (value) {
+                    context.bloc<CreateGameBloc>().add(CardSourceSelected(title, value));
+                  },
+                  activeColor: AppColors.primary,
+                  checkColor: Colors.white,
+                ),
+                Expanded(
+                  child: Container(
+                    margin: const EdgeInsets.only(left: 16),
+                    child: Text(
+                      title ?? "_UNKNOWN_",
+                      style: context.theme.textTheme.subtitle2.copyWith(
+                        color: AppColors.primaryVariant,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          )
+        ],
+      ),
+    );
+  }
+}
+
+class CardSetListItem extends StatelessWidget {
+  final CardSet cardSet;
+  final bool isSelected;
+
+  CardSetListItem(this.cardSet, this.isSelected);
+
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      title: Text(cardSet.name),
+      contentPadding: const EdgeInsets.symmetric(horizontal: 6),
+      leading: Checkbox(
+        value: isSelected,
+        activeColor: AppColors.primary,
+        onChanged: (value) {
+          context.bloc<CreateGameBloc>().add(CardSetSelected(cardSet));
+        },
+      ),
+      onTap: () {
+        context.bloc<CreateGameBloc>().add(CardSetSelected(cardSet));
       },
     );
   }
