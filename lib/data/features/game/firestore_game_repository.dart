@@ -1,5 +1,5 @@
 import 'dart:math';
-
+import 'package:appsagainsthumanity/data/features/cards/model/card_set.dart';
 import 'package:appsagainsthumanity/data/features/cards/model/response_card.dart';
 import 'package:appsagainsthumanity/data/features/game/game_repository.dart';
 import 'package:appsagainsthumanity/data/features/game/model/game.dart';
@@ -22,7 +22,13 @@ class FirestoreGameRepository extends GameRepository {
         db = firestore ?? Firestore.instance;
 
   @override
-  Future<Game> createGame(KtSet<String> cardSets, {int prizesToWin = 10}) {
+  Future<Game> createGame(
+    KtSet<CardSet> cardSets, {
+    int prizesToWin = Game.PRIZES_TO_WIN,
+    int playerLimit = Game.PLAYER_LIMIT,
+    bool pick2Enabled = true,
+    bool draw2Pick3Enabled = true,
+  }) {
     return currentUserOrThrow((firebaseUser) async {
       var newGameDoc = db.collection(FirebaseConstants.COLLECTION_GAMES).document();
       var game = Game(
@@ -31,7 +37,10 @@ class FirestoreGameRepository extends GameRepository {
         ownerId: firebaseUser.uid,
         state: GameState.waitingRoom,
         prizesToWin: prizesToWin,
-        cardSets: cardSets.asSet(),
+        playerLimit: playerLimit,
+        pick2Enabled: pick2Enabled,
+        draw2Pick3Enabled: draw2Pick3Enabled,
+        cardSets: cardSets.map((c) => c.id).asList().toSet(),
       );
       await newGameDoc.setData(game.toJson());
 
@@ -42,15 +51,11 @@ class FirestoreGameRepository extends GameRepository {
     });
   }
 
-
   @override
   Future<Game> joinGame(String gid) {
     return currentUserOrThrow((firebaseUser) async {
       var snapshot =
-          await db.collection(FirebaseConstants.COLLECTION_GAMES)
-              .where('gid', isEqualTo: gid)
-              .limit(1)
-              .getDocuments();
+          await db.collection(FirebaseConstants.COLLECTION_GAMES).where('gid', isEqualTo: gid).limit(1).getDocuments();
 
       if (snapshot != null && snapshot.documents.isNotEmpty) {
         var gameDocument = snapshot.documents.first;
@@ -71,11 +76,8 @@ class FirestoreGameRepository extends GameRepository {
 
   @override
   Future<Game> findGame(String gid) async {
-    var snapshots = await db
-        .collection(FirebaseConstants.COLLECTION_GAMES)
-        .where('gid', isEqualTo: gid)
-        .limit(1)
-        .getDocuments();
+    var snapshots =
+        await db.collection(FirebaseConstants.COLLECTION_GAMES).where('gid', isEqualTo: gid).limit(1).getDocuments();
 
     if (snapshots != null && snapshots.documents.isNotEmpty) {
       var document = snapshots.documents.first;
@@ -87,8 +89,7 @@ class FirestoreGameRepository extends GameRepository {
 
   @override
   Future<Game> getGame(String gameDocumentId, {bool andJoin = false}) async {
-    var gameDocument = db.collection(FirebaseConstants.COLLECTION_GAMES)
-        .document(gameDocumentId);
+    var gameDocument = db.collection(FirebaseConstants.COLLECTION_GAMES).document(gameDocumentId);
 
     var snapshot = await gameDocument.get();
     var game = Game.fromDocument(snapshot);
@@ -140,14 +141,13 @@ class FirestoreGameRepository extends GameRepository {
         .collection(FirebaseConstants.COLLECTION_DOWNVOTES)
         .document(FirebaseConstants.DOCUMENT_TALLY);
 
-    return collection.snapshots()
-        .map((snapshot) {
-          if (snapshot.data != null) {
-            return List<String>.from(snapshot.data['votes'] ?? []);
-          } else {
-            return [];
-          }
-        });
+    return collection.snapshots().map((snapshot) {
+      if (snapshot.data != null) {
+        return List<String>.from(snapshot.data['votes'] ?? []);
+      } else {
+        return [];
+      }
+    });
   }
 
   @override
@@ -159,11 +159,10 @@ class FirestoreGameRepository extends GameRepository {
         .document(FirebaseConstants.DOCUMENT_RANDO_CARDRISSIAN);
 
     var rando = Player(
-      id: FirebaseConstants.DOCUMENT_RANDO_CARDRISSIAN,
-      name: "Rando Cardrissian",
-      avatarUrl: null,
-      isRandoCardrissian: true
-    );
+        id: FirebaseConstants.DOCUMENT_RANDO_CARDRISSIAN,
+        name: "Rando Cardrissian",
+        avatarUrl: null,
+        isRandoCardrissian: true);
 
     await document.setData(rando.toJson());
   }
@@ -171,9 +170,7 @@ class FirestoreGameRepository extends GameRepository {
   @override
   Future<void> startGame(String gameDocumentId) async {
     final HttpsCallable callable = CloudFunctions.instance.getHttpsCallable(functionName: 'startGame');
-    dynamic response = await callable.call(<String, dynamic>{
-      'game_id': gameDocumentId
-    });
+    dynamic response = await callable.call(<String, dynamic>{'game_id': gameDocumentId});
 
     print("Start game Successful! $response");
   }
@@ -183,13 +180,9 @@ class FirestoreGameRepository extends GameRepository {
     // 1. Remove the cards from the player's hand
     // 2. Add the cards as a response to the current game's turn
     return currentUserOrThrow((firebaseUser) async {
-      var gameDocument = db
-          .collection(FirebaseConstants.COLLECTION_GAMES)
-          .document(gameDocumentId);
+      var gameDocument = db.collection(FirebaseConstants.COLLECTION_GAMES).document(gameDocumentId);
 
-      var playerDocument = gameDocument
-          .collection(FirebaseConstants.COLLECTION_PLAYERS)
-          .document(firebaseUser.uid);
+      var playerDocument = gameDocument.collection(FirebaseConstants.COLLECTION_PLAYERS).document(firebaseUser.uid);
 
       var cardData = cards.map((e) => e.toJson()).toList();
 
@@ -201,13 +194,9 @@ class FirestoreGameRepository extends GameRepository {
           return cards.firstWhere((c) => c.cid == element.cid, orElse: () => null) != null;
         });
 
-        await transaction.update(playerDocument, {
-          'hand': player.hand.map((e) => e.toJson()).toList()
-        });
+        await transaction.update(playerDocument, {'hand': player.hand.map((e) => e.toJson()).toList()});
 
-        await transaction.update(gameDocument, {
-          'turn.responses.${firebaseUser.uid}': cardData
-        });
+        await transaction.update(gameDocument, {'turn.responses.${firebaseUser.uid}': cardData});
       });
     });
   }
@@ -238,10 +227,7 @@ class FirestoreGameRepository extends GameRepository {
   Future<void> reDealHand(String gameDocumentId) {
     return currentUserOrThrow((firebaseUser) async {
       final HttpsCallable callable = CloudFunctions.instance.getHttpsCallable(functionName: 'reDealHand');
-      dynamic response = await callable.call(<String, dynamic>{
-        'game_id': gameDocumentId
-      });
-
+      dynamic response = await callable.call(<String, dynamic>{'game_id': gameDocumentId});
       print("Hand re-dealt successfully! $response");
     });
   }
@@ -249,21 +235,26 @@ class FirestoreGameRepository extends GameRepository {
   @override
   Future<void> pickWinner(String gameDocumentId, String playerId) async {
     final HttpsCallable callable = CloudFunctions.instance.getHttpsCallable(functionName: 'pickWinner');
-    dynamic response = await callable.call(<String, dynamic>{
-      'game_id': gameDocumentId,
-      'player_id': playerId
-    });
+    dynamic response = await callable.call(<String, dynamic>{'game_id': gameDocumentId, 'player_id': playerId});
 
     print("Winner picked Successful! $response");
   }
 
   Future<void> _addSelfToGame(String gameDocumentId, Game game) async {
+    // first check if game CAN be joined
+    var limit = game.playerLimit ?? Game.PLAYER_LIMIT;
+    var players = await db
+        .collection(FirebaseConstants.COLLECTION_GAMES)
+        .document(game.id)
+        .collection(FirebaseConstants.COLLECTION_PLAYERS)
+        .getDocuments();
+
+    if (players.documents.length >= limit) {
+      throw 'Unable to join. This game is already full';
+    }
+
     var user = await userRepository.getUser();
-    var player = Player(
-      id: user.id,
-      name: user.name,
-      avatarUrl: user.avatarUrl
-    );
+    var player = Player(id: user.id, name: user.name, avatarUrl: user.avatarUrl);
 
     // Write self to game's players
     await db

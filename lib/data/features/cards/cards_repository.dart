@@ -1,4 +1,7 @@
+import 'package:appsagainsthumanity/data/features/cards/model/card_set.dart';
+
 abstract class CardsRepository{
 
-    Future<List<String>> getAvailableCardSets();
+    /// Get the list of cardsets that you can use
+    Future<List<CardSet>> getAvailableCardSets();
 }

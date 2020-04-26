@@ -775,6 +775,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.9.3"
+  stepper_counter_swipe:
+    dependency: "direct main"
+    description:
+      name: stepper_counter_swipe
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.0.5"
   stream_channel:
     dependency: transitive
     description:

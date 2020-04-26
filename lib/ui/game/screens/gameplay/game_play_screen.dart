@@ -28,7 +28,7 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
       bottomNavigationBar: BottomAppBar(
         notchMargin: 8,
         shape: CircularNotchedRectangle(),
-        color: AppColors.primary,
+        color: AppColors.surfaceLight,
         child: Container(
           height: 56,
           child: Row(
@@ -37,7 +37,7 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
                 margin: const EdgeInsets.only(left: 8),
                 child: IconButton(
                   icon: Icon(Icons.close),
-                  color: Colors.black87,
+                  color: Colors.white,
                   onPressed: () {
                     Navigator.of(context).pop();
                   },
@@ -61,7 +61,7 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
                     ),
                     IconButton(
                       icon: Icon(MdiIcons.accountGroup),
-                      color: Colors.black87,
+                      color: Colors.white,
                       onPressed: () {
                         _showPlayerBottomSheet(context);
                       },
@@ -147,7 +147,7 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
                     child: Text(
                       widget.state.game.gid,
                       style: context.theme.textTheme.headline6.copyWith(
-                        color: AppColors.secondary,
+                        color: AppColors.primaryVariant,
                       ),
                     ),
                   )

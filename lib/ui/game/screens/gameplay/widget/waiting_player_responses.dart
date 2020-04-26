@@ -87,7 +87,7 @@ class PlayerResponseCard extends StatelessWidget {
                       )
                     : Icon(
                         MdiIcons.checkboxBlankCircleOutline,
-                        color: AppColors.primary,
+                        color: Colors.black54,
                         size: 32,
                       ),
               ),

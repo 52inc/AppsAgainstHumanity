@@ -27,7 +27,7 @@ class GameStatusTitle extends StatelessWidget {
   Widget _buildText(BuildContext context, String title) {
     return Text(
       title,
-      style: context.theme.textTheme.headline6.copyWith(color: Colors.black87),
+      style: context.theme.textTheme.headline6.copyWith(color: Colors.white),
     );
   }
 }
