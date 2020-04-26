@@ -28,7 +28,7 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
       bottomNavigationBar: BottomAppBar(
         notchMargin: 8,
         shape: CircularNotchedRectangle(),
-        color: AppColors.surfaceLight,
+        color: AppColors.surfaceDark,
         child: Container(
           height: 56,
           child: Row(
