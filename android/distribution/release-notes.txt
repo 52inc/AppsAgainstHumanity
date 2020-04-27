@@ -1,5 +1,6 @@
-* Fixed Prompt Macros
-* Added Push Notifications
-* Fixed how the player list can scroll
-* Fixed some end of game functions
-* Optimizations and improvements for the app
+* Most of game logic is now offloaded to the backend
+* Permissions are now setup on DB to prevent nefarious access
+* Improved 'New Game' interface
+* Added dynamic link (share link to friends to install/join) this may or may not work fully yet until release
+* Improving look & feel with new color scheme
+* Fixed how the player list scrolling reacts
