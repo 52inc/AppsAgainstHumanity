@@ -27,6 +27,16 @@ class SettingsScreen extends StatelessWidget {
             children: [
               UserPreference(),
               Preference(
+                title: "Sign out",
+                icon: Icon(
+                  MdiIcons.logout,
+                  color: Colors.black54,
+                ),
+                onTap: () {
+                  _signOut(context);
+                },
+              ),
+              Preference(
                 title: "Delete account",
                 titleColor: Colors.redAccent,
                 icon: Icon(
@@ -37,16 +47,6 @@ class SettingsScreen extends StatelessWidget {
                   _deleteAccount(context);
                 },
               ),
-              Preference(
-                title: "Sign out",
-                icon: Icon(
-                  MdiIcons.logout,
-                  color: Colors.black54,
-                ),
-                onTap: () {
-                  _signOut(context);
-                },
-              )
             ],
           ),
           PreferenceCategory(
@@ -156,6 +156,7 @@ class SettingsScreen extends StatelessWidget {
         context: context,
         builder: (context) {
           return AlertDialog(
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
             title: Text(
               "Delete account?",
               style: context.theme.textTheme.headline6.copyWith(color: Colors.redAccent),

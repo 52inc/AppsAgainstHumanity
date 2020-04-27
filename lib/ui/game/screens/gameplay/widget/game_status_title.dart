@@ -10,11 +10,11 @@ class GameStatusTitle extends StatelessWidget {
       if (state.areWeJudge) {
         return _buildText(
           context,
-          !state.allResponsesSubmitted ? "Waiting for responses" : "Judge them! You are the Law!",
+          !state.allResponsesSubmitted ? "Waiting for responses" : "Judging",
         );
       } else {
           if (state.allResponsesSubmitted) {
-              return _buildText(context, "Judgement day is upon you!");
+              return _buildText(context, "Waiting for judgement!");
           } else if (state.haveWeSubmittedResponse) {
               return _buildText(context, "Waiting on other players");
           } else {

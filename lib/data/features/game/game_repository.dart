@@ -27,6 +27,9 @@ abstract class GameRepository {
   /// Get a game by it's actual document id
   Future<Game> getGame(String gameDocumentId, {bool andJoin = false});
 
+  /// Leave a game. This will flag the 'player' on the game as 'inActive'
+  Future<void> leaveGame(String gameDocumentId);
+
   /// Return a list of games that you have joined in the past
   Stream<List<UserGame>> observeJoinedGames();
 

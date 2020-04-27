@@ -6,6 +6,8 @@ class AppColors {
     static const primary = Color(0xFFAB47BC);
     static const primaryDark = Color(0xFF790e8b);
     static const primaryVariant = Color(0xFFdf78ef);
+    static const colorOnPrimary = Color(0xFFFFFFFF);
+    static const colorOnPrimaryVariant = Color(0xDD000000);
 
     static const secondary = Color(0xFF00BCD4);
     static const secondaryLight = Color(0xFF80DEEA);
@@ -27,7 +29,18 @@ class AppThemes {
             primaryColorDark: AppColors.primaryDark,
             primaryColorLight: AppColors.primaryVariant,
             accentColor: AppColors.primary,
-            canvasColor: AppColors.surface
+            canvasColor: AppColors.surface,
+            cardColor: Colors.white
+        );
+
+    static ThemeData get dark =>
+        ThemeData(
+            brightness: Brightness.dark,
+            primaryColor: AppColors.primary,
+            primaryColorDark: AppColors.primaryDark,
+            primaryColorLight: AppColors.primaryVariant,
+            accentColor: AppColors.primaryVariant,
+            cardColor: AppColors.surfaceLight
         );
 }
 
