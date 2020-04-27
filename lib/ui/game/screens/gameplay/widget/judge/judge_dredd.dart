@@ -76,7 +76,7 @@ class _JudgeDreddState extends State<JudgeDredd> {
     return RaisedButton.icon(
       padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
       shape: StadiumBorder(),
-      color: AppColors.secondary,
+      color: AppColors.primary,
       onPressed: () async {
         var currentPlayerResponse = controller.currentPlayerResponse;
         if (currentPlayerResponse != null) {
@@ -87,14 +87,14 @@ class _JudgeDreddState extends State<JudgeDredd> {
       },
       icon: Icon(
         MdiIcons.crown,
-        color: Colors.black87,
+        color: AppColors.colorOnPrimary,
       ),
       label: Container(
         margin: const EdgeInsets.only(left: 16, right: 40),
         child: Text(
           "WINNER",
           style: context.theme.textTheme.button.copyWith(
-            color: Colors.black87,
+            color: AppColors.colorOnPrimary,
             letterSpacing: 1,
           ),
         ),
@@ -106,13 +106,13 @@ class _JudgeDreddState extends State<JudgeDredd> {
     return RaisedButton.icon(
       padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
       shape: StadiumBorder(),
-      color: AppColors.secondary,
-      disabledColor: AppColors.secondary,
+      color: AppColors.primary,
+      disabledColor: AppColors.primary,
       icon: Container(
         width: 24,
         height: 24,
         child: CircularProgressIndicator(
-          valueColor: AlwaysStoppedAnimation<Color>(AppColors.primary),
+          valueColor: AlwaysStoppedAnimation<Color>(AppColors.colorOnPrimary),
         ),
       ),
       label: Container(
@@ -120,7 +120,7 @@ class _JudgeDreddState extends State<JudgeDredd> {
         child: Text(
           "SUBMITTING...",
           style: context.theme.textTheme.button.copyWith(
-            color: Colors.black87,
+            color: AppColors.colorOnPrimary,
             letterSpacing: 1,
           ),
         ),
@@ -141,7 +141,7 @@ class _JudgeDreddState extends State<JudgeDredd> {
         height: 48,
         width: 56,
         child: Material(
-          color: AppColors.secondary,
+          color: AppColors.primary,
           clipBehavior: Clip.hardEdge,
           shape: RoundedRectangleBorder(
             borderRadius: isLeft
@@ -168,7 +168,7 @@ class _JudgeDreddState extends State<JudgeDredd> {
               alignment: Alignment.center,
               child: Icon(
                 iconData,
-                color: Colors.black87,
+                color: AppColors.colorOnPrimary,
               ),
             ),
           ),

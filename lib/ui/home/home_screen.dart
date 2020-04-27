@@ -9,6 +9,7 @@ import 'package:appsagainsthumanity/ui/creategame/create_game_screen.dart';
 import 'package:appsagainsthumanity/ui/game/game_screen.dart';
 import 'package:appsagainsthumanity/ui/home/bloc/bloc.dart';
 import 'package:appsagainsthumanity/ui/home/widgets/join_room_dialog.dart';
+import 'package:appsagainsthumanity/ui/home/widgets/past_game_card.dart';
 import 'package:appsagainsthumanity/ui/routes.dart';
 import 'package:appsagainsthumanity/ui/settings/settings_screen.dart';
 import 'package:flutter/material.dart';
@@ -70,7 +71,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       _buildTitleCard(context, state, includeMargin: false),
 
                       if (state.games.isNotEmpty)
-                        _buildPastGamesCard(context, state),
+                        PastGamesCard(state),
                     ],
                   ),
                 ),
@@ -122,7 +123,7 @@ class _HomeScreenState extends State<HomeScreen> {
         child: Material(
           elevation: 4.0,
           borderRadius: BorderRadius.circular(16),
-          color: Colors.white,
+          color: context.theme.cardColor,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -159,78 +160,6 @@ class _HomeScreenState extends State<HomeScreen> {
                           ? _buildLoadingUserTile()
                           : state.error != null ? _buildErrorUserTile(state.error) : _buildUserTile(state.user)),
                 ),
-              )
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildPastGamesCard(BuildContext context, HomeState state) {
-    var topMargin = MediaQuery.of(context).padding.top + (Platform.isAndroid ? 24 : 0);
-    return Container(
-      margin: EdgeInsets.only(left: 8, right: 8, top: topMargin),
-      child: AspectRatio(
-        aspectRatio: 312 / 436,
-        child: Material(
-          elevation: 4.0,
-          borderRadius: BorderRadius.circular(16),
-          color: Colors.white,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.max,
-            children: [
-              Container(
-                margin: const EdgeInsets.all(24),
-                child: Text(
-                  "Past Games",
-                  style: context.theme.textTheme.headline3
-                      .copyWith(color: Colors.black87, fontWeight: FontWeight.bold, fontSize: 48),
-                ),
-              ),
-              Divider(
-                height: 1,
-                color: Colors.black12,
-              ),
-              Expanded(
-                child: ListView.builder(
-                    padding: const EdgeInsets.symmetric(vertical: 8),
-                    itemCount: state.games.length,
-                    itemBuilder: (context, index) {
-                      var game = state.games[index];
-                      return ListTile(
-                        title: Text(
-                          game.gid,
-                          style: context.theme.textTheme.subtitle1
-                              .copyWith(color: AppColors.primary, fontWeight: FontWeight.w500),
-                        ),
-                        subtitle: Text(
-                          game.state.label,
-                          style: context.theme.textTheme.bodyText2.copyWith(color: Colors.black54),
-                        ),
-                        trailing: Text(
-                          timeago.format(game.joinedAt),
-                          style: context.theme.textTheme.bodyText2.copyWith(color: Colors.black26),
-                        ),
-                        onTap: game.state == GameState.inProgress || game.state == GameState.waitingRoom
-                            ? () async {
-                                // Fetch and load game
-                                try {
-                                  var existingGame = await context.repository<GameRepository>().findGame(game.gid);
-                                  Navigator.of(context)
-                                      .push(GamePageRoute(existingGame));
-                                } catch (e) {
-                                  Scaffold.of(context)
-                                    ..hideCurrentSnackBar()
-                                    ..showSnackBar(SnackBar(
-                                      content: Text("$e"),
-                                    ));
-                                }
-                              }
-                            : null,
-                      );
-                    }),
               )
             ],
           ),

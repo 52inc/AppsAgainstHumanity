@@ -45,7 +45,7 @@ class FirestoreGameRepository extends GameRepository {
       await newGameDoc.setData(game.toJson());
 
       // Now add yourself as a player to the game
-      await _addSelfToGame(newGameDoc.documentID, game);
+      await _addSelfToGame(gameDocumentId: newGameDoc.documentID);
 
       return game;
     });
@@ -54,23 +54,7 @@ class FirestoreGameRepository extends GameRepository {
   @override
   Future<Game> joinGame(String gid) {
     return currentUserOrThrow((firebaseUser) async {
-      var snapshot =
-          await db.collection(FirebaseConstants.COLLECTION_GAMES).where('gid', isEqualTo: gid).limit(1).getDocuments();
-
-      if (snapshot != null && snapshot.documents.isNotEmpty) {
-        var gameDocument = snapshot.documents.first;
-        var game = Game.fromDocument(gameDocument);
-
-        // Only let user's join a game that hasn't been started yet
-        if (game.state == GameState.waitingRoom) {
-          await _addSelfToGame(gameDocument.documentID, game);
-          return game;
-        } else {
-          throw 'You cannot join a game that is already in-progress or completed';
-        }
-      } else {
-        throw 'No game found for $gid';
-      }
+      return await _addSelfToGame(gid: gid);
     });
   }
 
@@ -94,14 +78,30 @@ class FirestoreGameRepository extends GameRepository {
     var snapshot = await gameDocument.get();
     var game = Game.fromDocument(snapshot);
 
-    // TODO: Update this to be joinable at anypoint in hte game if the game is setup for it
-    if (andJoin && game.state == GameState.waitingRoom) {
-      await _addSelfToGame(gameDocumentId, game);
+    if (andJoin) {
+      try {
+        game = await _addSelfToGame(gameDocumentId: gameDocumentId);
+      } catch (e, st) {
+        print("Error joining game: $e\n$st");
+      }
     } else if (andJoin) {
       throw 'You cannot join a game that has already started';
     }
 
     return game;
+  }
+
+  @override
+  Future<void> leaveGame(String gameDocumentId) {
+    return currentUserOrThrow((firebaseUser) async {
+      // Flag player object as inactive in the game
+
+      // remove from judging order
+
+      // remove any responses
+
+      // Delete UserGame obj
+    });
   }
 
   @override
@@ -171,34 +171,17 @@ class FirestoreGameRepository extends GameRepository {
   Future<void> startGame(String gameDocumentId) async {
     final HttpsCallable callable = CloudFunctions.instance.getHttpsCallable(functionName: 'startGame');
     dynamic response = await callable.call(<String, dynamic>{'game_id': gameDocumentId});
-
     print("Start game Successful! $response");
   }
 
   @override
-  Future<void> submitResponse(String gameDocumentId, List<ResponseCard> cards) {
-    // 1. Remove the cards from the player's hand
-    // 2. Add the cards as a response to the current game's turn
-    return currentUserOrThrow((firebaseUser) async {
-      var gameDocument = db.collection(FirebaseConstants.COLLECTION_GAMES).document(gameDocumentId);
-
-      var playerDocument = gameDocument.collection(FirebaseConstants.COLLECTION_PLAYERS).document(firebaseUser.uid);
-
-      var cardData = cards.map((e) => e.toJson()).toList();
-
-      await db.runTransaction((transaction) async {
-        var playerSnapshot = await transaction.get(playerDocument);
-        var player = Player.fromDocument(playerSnapshot);
-
-        player.hand.removeWhere((element) {
-          return cards.firstWhere((c) => c.cid == element.cid, orElse: () => null) != null;
-        });
-
-        await transaction.update(playerDocument, {'hand': player.hand.map((e) => e.toJson()).toList()});
-
-        await transaction.update(gameDocument, {'turn.responses.${firebaseUser.uid}': cardData});
-      });
+  Future<void> submitResponse(String gameDocumentId, List<ResponseCard> cards) async {
+    final HttpsCallable callable = CloudFunctions.instance.getHttpsCallable(functionName: 'submitResponses');
+    dynamic response = await callable.call(<String, dynamic>{
+      'game_id': gameDocumentId,
+      'responses': cards.map((e) => e.cid).toList()
     });
+    print("Responses Submitted! $response");
   }
 
   @override
@@ -236,46 +219,28 @@ class FirestoreGameRepository extends GameRepository {
   Future<void> pickWinner(String gameDocumentId, String playerId) async {
     final HttpsCallable callable = CloudFunctions.instance.getHttpsCallable(functionName: 'pickWinner');
     dynamic response = await callable.call(<String, dynamic>{'game_id': gameDocumentId, 'player_id': playerId});
-
     print("Winner picked Successful! $response");
   }
 
-  Future<void> _addSelfToGame(String gameDocumentId, Game game) async {
-    // first check if game CAN be joined
-    var limit = game.playerLimit ?? Game.PLAYER_LIMIT;
-    var players = await db
-        .collection(FirebaseConstants.COLLECTION_GAMES)
-        .document(game.id)
-        .collection(FirebaseConstants.COLLECTION_PLAYERS)
-        .getDocuments();
-
-    if (players.documents.length >= limit) {
-      throw 'Unable to join. This game is already full';
-    }
-
+  Future<Game> _addSelfToGame({String gameDocumentId, String gid}) async {
     var user = await userRepository.getUser();
-    var player = Player(id: user.id, name: user.name, avatarUrl: user.avatarUrl);
 
-    // Write self to game's players
-    await db
-        .collection(FirebaseConstants.COLLECTION_GAMES)
-        .document(gameDocumentId)
-        .collection(FirebaseConstants.COLLECTION_PLAYERS)
-        .document(user.id)
-        .setData(player.toJson(), merge: true);
+    final HttpsCallable callable = CloudFunctions.instance.getHttpsCallable(functionName: 'joinGame');
+    HttpsCallableResult response = await callable.call(<String, dynamic>{
+      if (gameDocumentId != null)
+        'game_id': gameDocumentId,
 
-    // Write game to your collection of games
-    var userGame = UserGame(
-      gid: game.gid,
-      state: game.state,
-      joinedAt: DateTime.now(),
-    );
-    await db
-        .collection(FirebaseConstants.COLLECTION_USERS)
-        .document(user.id)
-        .collection(FirebaseConstants.COLLECTION_GAMES)
-        .document(gameDocumentId)
-        .setData(userGame.toJson());
+      if (gid != null)
+        'gid': gid,
+
+      'name': user.name,
+      'avatar': user.avatarUrl
+    });
+
+    var jsonResponse = Map<String, dynamic>.from(response.data);
+    var game = Game.fromJson(jsonResponse);
+    game.id = jsonResponse['id'];
+    return game;
   }
 
   String generateId({int length = 7}) {

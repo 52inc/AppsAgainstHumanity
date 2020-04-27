@@ -17,7 +17,7 @@ class PreferenceHeader extends StatelessWidget {
       alignment: Alignment.centerLeft,
       child: Text(
         title,
-        style: context.theme.textTheme.subtitle2.copyWith(color: context.primaryColor),
+        style: context.theme.textTheme.subtitle2.copyWith(color: AppColors.primary),
       ),
     );
   }

@@ -68,14 +68,14 @@ class _PlayerResponsePickerState extends State<PlayerResponsePicker> {
     return RaisedButton.icon(
       padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
       shape: StadiumBorder(),
-      color: AppColors.secondary,
-      disabledColor: AppColors.secondary,
+      color: AppColors.primary,
+      disabledColor: AppColors.primary,
       onPressed: null,
       icon: Container(
         width: 24,
         height: 24,
         child: CircularProgressIndicator(
-          valueColor: AlwaysStoppedAnimation<Color>(AppColors.primary),
+          valueColor: AlwaysStoppedAnimation<Color>(AppColors.colorOnPrimary),
         ),
       ),
       label: Container(
@@ -83,7 +83,7 @@ class _PlayerResponsePickerState extends State<PlayerResponsePicker> {
         child: Text(
           "SUBMITTING...",
           style: context.theme.textTheme.button.copyWith(
-            color: Colors.black87,
+            color: AppColors.colorOnPrimary,
             letterSpacing: 1,
           ),
         ),
@@ -95,20 +95,20 @@ class _PlayerResponsePickerState extends State<PlayerResponsePicker> {
     return RaisedButton.icon(
       padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
       shape: StadiumBorder(),
-      color: AppColors.secondary,
+      color: AppColors.primary,
       onPressed: () async {
         context.bloc<GameBloc>().add(SubmitResponses());
       },
       icon: Icon(
         MdiIcons.uploadMultiple,
-        color: Colors.black87,
+        color: AppColors.colorOnPrimary,
       ),
       label: Container(
         margin: const EdgeInsets.only(left: 8, right: 20),
         child: Text(
           "SUBMIT RESPONSE",
           style: context.theme.textTheme.button.copyWith(
-            color: Colors.black87,
+            color: AppColors.colorOnPrimary,
             letterSpacing: 1,
           ),
         ),
