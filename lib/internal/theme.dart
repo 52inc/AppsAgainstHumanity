@@ -17,6 +17,9 @@ class AppColors {
     static const surfaceLight = Color(0xFF4F4F4F);
     static const surfaceDark = Color(0xFF303030);
     static const responseCardBackground = Color(0xFFF2F2F2);
+
+    static const addPhotoBackground = Color(0xFF666666);
+    static const addPhotoForeground = Colors.white70;
 }
 
 class AppThemes {

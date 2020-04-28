@@ -10,6 +10,7 @@ import 'package:appsagainsthumanity/ui/game/game_screen.dart';
 import 'package:appsagainsthumanity/ui/home/bloc/bloc.dart';
 import 'package:appsagainsthumanity/ui/home/widgets/join_room_dialog.dart';
 import 'package:appsagainsthumanity/ui/home/widgets/past_game_card.dart';
+import 'package:appsagainsthumanity/ui/profile/profile_screen.dart';
 import 'package:appsagainsthumanity/ui/routes.dart';
 import 'package:appsagainsthumanity/ui/settings/settings_screen.dart';
 import 'package:flutter/material.dart';
@@ -124,6 +125,7 @@ class _HomeScreenState extends State<HomeScreen> {
           elevation: 4.0,
           borderRadius: BorderRadius.circular(16),
           color: context.theme.cardColor,
+          clipBehavior: Clip.hardEdge,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -158,7 +160,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   child: Container(
                       child: state.isLoading
                           ? _buildLoadingUserTile()
-                          : state.error != null ? _buildErrorUserTile(state.error) : _buildUserTile(state.user)),
+                          : state.error != null ? _buildErrorUserTile(state.error) : _buildUserTile(context, state.user)),
                 ),
               )
             ],
@@ -243,8 +245,13 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _buildUserTile(User user) {
+  Widget _buildUserTile(BuildContext context, User user) {
     return ListTile(
+      onTap: () {
+        Navigator.of(context).push(MaterialPageRoute(
+          builder: (_) => ProfileScreen()
+        ));
+      },
       contentPadding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
       title: Text(
         user.name ?? Player.DEFAULT_NAME,

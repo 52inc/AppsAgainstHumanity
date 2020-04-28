@@ -1,3 +1,4 @@
+import 'package:appsagainsthumanity/data/features/users/model/user.dart';
 import 'package:appsagainsthumanity/data/features/users/model/user_game.dart';
 import 'package:equatable/equatable.dart';
 import 'package:meta/meta.dart';
@@ -19,4 +20,14 @@ class JoinedGamesUpdated extends HomeEvent {
 
   @override
   List<Object> get props => [games];
+}
+
+@immutable
+class UserUpdated extends HomeEvent {
+  final User user;
+
+  UserUpdated(this.user);
+
+  @override
+  List<Object> get props => [user];
 }

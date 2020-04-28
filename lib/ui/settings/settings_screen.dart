@@ -1,6 +1,7 @@
 import 'package:appsagainsthumanity/authentication_bloc/authentication_bloc.dart';
 import 'package:appsagainsthumanity/data/features/users/user_repository.dart';
 import 'package:appsagainsthumanity/internal.dart';
+import 'package:appsagainsthumanity/ui/profile/profile_screen.dart';
 import 'package:appsagainsthumanity/ui/settings/widgets/preference.dart';
 import 'package:appsagainsthumanity/ui/settings/widgets/preference_header.dart';
 import 'package:appsagainsthumanity/ui/settings/widgets/user_preference.dart';
@@ -25,7 +26,13 @@ class SettingsScreen extends StatelessWidget {
           PreferenceCategory(
             title: "Account",
             children: [
-              UserPreference(),
+              UserPreference(
+                onTap: (user) {
+                  Navigator.of(context).push(MaterialPageRoute(
+                    builder: (_) => ProfileScreen()
+                  ));
+                },
+              ),
               Preference(
                 title: "Sign out",
                 icon: Icon(
