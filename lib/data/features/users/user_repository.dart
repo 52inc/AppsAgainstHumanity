@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:apple_sign_in/apple_sign_in.dart';
 import 'package:appsagainsthumanity/data/app_preferences.dart';
 import 'package:appsagainsthumanity/data/features/game/model/player.dart';
@@ -6,14 +8,14 @@ import 'package:appsagainsthumanity/data/firestore.dart';
 import 'package:appsagainsthumanity/internal/push.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:logging/logging.dart';
 
 class UserRepository {
-  final FirebaseAuth _auth;
+  final FirebaseAuth _auth = FirebaseAuth.instance;
   final Firestore _db = Firestore.instance;
-
-  UserRepository({FirebaseAuth firebaseAuth}) : _auth = firebaseAuth ?? FirebaseAuth.instance;
+  final FirebaseStorage _storage = FirebaseStorage.instance;
 
   Future<bool> isSignedIn() async {
     return (await _auth.currentUser()) != null;
@@ -28,6 +30,51 @@ class UserRepository {
           name: snapshot['name'],
           avatarUrl: snapshot['avatarUrl'],
           updatedAt: (snapshot['updatedAt'] as Timestamp).toDate());
+    });
+  }
+
+  Stream<User> observeUser() {
+    return streamCurrentUserOrThrow((firebaseUser) {
+      var doc = _userDocument(firebaseUser);
+      return doc.snapshots().map((snapshot) {
+        return User(
+            id: snapshot.documentID,
+            name: snapshot['name'],
+            avatarUrl: snapshot['avatarUrl'],
+            updatedAt: (snapshot['updatedAt'] as Timestamp).toDate(),
+        );
+      });
+    });
+  }
+
+  Future<void> updateDisplayName(String name) {
+    return currentUserOrThrow((firebaseUser) async {
+      await _userDocument(firebaseUser).updateData({
+        'name': name
+      });
+    });
+  }
+
+  Future<void> deleteProfilePhoto() {
+    return currentUserOrThrow((firebaseUser) async {
+      var ref = _profilePhotoReference(firebaseUser);
+      await ref.delete();
+
+      await _userDocument(firebaseUser).updateData({
+        'avatarUrl': null
+      });
+    });
+  }
+
+  Future<void> updateProfilePhoto(File image) {
+    return currentUserOrThrow((firebaseUser) async {
+      var ref = _profilePhotoReference(firebaseUser);
+      var refSnapshot = await ref.putFile(image).onComplete;
+      var downloadUrl = await refSnapshot.ref.getDownloadURL();
+
+      await _userDocument(firebaseUser).updateData({
+        'avatarUrl': downloadUrl.toString()
+      });
     });
   }
 
@@ -144,9 +191,17 @@ class UserRepository {
     await AppPreferences().clear();
     var user = await _auth.currentUser();
     await user.delete();
+    await _profilePhotoReference(user).delete();
   }
 
   DocumentReference _userDocument(FirebaseUser user) {
-    return _db.collection(FirebaseConstants.COLLECTION_USERS).document(user.uid);
+    return _db.collection(FirebaseConstants.COLLECTION_USERS)
+        .document(user.uid);
+  }
+
+  StorageReference _profilePhotoReference(FirebaseUser user) {
+    return _storage.ref()
+        .child(FirebaseConstants.COLLECTION_USERS)
+        .child(user.uid);
   }
 }

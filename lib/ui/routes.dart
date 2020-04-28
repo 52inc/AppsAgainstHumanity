@@ -36,28 +36,29 @@ class NoAnimationPageRoute<T> extends MaterialPageRoute<T> {
 
 class RouteTracer extends NavigatorObserver {
   Route<dynamic> currentRoute;
+  bool logEnabled = false;
 
   @override
   void didPop(Route<dynamic> route, Route<dynamic> previousRoute) {
     currentRoute = previousRoute;
-    print("Route Changed => $currentRoute");
+    if (logEnabled) print("Route Changed => $currentRoute");
   }
 
   @override
   void didReplace({Route<dynamic> newRoute, Route<dynamic> oldRoute}) {
     currentRoute = newRoute;
-    print("Route Changed => $currentRoute");
+    if (logEnabled) print("Route Changed => $currentRoute");
   }
 
   @override
   void didRemove(Route<dynamic> route, Route<dynamic> previousRoute) {
     currentRoute = previousRoute;
-    print("Route Changed => $currentRoute");
+    if (logEnabled) print("Route Changed => $currentRoute");
   }
 
   @override
   void didPush(Route<dynamic> route, Route<dynamic> previousRoute) {
     currentRoute = route;
-    print("Route Changed => $currentRoute");
+    if (logEnabled) print("Route Changed => $currentRoute");
   }
 }

@@ -10,6 +10,7 @@ import 'package:logging/logging.dart';
 class HomeBloc extends Bloc<HomeEvent, HomeState> {
   UserRepository _userRepository;
   GameRepository _gameRepository;
+  StreamSubscription _userSubscription;
   StreamSubscription _joinedGamesSubscription;
 
   HomeBloc(this._userRepository, this._gameRepository);
@@ -23,13 +24,17 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       yield* _mapHomeStartedToState();
     } else if (event is JoinedGamesUpdated){
       yield* _mapJoinedGamesUpdatedToState(event);
+    } else if (event is UserUpdated) {
+      yield* _mapUserUpdatedToState(event);
     }
   }
 
   Stream<HomeState> _mapHomeStartedToState() async* {
     try {
-      var user = await _userRepository.getUser();
-      yield state.copyWith(isLoading: false, user: user);
+      _userSubscription?.cancel();
+      _userSubscription = _userRepository.observeUser().listen((user) {
+        add(UserUpdated(user));
+      });
 
       _joinedGamesSubscription?.cancel();
       _joinedGamesSubscription = _gameRepository.observeJoinedGames().listen((event) {
@@ -43,5 +48,9 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
 
   Stream<HomeState> _mapJoinedGamesUpdatedToState(JoinedGamesUpdated event) async* {
     yield state.copyWith(games: event.games..sort((a, b) => b.joinedAt.compareTo(a.joinedAt)));
+  }
+
+  Stream<HomeState> _mapUserUpdatedToState(UserUpdated event) async* {
+    yield state.copyWith(user: event.user, isLoading: false);
   }
 }
