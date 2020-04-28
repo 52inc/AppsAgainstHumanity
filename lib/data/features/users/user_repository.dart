@@ -50,7 +50,8 @@ class UserRepository {
   Future<void> updateDisplayName(String name) {
     return currentUserOrThrow((firebaseUser) async {
       await _userDocument(firebaseUser).updateData({
-        'name': name
+        'name': name,
+        'updatedAt': Timestamp.now()
       });
     });
   }
@@ -61,7 +62,8 @@ class UserRepository {
       await ref.delete();
 
       await _userDocument(firebaseUser).updateData({
-        'avatarUrl': null
+        'avatarUrl': null,
+        'updatedAt': Timestamp.now()
       });
     });
   }
@@ -73,7 +75,8 @@ class UserRepository {
       var downloadUrl = await refSnapshot.ref.getDownloadURL();
 
       await _userDocument(firebaseUser).updateData({
-        'avatarUrl': downloadUrl.toString()
+        'avatarUrl': downloadUrl.toString(),
+        'updatedAt': Timestamp.now()
       });
     });
   }
