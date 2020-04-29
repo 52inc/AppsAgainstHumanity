@@ -37,27 +37,45 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) => HomeBloc(context.repository(), context.repository())..add(HomeStarted()),
-      child: _buildBody(),
+      child: MultiBlocListener(
+        listeners: [
+          // Error Listener
+          BlocListener<HomeBloc, HomeState>(
+            condition: (previous, current) => previous.error != current.error && current.error != null,
+            listener: (context, state) {
+              if (state.error != null) {
+                Scaffold.of(context)
+                  ..hideCurrentSnackBar()
+                  ..showSnackBar(
+                    SnackBar(
+                      content: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [Text(state.error), Icon(Icons.error)],
+                      ),
+                      backgroundColor: Colors.redAccent,
+                    ),
+                  );
+              }
+            },
+          ),
+
+          // Joined Game listener that opens a 'joined' game
+          BlocListener<HomeBloc, HomeState>(
+            condition: (previous, current) => previous.joinedGame?.id != current.joinedGame?.id,
+            listener: (context, state) {
+              if (state.joinedGame != null) {
+                Navigator.of(context).push(GamePageRoute(state.joinedGame));
+              }
+            },
+          )
+        ],
+        child: _buildBody(),
+      ),
     );
   }
 
   Widget _buildBody() {
-    return BlocConsumer<HomeBloc, HomeState>(
-      listener: (BuildContext context, HomeState state) {
-        if (state.error != null) {
-          Scaffold.of(context)
-            ..hideCurrentSnackBar()
-            ..showSnackBar(
-              SnackBar(
-                content: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [Text(state.error), Icon(Icons.error)],
-                ),
-                backgroundColor: Colors.redAccent,
-              ),
-            );
-        }
-      },
+    return BlocBuilder<HomeBloc, HomeState>(
       builder: (context, state) {
         return Scaffold(
           body: Padding(
@@ -70,9 +88,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     controller: _pageController,
                     children: [
                       _buildTitleCard(context, state, includeMargin: false),
-
-                      if (state.games.isNotEmpty)
-                        PastGamesCard(state),
+                      if (state.games.isNotEmpty) PastGamesCard(state),
                     ],
                   ),
                 ),
@@ -80,28 +96,34 @@ class _HomeScreenState extends State<HomeScreen> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
-                      _buildMenuAction(
-                        context: context,
-                        margin: const EdgeInsets.only(left: 24, top: 16, right: 8, bottom: 16),
-                        icon: MdiIcons.gamepad,
-                        label: "START GAME",
-                        onTap: () {
-                          PushNotifications().checkPermissions();
-                          Navigator.of(context).push(MaterialPageRoute(builder: (context) => CreateGameScreen()));
-                        },
-                      ),
-                      Builder(builder: (context) {
-                        return _buildMenuAction(
+                      if (state.joiningGame == null)
+                        _buildMenuAction(
                           context: context,
-                          margin: const EdgeInsets.only(left: 8, top: 16, right: 24, bottom: 16),
-                          icon: MdiIcons.gamepadVariantOutline,
-                          label: "JOIN GAME",
+                          margin: const EdgeInsets.only(left: 24, top: 16, right: 8, bottom: 16),
+                          icon: MdiIcons.gamepad,
+                          label: "START GAME",
                           onTap: () {
                             PushNotifications().checkPermissions();
-                            _joinGame(context);
+                            Navigator.of(context).push(MaterialPageRoute(builder: (context) => CreateGameScreen()));
                           },
-                        );
-                      }),
+                        ),
+                      _buildMenuAction(
+                        context: context,
+                        margin: EdgeInsets.only(
+                          left: state.joiningGame == null ? 8 : 24,
+                          top: 16,
+                          right: 24,
+                          bottom: 16,
+                        ),
+                        icon: MdiIcons.gamepadVariantOutline,
+                        label: state.joiningGame != null ? "JOINING GAME..." : "JOIN GAME",
+                        onTap: state.joiningGame == null
+                            ? () {
+                                PushNotifications().checkPermissions();
+                                _joinGame(context);
+                              }
+                            : null,
+                      ),
                     ],
                   ),
                 )
@@ -160,7 +182,9 @@ class _HomeScreenState extends State<HomeScreen> {
                   child: Container(
                       child: state.isLoading
                           ? _buildLoadingUserTile()
-                          : state.error != null ? _buildErrorUserTile(state.error) : _buildUserTile(context, state.user)),
+                          : state.error != null
+                              ? _buildErrorUserTile(state.error)
+                              : _buildUserTile(context, state.user)),
                 ),
               )
             ],
@@ -179,7 +203,9 @@ class _HomeScreenState extends State<HomeScreen> {
     VoidCallback onTap,
   }) {
     return Expanded(
-      child: Container(
+      child: AnimatedContainer(
+        duration: Duration(milliseconds: 150),
+        curve: Curves.fastOutSlowIn,
         margin: margin,
         child: Material(
           borderRadius: BorderRadius.circular(16),
@@ -248,9 +274,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget _buildUserTile(BuildContext context, User user) {
     return ListTile(
       onTap: () {
-        Navigator.of(context).push(MaterialPageRoute(
-          builder: (_) => ProfileScreen()
-        ));
+        Navigator.of(context).push(MaterialPageRoute(builder: (_) => ProfileScreen()));
       },
       contentPadding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
       title: Text(
@@ -272,16 +296,7 @@ class _HomeScreenState extends State<HomeScreen> {
   void _joinGame(BuildContext context) async {
     var gameId = await showJoinRoomDialog(context);
     if (gameId != null) {
-      try {
-        var game = await context.repository<GameRepository>().joinGame(gameId);
-        Navigator.of(context).push(GamePageRoute(game));
-      } catch (e) {
-        Scaffold.of(context)
-          ..hideCurrentSnackBar()
-          ..showSnackBar(SnackBar(
-            content: Text("$e"),
-          ));
-      }
+      context.bloc<HomeBloc>().add(JoinGame(gameId));
     }
   }
 }

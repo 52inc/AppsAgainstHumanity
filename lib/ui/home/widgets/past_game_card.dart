@@ -47,7 +47,8 @@ class PastGamesCard extends StatelessWidget {
                     itemCount: state.games.length,
                     itemBuilder: (context, index) {
                       var game = state.games[index];
-                      return PastGame(game);
+                      var isLeavingGame = game.id == state.leavingGame?.id;
+                      return PastGame(game, isLeavingGame);
                     }),
               )
             ],
@@ -74,8 +75,9 @@ class PastGamesCard extends StatelessWidget {
 
 class PastGame extends StatelessWidget {
   final UserGame game;
+  final bool isLeavingGame;
 
-  PastGame(this.game);
+  PastGame(this.game, this.isLeavingGame);
 
   @override
   Widget build(BuildContext context) {
@@ -85,13 +87,15 @@ class PastGame extends StatelessWidget {
         style: context.theme.textTheme.subtitle1.copyWith(color: AppColors.primary, fontWeight: FontWeight.w500),
       ),
       subtitle: Text(
-        game.state.label,
+        isLeavingGame ? "Leaving..." : game.state.label,
         style: context.theme.textTheme.bodyText2.copyWith(color: Colors.black54),
       ),
-      trailing: Text(
-        timeago.format(game.joinedAt),
-        style: context.theme.textTheme.bodyText2.copyWith(color: Colors.black26),
-      ),
+      trailing: isLeavingGame
+          ? Container(width: 24, height: 24,child: CircularProgressIndicator())
+          : Text(
+              timeago.format(game.joinedAt),
+              style: context.theme.textTheme.bodyText2.copyWith(color: Colors.black26),
+            ),
       onTap: game.state == GameState.inProgress || game.state == GameState.waitingRoom ? () => openGame(context) : null,
       onLongPress: () => leaveGame(context),
     );
@@ -134,7 +138,7 @@ class PastGame extends StatelessWidget {
         });
 
     if (result == true) {
-      await context.repository<GameRepository>().leaveGame(game.id);
+      context.bloc<HomeBloc>().add(LeaveGame(game));
     }
   }
 }

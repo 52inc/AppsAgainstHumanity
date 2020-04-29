@@ -39,16 +39,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
             title: Text("Profile"),
             backgroundColor: AppColors.surfaceDark,
           ),
-          body: Column(
+          body: ListView(
             children: [
               Container(
-                padding: const EdgeInsets.only(top: 56),
+                padding: const EdgeInsets.only(top: 32),
                 child: Stack(
                   alignment: Alignment.center,
                   children: [
                     ProfilePhoto(
                       state.user,
-                      size: 196,
+                      size: 128,
                     ),
                     if (state.isLoading) CircularProgressIndicator(),
                     if (!state.isLoading && state.user?.avatarUrl != null) _buildEditPhotoStack(context)
@@ -93,14 +93,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
     return IgnorePointer(
       ignoring: true,
       child: Container(
-        margin: const EdgeInsets.only(top: 72),
+        margin: const EdgeInsets.only(top: 8),
         child: Row(
           mainAxisSize: MainAxisSize.min,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Icon(
               MdiIcons.imageEditOutline,
-              color: Colors.white,
+              color: AppColors.primaryVariant,
             ),
             Container(
               margin: const EdgeInsets.only(left: 8),
@@ -108,7 +108,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 "EDIT",
                 style: context.theme.textTheme.subtitle1.copyWith(
                   fontWeight: FontWeight.w700,
-                  color: Colors.white,
+                  color: AppColors.primaryVariant,
                 ),
               ),
             )

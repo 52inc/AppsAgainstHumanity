@@ -26,6 +26,10 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       yield* _mapJoinedGamesUpdatedToState(event);
     } else if (event is UserUpdated) {
       yield* _mapUserUpdatedToState(event);
+    } else if (event is LeaveGame) {
+      yield* _mapLeaveGameToState(event);
+    } else if (event is JoinGame) {
+      yield* _mapJoinGameToState(event);
     }
   }
 
@@ -52,5 +56,25 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
 
   Stream<HomeState> _mapUserUpdatedToState(UserUpdated event) async* {
     yield state.copyWith(user: event.user, isLoading: false);
+  }
+
+  Stream<HomeState> _mapLeaveGameToState(LeaveGame event) async* {
+    try {
+      yield state.copyWith(leavingGame: event.game);
+      await _gameRepository.leaveGame(event.game.id);
+      yield state.copyWith(leavingGame: null);
+    } catch (e) {
+      yield state.copyWith(leavingGame: null, error: "$e");
+    }
+  }
+
+  Stream<HomeState> _mapJoinGameToState(JoinGame event) async* {
+    try {
+      yield state.copyWith(joiningGame: event.gameCode);
+      var game = await _gameRepository.joinGame(event.gameCode);
+      yield state.copyWith(joiningGame: null, joinedGame: game, overrideNull: true);
+    } catch (e) {
+      yield state.copyWith(joiningGame: null, joinedGame: null, error: "$e", overrideNull: true);
+    }
   }
 }
