@@ -31,3 +31,23 @@ class UserUpdated extends HomeEvent {
   @override
   List<Object> get props => [user];
 }
+
+@immutable
+class LeaveGame extends HomeEvent {
+  final UserGame game;
+
+  LeaveGame(this.game);
+
+  @override
+  List<Object> get props => [game];
+}
+
+@immutable
+class JoinGame extends HomeEvent {
+  final String gameCode;
+
+  JoinGame(this.gameCode);
+
+  @override
+  List<Object> get props => [gameCode];
+}

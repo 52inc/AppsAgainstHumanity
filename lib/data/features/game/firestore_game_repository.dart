@@ -94,13 +94,11 @@ class FirestoreGameRepository extends GameRepository {
   @override
   Future<void> leaveGame(String gameDocumentId) {
     return currentUserOrThrow((firebaseUser) async {
-      // Flag player object as inactive in the game
-
-      // remove from judging order
-
-      // remove any responses
-
-      // Delete UserGame obj
+      final HttpsCallable callable = CloudFunctions.instance.getHttpsCallable(functionName: 'leaveGame');
+      HttpsCallableResult response = await callable.call(<String, dynamic>{
+        'game_id': gameDocumentId
+      });
+      print("Game left! ${response.data}");
     });
   }
 
