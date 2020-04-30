@@ -31,6 +31,8 @@ class CreateGameBloc extends Bloc<CreateGameEvent, CreateGameState> {
       yield* _mapChangePick2EnabledToState(event);
     } else if (event is ChangeDraw2Pick3Enabled) {
       yield* _mapChangeDraw2Pick3EnabledToState(event);
+    } else if (event is CreateGame) {
+      yield* _mapCreateGameToState();
     }
   }
 
@@ -83,5 +85,22 @@ class CreateGameBloc extends Bloc<CreateGameEvent, CreateGameState> {
 
   Stream<CreateGameState> _mapChangeDraw2Pick3EnabledToState(ChangeDraw2Pick3Enabled event) async* {
     yield state.copyWith(draw2pick3Enabled: event.enabled);
+  }
+
+  Stream<CreateGameState> _mapCreateGameToState() async* {
+    yield state.copyWith(isLoading: true, error: null);
+    try {
+      var game = await gameRepository.createGame(
+        state.selectedSets,
+        prizesToWin: state.prizesToWin,
+        playerLimit: state.playerLimit,
+        pick2Enabled: state.pick2Enabled,
+        draw2Pick3Enabled: state.draw2pick3Enabled,
+      );
+      yield state.copyWith(createdGame: game, isLoading: false);
+    } catch (e, st) {
+      print("Create Game Error: $e\n$st");
+      yield state.copyWith(isLoading: false, error: "$e");
+    }
   }
 }

@@ -64,3 +64,5 @@ class ChangeDraw2Pick3Enabled extends CreateGameEvent {
   @override
   List<Object> get props => [enabled];
 }
+
+class CreateGame extends CreateGameEvent {}
