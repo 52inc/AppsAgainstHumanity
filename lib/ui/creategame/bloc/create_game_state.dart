@@ -1,5 +1,6 @@
 import 'package:appsagainsthumanity/data/app_preferences.dart';
 import 'package:appsagainsthumanity/data/features/cards/model/card_set.dart';
+import 'package:appsagainsthumanity/data/features/game/model/game.dart';
 import 'package:kt_dart/kt.dart';
 import 'package:meta/meta.dart';
 
@@ -12,6 +13,7 @@ class CreateGameState {
   final bool pick2Enabled;
   final bool draw2pick3Enabled;
 
+  final Game createdGame;
   final bool isLoading;
   final String error;
 
@@ -23,7 +25,8 @@ class CreateGameState {
     this.prizesToWin = 7,
     this.playerLimit = 15,
     this.pick2Enabled = true,
-    this.draw2pick3Enabled = true
+    this.draw2pick3Enabled = true,
+    this.createdGame,
   });
 
   factory CreateGameState.empty() {
@@ -45,6 +48,8 @@ class CreateGameState {
     bool draw2pick3Enabled,
     bool isLoading,
     String error,
+    Game createdGame,
+    bool overrideNull = false
   }) {
     return CreateGameState(
       cardSets: cardSets ?? this.cardSets,
@@ -54,7 +59,8 @@ class CreateGameState {
       pick2Enabled: pick2Enabled ?? this.pick2Enabled,
       draw2pick3Enabled: draw2pick3Enabled ?? this.draw2pick3Enabled,
       isLoading: isLoading ?? this.isLoading,
-      error: error ?? this.error,
+      error: overrideNull ? error : error ?? this.error,
+      createdGame: overrideNull ? createdGame : createdGame ?? this.createdGame
     );
   }
 
@@ -68,7 +74,8 @@ class CreateGameState {
       pick2Enabled: $pick2Enabled, 
       draw2pick3Enabled: $draw2pick3Enabled, 
       isLoading: $isLoading, 
-      error: $error
+      error: $error,
+      createdGame: $createdGame,
     }''';
   }
 }

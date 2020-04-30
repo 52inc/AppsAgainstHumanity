@@ -21,93 +21,104 @@ class _CreateGameScreenState extends State<CreateGameScreen> {
         context.repository(),
         context.repository(),
       )..add(ScreenLoaded()),
-      child: _buildScaffold(),
+      child: MultiBlocListener(
+        listeners: [
+          BlocListener<CreateGameBloc, CreateGameState>(
+            condition: (previous, current) => current.error != previous.error,
+            listener: (context, state) {
+              if (state.error != null) {
+                Scaffold.of(context)
+                  ..hideCurrentSnackBar()
+                  ..showSnackBar(
+                    SnackBar(
+                      content: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [Text(state.error), Icon(Icons.error)],
+                      ),
+                      backgroundColor: Colors.redAccent,
+                    ),
+                  );
+              }
+            },
+          ),
+          BlocListener<CreateGameBloc, CreateGameState>(
+            condition: (previous, current) => current.createdGame?.id != previous.createdGame?.id,
+            listener: (context, state) {
+              if (state.createdGame != null) {
+                Navigator.of(context).pushReplacement(GamePageRoute(state.createdGame));
+              }
+            },
+          ),
+        ],
+        child: _buildScaffold(),
+      ),
     );
   }
 
   Widget _buildScaffold() {
-    return BlocConsumer<CreateGameBloc, CreateGameState>(listener: (context, state) {
-      if (state.error != null) {
-        Scaffold.of(context)
-          ..hideCurrentSnackBar()
-          ..showSnackBar(
-            SnackBar(
-              content: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [Text(state.error), Icon(Icons.error)],
+    return BlocBuilder<CreateGameBloc, CreateGameState>(
+      builder: (context, state) {
+        return DefaultTabController(
+          length: 2,
+          child: Scaffold(
+            appBar: AppBar(
+              title: Text(context.strings.titleNewGame),
+              backgroundColor: AppColors.surfaceDark,
+              leading: IconButton(
+                icon: Icon(Icons.arrow_back),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
               ),
-              backgroundColor: Colors.redAccent,
-            ),
-          );
-      }
-    }, builder: (context, state) {
-      return DefaultTabController(
-        length: 2,
-        child: Scaffold(
-          appBar: AppBar(
-            title: Text(context.strings.titleNewGame),
-            backgroundColor: AppColors.surfaceDark,
-            leading: IconButton(
-              icon: Icon(Icons.arrow_back),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-            bottom: TabBar(
-              tabs: [
-                Tab(text: "CARDS"),
-                Tab(text: "OPTIONS"),
-              ],
-            ),
-          ),
-          bottomNavigationBar: BottomAppBar(
-            notchMargin: 8,
-            color: AppColors.surfaceDark,
-            shape: CircularNotchedRectangle(),
-            child: Container(
-              height: 56,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Expanded(
-                    child: Container(
-                      margin: const EdgeInsets.symmetric(horizontal: 16),
-                      child: Text(
-                        "${state.selectedSets.size} Selected",
-                        style: context.theme.textTheme.headline6,
-                      ),
-                    ),
-                  ),
+              bottom: TabBar(
+                tabs: [
+                  Tab(text: "CARDS"),
+                  Tab(text: "OPTIONS"),
                 ],
               ),
             ),
+            bottomNavigationBar: BottomAppBar(
+              notchMargin: 8,
+              color: AppColors.surfaceDark,
+              shape: CircularNotchedRectangle(),
+              child: Container(
+                height: 56,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Expanded(
+                      child: Container(
+                        margin: const EdgeInsets.symmetric(horizontal: 16),
+                        child: Text(
+                          state.isLoading ? "Loading..." : "${state.selectedSets.size} Selected",
+                          style: context.theme.textTheme.headline6,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
+            floatingActionButton: state.selectedSets.isNotEmpty() && !state.isLoading
+                ? FloatingActionButton(
+                    child: Icon(Icons.check),
+                    onPressed: () async {
+                      // Start game?
+                      context.bloc<CreateGameBloc>().add(CreateGame());
+                    },
+                  )
+                : null,
+            body: TabBarView(
+              children: [
+                _buildCardSetLists(state),
+                _buildGameOptions(context, state),
+              ],
+            ),
           ),
-          floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
-          floatingActionButton: state.selectedSets.isNotEmpty()
-              ? FloatingActionButton(
-                  child: Icon(Icons.check),
-                  onPressed: () async {
-                    // Start game?
-                    var newGame = await context.repository<GameRepository>().createGame(
-                          state.selectedSets,
-                          prizesToWin: state.prizesToWin,
-                          playerLimit: state.playerLimit,
-                          pick2Enabled: state.pick2Enabled,
-                          draw2Pick3Enabled: state.draw2pick3Enabled,
-                        );
-                    Navigator.of(context).pushReplacement(GamePageRoute(newGame));
-                  },
-                )
-              : null,
-          body: TabBarView(
-            children: [
-              _buildCardSetLists(state),
-              _buildGameOptions(context, state),
-            ],
-          ),
-        ),
-      );
-    });
+        );
+      },
+    );
   }
 
   Widget _buildCardSetLists(CreateGameState state) {
