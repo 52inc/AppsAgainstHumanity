@@ -24,13 +24,15 @@ class Preference extends StatelessWidget {
       title: Text(
         title,
         style: context.theme.textTheme.subtitle1.copyWith(
-          color: titleColor ?? Colors.black87,
+          color: titleColor ?? context.colorOnCard,
         ),
       ),
       subtitle: subtitle != null
           ? Text(
               subtitle,
-              style: context.theme.textTheme.bodyText1.copyWith(color: Colors.black38),
+              style: context.theme.textTheme.bodyText1.copyWith(
+                color: context.secondaryColorOnCard,
+              ),
             )
           : null,
       leading: Padding(

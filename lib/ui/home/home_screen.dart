@@ -157,8 +157,11 @@ class _HomeScreenState extends State<HomeScreen> {
                     margin: const EdgeInsets.all(24),
                     child: Text(
                       context.strings.appNameDisplay,
-                      style: context.theme.textTheme.headline3
-                          .copyWith(color: Colors.black87, fontWeight: FontWeight.bold, fontSize: 48),
+                      style: context.theme.textTheme.headline3.copyWith(
+                        color: context.colorOnCard,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 48,
+                      ),
                     ),
                   ),
                   Align(
@@ -167,7 +170,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       padding: const EdgeInsets.all(24),
                       icon: Icon(
                         MdiIcons.cog,
-                        color: Colors.black87,
+                        color: context.colorOnCard,
                       ),
                       onPressed: () {
                         Navigator.of(context).push(MaterialPageRoute(builder: (_) => SettingsScreen()));
@@ -199,7 +202,6 @@ class _HomeScreenState extends State<HomeScreen> {
     @required IconData icon,
     @required String label,
     @required EdgeInsets margin,
-    Color color = Colors.white,
     VoidCallback onTap,
   }) {
     return Expanded(
@@ -210,7 +212,7 @@ class _HomeScreenState extends State<HomeScreen> {
         child: Material(
           borderRadius: BorderRadius.circular(16),
           elevation: 2,
-          color: color,
+          color: context.theme.cardColor,
           clipBehavior: Clip.hardEdge,
           child: InkWell(
             onTap: onTap,
@@ -221,13 +223,13 @@ class _HomeScreenState extends State<HomeScreen> {
                 children: [
                   Icon(
                     icon,
-                    color: Colors.black87,
+                    color: context.colorOnCard,
                   ),
                   Container(
                     margin: const EdgeInsets.only(top: 16),
                     child: Text(label,
                         style: context.theme.textTheme.button.copyWith(
-                          color: Colors.black87,
+                          color: context.colorOnCard,
                         )),
                   )
                 ],
@@ -243,7 +245,9 @@ class _HomeScreenState extends State<HomeScreen> {
     return ListTile(
       title: Text(
         "Loading...",
-        style: context.theme.textTheme.subtitle1.copyWith(color: Colors.black87),
+        style: context.theme.textTheme.subtitle1.copyWith(
+          color: context.colorOnCard,
+        ),
       ),
       leading: CircleAvatar(
         radius: 20,
@@ -257,7 +261,9 @@ class _HomeScreenState extends State<HomeScreen> {
     return ListTile(
       title: Text(
         "Error loading user",
-        style: context.theme.textTheme.subtitle1.copyWith(color: Colors.black87),
+        style: context.theme.textTheme.subtitle1.copyWith(
+          color: context.colorOnCard,
+        ),
       ),
       subtitle: Text(error),
       leading: CircleAvatar(
@@ -279,11 +285,15 @@ class _HomeScreenState extends State<HomeScreen> {
       contentPadding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
       title: Text(
         user.name ?? Player.DEFAULT_NAME,
-        style: context.theme.textTheme.subtitle1.copyWith(color: Colors.black87),
+        style: context.theme.textTheme.subtitle1.copyWith(
+          color: context.colorOnCard,
+        ),
       ),
       subtitle: Text(
         user.id,
-        style: context.theme.textTheme.bodyText1.copyWith(color: Colors.black38),
+        style: context.theme.textTheme.bodyText1.copyWith(
+          color: context.secondaryColorOnCard,
+        ),
       ),
       leading: CircleAvatar(
         radius: 20,

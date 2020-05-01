@@ -72,4 +72,11 @@ abstract class GameRepository {
   /// B. All responses are not in yet
   /// C. The turn hasn't been rotated yet and your previous pick still persists
   Future<void> pickWinner(String gameDocumentId, String playerId);
+
+  //////////////////////
+  // Owner Methods
+  //////////////////////
+
+  /// Kick a player from a game, this will only work if you are the owner of the game
+  Future<void> kickPlayer(String gameDocumentId, String playerId);
 }

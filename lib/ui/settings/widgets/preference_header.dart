@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:appsagainsthumanity/internal.dart';
 
 class PreferenceHeader extends StatelessWidget {
-
   final String title;
   final bool includeIconSpacing;
 
@@ -17,7 +16,9 @@ class PreferenceHeader extends StatelessWidget {
       alignment: Alignment.centerLeft,
       child: Text(
         title,
-        style: context.theme.textTheme.subtitle2.copyWith(color: AppColors.primary),
+        style: context.theme.textTheme.subtitle2.copyWith(
+          color: context.primaryColor,
+        ),
       ),
     );
   }

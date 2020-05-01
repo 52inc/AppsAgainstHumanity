@@ -17,8 +17,13 @@ class SettingsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Settings"),
+        title: Text(
+          "Settings",
+          style: context.theme.textTheme.headline6.copyWith(color: Colors.white),
+        ),
+        iconTheme: context.theme.iconTheme,
         backgroundColor: Colors.transparent,
+        brightness: Brightness.dark,
         elevation: 0,
       ),
       body: ListView(
@@ -28,16 +33,14 @@ class SettingsScreen extends StatelessWidget {
             children: [
               UserPreference(
                 onTap: (user) {
-                  Navigator.of(context).push(MaterialPageRoute(
-                    builder: (_) => ProfileScreen()
-                  ));
+                  Navigator.of(context).push(MaterialPageRoute(builder: (_) => ProfileScreen()));
                 },
               ),
               Preference(
                 title: "Sign out",
                 icon: Icon(
                   MdiIcons.logout,
-                  color: Colors.black54,
+                  color: context.secondaryColorOnCard,
                 ),
                 onTap: () {
                   _signOut(context);
@@ -63,7 +66,7 @@ class SettingsScreen extends StatelessWidget {
                 title: "Privacy Policy",
                 icon: Icon(
                   MdiIcons.shieldSearch,
-                  color: Colors.black54,
+                  color: context.secondaryColorOnCard,
                 ),
                 onTap: () {
                   showWebView(
@@ -77,7 +80,7 @@ class SettingsScreen extends StatelessWidget {
                 title: "Terms of service",
                 icon: Icon(
                   MdiIcons.formatFloatLeft,
-                  color: Colors.black54,
+                  color: context.secondaryColorOnCard,
                 ),
                 onTap: () {
                   showWebView(
@@ -91,7 +94,7 @@ class SettingsScreen extends StatelessWidget {
                 title: "Open Source Licenses",
                 icon: Icon(
                   MdiIcons.sourceBranch,
-                  color: Colors.black54,
+                  color: context.secondaryColorOnCard,
                 ),
                 onTap: () {
                   showLicensePage(context: context);
@@ -107,7 +110,7 @@ class SettingsScreen extends StatelessWidget {
                 subtitle: "Checkout the source code on GitHub!",
                 icon: Icon(
                   MdiIcons.github,
-                  color: Colors.black54,
+                  color: context.secondaryColorOnCard,
                 ),
                 onTap: () {
                   showWebView(
@@ -119,7 +122,10 @@ class SettingsScreen extends StatelessWidget {
               ),
               Preference(
                 title: "Built by 52inc",
-                icon: Image.asset('assets/ic_logo.png', color: Colors.black54,),
+                icon: Image.asset(
+                  'assets/ic_logo.png',
+                  color: context.secondaryColorOnCard,
+                ),
                 onTap: () {
                   showWebView(
                     context,
@@ -136,7 +142,7 @@ class SettingsScreen extends StatelessWidget {
                       title: "Version",
                       icon: Icon(
                         MdiIcons.application,
-                        color: Colors.black54,
+                        color: context.secondaryColorOnCard,
                       ),
                       subtitle:
                           packageInfo != null ? "${packageInfo.version}+${packageInfo.buildNumber}" : "Loading...",
@@ -238,7 +244,7 @@ class PreferenceCategory extends StatelessWidget {
       child: Material(
         elevation: 4,
         borderRadius: BorderRadius.circular(8),
-        color: Colors.white,
+        color: context.theme.cardColor,
         child: Padding(
           padding: const EdgeInsets.only(bottom: 8),
           child: Column(

@@ -241,6 +241,16 @@ class FirestoreGameRepository extends GameRepository {
     return game;
   }
 
+  @override
+  Future<void> kickPlayer(String gameDocumentId, String playerId) async {
+    final HttpsCallable callable = CloudFunctions.instance.getHttpsCallable(functionName: 'kickPlayer');
+    HttpsCallableResult response = await callable.call(<String, dynamic>{
+      'game_id': gameDocumentId,
+      'player_id': playerId
+    });
+    print("Player kicked! ${response.data}");
+  }
+
   String generateId({int length = 7}) {
     String source = "ACEFHJKLMNPQRTUVWXY3479";
     StringBuffer builder = StringBuffer();

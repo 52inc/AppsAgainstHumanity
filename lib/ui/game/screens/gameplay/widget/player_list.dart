@@ -28,6 +28,8 @@ class PlayerList extends StatelessWidget {
               return PlayerItem(
                 player,
                 isJudge: isJudge,
+                isOwner: state.isOurGame,
+                isSelf: state.userId == player.id,
                 hasDownvoted: hasDownvoted,
               );
             },

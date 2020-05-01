@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 class AppColors {
@@ -25,25 +26,41 @@ class AppColors {
 class AppThemes {
     AppThemes._();
 
-    static ThemeData get app =>
+    static ThemeData get light =>
         ThemeData(
-            brightness: Brightness.dark,
+            brightness: Brightness.light,
             primaryColor: AppColors.primary,
             primaryColorDark: AppColors.primaryDark,
             primaryColorLight: AppColors.primaryVariant,
             accentColor: AppColors.primary,
             canvasColor: AppColors.surface,
-            cardColor: Colors.white
+            cardColor: Colors.white,
+            textTheme: Typography.material2018(platform: defaultTargetPlatform).white,
+            iconTheme: const IconThemeData(color: Colors.white),
+            disabledColor: Colors.white38,
+            unselectedWidgetColor: Colors.white70,
+            dialogBackgroundColor: Colors.grey[700],
+            appBarTheme: AppBarTheme(
+                color: AppColors.surfaceDark
+            ),
+            bottomAppBarColor: AppColors.surfaceDark,
         );
 
     static ThemeData get dark =>
         ThemeData(
             brightness: Brightness.dark,
-            primaryColor: AppColors.primary,
+            primaryColor: AppColors.primaryVariant,
             primaryColorDark: AppColors.primaryDark,
             primaryColorLight: AppColors.primaryVariant,
+            floatingActionButtonTheme: FloatingActionButtonThemeData(
+                foregroundColor: Colors.white
+            ),
             accentColor: AppColors.primaryVariant,
-            cardColor: AppColors.surfaceLight
+            cardColor: Colors.grey[700],
+            appBarTheme: AppBarTheme(
+                color: AppColors.surface
+            ),
+            bottomAppBarColor: AppColors.surface,
         );
 }
 
@@ -57,6 +74,24 @@ extension ThemeExt on BuildContext {
             return AppColors.primaryVariant;
         } else {
             return AppColors.primary;
+        }
+    }
+
+    Color get colorOnCard {
+        var brightness = theme.brightness;
+        if (brightness == Brightness.dark) {
+            return Colors.white;
+        } else {
+            return Colors.black87;
+        }
+    }
+
+    Color get secondaryColorOnCard {
+        var brightness = theme.brightness;
+        if (brightness == Brightness.dark) {
+            return Colors.white54;
+        } else {
+            return Colors.black38;
         }
     }
 }

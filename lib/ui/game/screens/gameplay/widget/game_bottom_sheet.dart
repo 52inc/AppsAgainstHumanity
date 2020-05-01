@@ -29,6 +29,8 @@ class GameBottomSheet extends StatelessWidget {
               elevation: 0,
               actions: actions,
               centerTitle: false,
+              iconTheme: context.theme.iconTheme,
+              textTheme: context.theme.textTheme,
               leading: Container(
                 margin: const EdgeInsets.only(left: 8),
                 child: IconButton(
