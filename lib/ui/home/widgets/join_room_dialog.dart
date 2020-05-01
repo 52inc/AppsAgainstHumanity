@@ -33,6 +33,7 @@ class _JoinRoomDialogState extends State<JoinRoomDialog> {
               decoration: InputDecoration(
                 border: OutlineInputBorder(),
                 labelText: 'Game ID',
+                labelStyle: context.theme.textTheme.caption
               ),
               maxLength: FirebaseConstants.MAX_GID_SIZE,
               maxLengthEnforced: true,
@@ -87,20 +88,28 @@ Future<String> showJoinRoomDialog(BuildContext context) {
     return showGeneralDialog<String>(
         context: context,
         pageBuilder: (context, _, __) {
-          return AlertDialog(
-            title: Text('Join a game'),
-            content: JoinRoomDialog(),
-            contentPadding: const EdgeInsets.all(0),
+          return Theme(
+            data: AppThemes.dark,
+            child: AlertDialog(
+              title: Text('Join a game'),
+              content: JoinRoomDialog(),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+              contentPadding: const EdgeInsets.all(0),
+            ),
           );
         });
   } else {
     return showDialog<String>(
         context: context,
         builder: (builderContext) {
-          return AlertDialog(
-            title: Text('Join a game'),
-            content: JoinRoomDialog(),
-            contentPadding: const EdgeInsets.all(0),
+          return Theme(
+            data: AppThemes.dark,
+            child: AlertDialog(
+              title: Text('Join a game'),
+              content: JoinRoomDialog(),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+              contentPadding: const EdgeInsets.all(0),
+            ),
           );
         });
   }

@@ -46,6 +46,8 @@ class GameBloc extends Bloc<GameEvent, GameViewState> {
       yield* _mapSubmitResponsesToState();
     } else if (event is PickWinner) {
       yield* _mapPickWinnerToState(event);
+    } else if (event is KickPlayer) {
+      yield* _mapKickWinnerToState(event);
     } else if (event is ClearSubmitting) {
       yield* _mapClearSubmittingToState();
     }
@@ -167,6 +169,16 @@ class GameBloc extends Bloc<GameEvent, GameViewState> {
       yield state.copyWith(isSubmitting: false);
     } catch (e) {
       yield state.copyWith(error: "$e", isSubmitting: false);
+    }
+  }
+
+  Stream<GameViewState> _mapKickWinnerToState(KickPlayer event) async* {
+    try {
+      yield state.copyWith(kickingPlayerId: event.playerId);
+      await gameRepository.kickPlayer(state.game.id, event.playerId);
+      yield state.copyWith(kickingPlayerId: null, overrideNull: true);
+    } catch (e) {
+      yield state.copyWith(error: "$e", kickingPlayerId: null, overrideNull: true);
     }
   }
 

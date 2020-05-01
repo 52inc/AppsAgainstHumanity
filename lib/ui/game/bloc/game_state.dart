@@ -13,6 +13,7 @@ class GameViewState {
   final List<ResponseCard> selectedCards;
   final List<String> downvotes;
   final bool isSubmitting;
+  final String kickingPlayerId;
   final bool isLoading;
   final String error;
 
@@ -83,6 +84,7 @@ class GameViewState {
     List<ResponseCard> selectedCards,
     this.isSubmitting = false,
     this.isLoading = true,
+    this.kickingPlayerId,
     this.error,
   }) : selectedCards = selectedCards ?? [],
         downvotes = downvotes;
@@ -95,7 +97,9 @@ class GameViewState {
     List<String> downvotes,
     bool isSubmitting,
     bool isLoading,
+    String kickingPlayerId,
     String error,
+    bool overrideNull = false
   }) {
     return GameViewState(
       userId: userId ?? this.userId,
@@ -105,7 +109,8 @@ class GameViewState {
       selectedCards: selectedCards ?? this.selectedCards,
       isSubmitting: isSubmitting ?? this.isSubmitting,
       isLoading: isLoading ?? this.isLoading,
-      error: error ?? this.error,
+      kickingPlayerId: overrideNull ? kickingPlayerId : kickingPlayerId ?? this.kickingPlayerId,
+      error: overrideNull ? error : error ?? this.error,
     );
   }
 
@@ -120,6 +125,7 @@ class GameViewState {
           selectedCards: $selectedCards,
           isSubmitting: $isSubmitting,
           isLoading: $isLoading, 
+          kickingPlayerId: $kickingPlayerId,
           error: $error,
           isOurGame: $isOurGame,
         }''';

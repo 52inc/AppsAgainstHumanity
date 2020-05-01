@@ -5,6 +5,7 @@ import 'package:appsagainsthumanity/internal.dart';
 import 'package:appsagainsthumanity/ui/creategame/widgets/CountPreference.dart';
 import 'package:appsagainsthumanity/ui/routes.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:kt_dart/kt.dart';
 
@@ -16,41 +17,44 @@ class CreateGameScreen extends StatefulWidget {
 class _CreateGameScreenState extends State<CreateGameScreen> {
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => CreateGameBloc(
-        context.repository(),
-        context.repository(),
-      )..add(ScreenLoaded()),
-      child: MultiBlocListener(
-        listeners: [
-          BlocListener<CreateGameBloc, CreateGameState>(
-            condition: (previous, current) => current.error != previous.error,
-            listener: (context, state) {
-              if (state.error != null) {
-                Scaffold.of(context)
-                  ..hideCurrentSnackBar()
-                  ..showSnackBar(
-                    SnackBar(
-                      content: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [Text(state.error), Icon(Icons.error)],
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: SystemUiOverlayStyle.light,
+      child: BlocProvider(
+        create: (context) => CreateGameBloc(
+          context.repository(),
+          context.repository(),
+        )..add(ScreenLoaded()),
+        child: MultiBlocListener(
+          listeners: [
+            BlocListener<CreateGameBloc, CreateGameState>(
+              condition: (previous, current) => current.error != previous.error,
+              listener: (context, state) {
+                if (state.error != null) {
+                  Scaffold.of(context)
+                    ..hideCurrentSnackBar()
+                    ..showSnackBar(
+                      SnackBar(
+                        content: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [Text(state.error), Icon(Icons.error)],
+                        ),
+                        backgroundColor: Colors.redAccent,
                       ),
-                      backgroundColor: Colors.redAccent,
-                    ),
-                  );
-              }
-            },
-          ),
-          BlocListener<CreateGameBloc, CreateGameState>(
-            condition: (previous, current) => current.createdGame?.id != previous.createdGame?.id,
-            listener: (context, state) {
-              if (state.createdGame != null) {
-                Navigator.of(context).pushReplacement(GamePageRoute(state.createdGame));
-              }
-            },
-          ),
-        ],
-        child: _buildScaffold(),
+                    );
+                }
+              },
+            ),
+            BlocListener<CreateGameBloc, CreateGameState>(
+              condition: (previous, current) => current.createdGame?.id != previous.createdGame?.id,
+              listener: (context, state) {
+                if (state.createdGame != null) {
+                  Navigator.of(context).pushReplacement(GamePageRoute(state.createdGame));
+                }
+              },
+            ),
+          ],
+          child: _buildScaffold(),
+        ),
       ),
     );
   }
@@ -62,15 +66,19 @@ class _CreateGameScreenState extends State<CreateGameScreen> {
           length: 2,
           child: Scaffold(
             appBar: AppBar(
-              title: Text(context.strings.titleNewGame),
-              backgroundColor: AppColors.surfaceDark,
+              brightness: Brightness.dark,
+              title: Text(
+                context.strings.titleNewGame,
+                style: context.theme.textTheme.headline6.copyWith(color: Colors.white),
+              ),
               leading: IconButton(
-                icon: Icon(Icons.arrow_back),
+                icon: Icon(Icons.arrow_back, color: Colors.white),
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
               ),
               bottom: TabBar(
+                labelColor: Colors.white,
                 tabs: [
                   Tab(text: "CARDS"),
                   Tab(text: "OPTIONS"),
@@ -79,7 +87,6 @@ class _CreateGameScreenState extends State<CreateGameScreen> {
             ),
             bottomNavigationBar: BottomAppBar(
               notchMargin: 8,
-              color: AppColors.surfaceDark,
               shape: CircularNotchedRectangle(),
               child: Container(
                 height: 56,

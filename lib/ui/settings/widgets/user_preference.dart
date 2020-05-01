@@ -28,7 +28,7 @@ class UserPreference extends StatelessWidget {
       title: Text(
         user?.name != null ? "${user.name}" : "Loading...",
         style: context.theme.textTheme.subtitle1.copyWith(
-          color: Colors.black87,
+          color: context.colorOnCard,
         ),
       ),
       onTap: onTap != null ? () => onTap(user) : null,

@@ -91,6 +91,16 @@ class PickWinner extends GameEvent {
   List<Object> get props => [winningPlayerId];
 }
 
+@immutable
+class KickPlayer extends GameEvent {
+  final String playerId;
+
+  KickPlayer(this.playerId);
+
+  @override
+  List<Object> get props => [playerId];
+}
+
 class SubmitResponses extends GameEvent { }
 
 class ClearSubmitting extends GameEvent { }

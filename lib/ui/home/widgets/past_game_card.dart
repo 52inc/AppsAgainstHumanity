@@ -24,7 +24,7 @@ class PastGamesCard extends StatelessWidget {
         child: Material(
           elevation: 4.0,
           borderRadius: BorderRadius.circular(16),
-          color: Colors.white,
+          color: context.theme.cardColor,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.max,
@@ -33,13 +33,15 @@ class PastGamesCard extends StatelessWidget {
                 margin: const EdgeInsets.all(24),
                 child: Text(
                   "Past Games",
-                  style: context.theme.textTheme.headline3
-                      .copyWith(color: Colors.black87, fontWeight: FontWeight.bold, fontSize: 48),
+                  style: context.theme.textTheme.headline3.copyWith(
+                    color: context.colorOnCard,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 48,
+                  ),
                 ),
               ),
               Divider(
                 height: 1,
-                color: Colors.black12,
               ),
               Expanded(
                 child: ListView.builder(
@@ -84,17 +86,24 @@ class PastGame extends StatelessWidget {
     return ListTile(
       title: Text(
         game.gid,
-        style: context.theme.textTheme.subtitle1.copyWith(color: AppColors.primary, fontWeight: FontWeight.w500),
+        style: context.theme.textTheme.subtitle1.copyWith(
+          color: context.primaryColor,
+          fontWeight: FontWeight.w500,
+        ),
       ),
       subtitle: Text(
         isLeavingGame ? "Leaving..." : game.state.label,
-        style: context.theme.textTheme.bodyText2.copyWith(color: Colors.black54),
+        style: context.theme.textTheme.bodyText2.copyWith(
+          color: context.colorOnCard,
+        ),
       ),
       trailing: isLeavingGame
-          ? Container(width: 24, height: 24,child: CircularProgressIndicator())
+          ? Container(width: 24, height: 24, child: CircularProgressIndicator())
           : Text(
               timeago.format(game.joinedAt),
-              style: context.theme.textTheme.bodyText2.copyWith(color: Colors.black26),
+              style: context.theme.textTheme.bodyText2.copyWith(
+                color: context.secondaryColorOnCard,
+              ),
             ),
       onTap: game.state == GameState.inProgress || game.state == GameState.waitingRoom ? () => openGame(context) : null,
       onLongPress: () => leaveGame(context),

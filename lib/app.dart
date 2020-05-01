@@ -7,6 +7,7 @@ import 'package:appsagainsthumanity/ui/terms_screen.dart';
 import 'package:flutter/material.dart';
 
 import 'package:firebase_analytics/observer.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'authentication_bloc/authentication_bloc.dart';
@@ -16,8 +17,8 @@ class App extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Apps Against Humanity',
-      theme: AppThemes.app,
-//      darkTheme: AppThemes.dark,
+      theme: AppThemes.light,
+      darkTheme: AppThemes.dark,
       localizationsDelegates: [
         AppLocalizationsDelegate(),
         GlobalMaterialLocalizations.delegate,
@@ -32,19 +33,22 @@ class App extends StatelessWidget {
         Routes.routeObserver,
         Routes.routeTracer
       ],
-      home: PushNavigator(
-        child: BlocBuilder<AuthenticationBloc, AuthenticationState>(
-          builder: (context, state) {
-            if (state is Unauthenticated) {
-              return SignInScreen();
-            } else if (state is NeedsAgreeToTerms) {
-              return TermsOfServiceScreen();
-            } else if (state is Authenticated) {
-              return HomeScreen();
-            } else {
-              return Container(color: AppColors.surface);
-            }
-          },
+      home: AnnotatedRegion<SystemUiOverlayStyle>(
+        value: SystemUiOverlayStyle.light,
+        child: PushNavigator(
+          child: BlocBuilder<AuthenticationBloc, AuthenticationState>(
+            builder: (context, state) {
+              if (state is Unauthenticated) {
+                return SignInScreen();
+              } else if (state is NeedsAgreeToTerms) {
+                return TermsOfServiceScreen();
+              } else if (state is Authenticated) {
+                return HomeScreen();
+              } else {
+                return Container(color: AppColors.surface);
+              }
+            },
+          ),
         ),
       ),
     );
