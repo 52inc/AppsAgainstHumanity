@@ -61,7 +61,10 @@ class FirestoreGameRepository extends GameRepository {
   @override
   Future<Game> findGame(String gid) async {
     var snapshots =
-        await db.collection(FirebaseConstants.COLLECTION_GAMES).where('gid', isEqualTo: gid).limit(1).getDocuments();
+        await db.collection(FirebaseConstants.COLLECTION_GAMES)
+            .where('gid', isEqualTo: gid.toUpperCase())
+            .limit(1)
+            .getDocuments();
 
     if (snapshots != null && snapshots.documents.isNotEmpty) {
       var document = snapshots.documents.first;
@@ -229,7 +232,7 @@ class FirestoreGameRepository extends GameRepository {
         'game_id': gameDocumentId,
 
       if (gid != null)
-        'gid': gid,
+        'gid': gid.toUpperCase(),
 
       'name': user.name,
       'avatar': user.avatarUrl
