@@ -27,6 +27,7 @@ dependencies:
   uuid: ^2.0.4
   share: ^0.6.4
   json_annotation: ^3.0.0
+  wiredash: 0.0.1+1
 
   # Architecture and Tools
   bloc: ^3.0.0

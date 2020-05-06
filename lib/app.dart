@@ -10,44 +10,58 @@ import 'package:firebase_analytics/observer.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:wiredash/wiredash.dart';
 import 'authentication_bloc/authentication_bloc.dart';
 
 class App extends StatelessWidget {
+  final _navigatorKey = GlobalKey<NavigatorState>();
+
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Apps Against Humanity',
-      theme: AppThemes.light,
-      darkTheme: AppThemes.dark,
-      localizationsDelegates: [
-        AppLocalizationsDelegate(),
-        GlobalMaterialLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate,
-      ],
-      supportedLocales: [
-        const Locale('en'), // English
-      ],
-      navigatorObservers: [
-        FirebaseAnalyticsObserver(analytics: Analytics()),
-        Routes.routeObserver,
-        Routes.routeTracer
-      ],
-      home: AnnotatedRegion<SystemUiOverlayStyle>(
-        value: SystemUiOverlayStyle.light,
-        child: PushNavigator(
-          child: BlocBuilder<AuthenticationBloc, AuthenticationState>(
-            builder: (context, state) {
-              if (state is Unauthenticated) {
-                return SignInScreen();
-              } else if (state is NeedsAgreeToTerms) {
-                return TermsOfServiceScreen();
-              } else if (state is Authenticated) {
-                return HomeScreen();
-              } else {
-                return Container(color: AppColors.surface);
-              }
-            },
+    return Wiredash(
+      projectId: Config.wiredashProjectId,
+      secret: Config.wiredashSecret,
+      theme: WiredashThemeData(
+        brightness: Brightness.dark,
+        primaryColor: AppColors.primary,
+        secondaryColor: AppColors.secondary
+      ),
+      navigatorKey: _navigatorKey,
+      child: MaterialApp(
+        navigatorKey: _navigatorKey,
+        title: 'Apps Against Humanity',
+        theme: AppThemes.light,
+        darkTheme: AppThemes.dark,
+        localizationsDelegates: [
+          AppLocalizationsDelegate(),
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
+        ],
+        supportedLocales: [
+          const Locale('en'), // English
+        ],
+        navigatorObservers: [
+          FirebaseAnalyticsObserver(analytics: Analytics()),
+          Routes.routeObserver,
+          Routes.routeTracer
+        ],
+        home: AnnotatedRegion<SystemUiOverlayStyle>(
+          value: SystemUiOverlayStyle.light,
+          child: PushNavigator(
+            child: BlocBuilder<AuthenticationBloc, AuthenticationState>(
+              builder: (context, state) {
+                if (state is Unauthenticated) {
+                  return SignInScreen();
+                } else if (state is NeedsAgreeToTerms) {
+                  return TermsOfServiceScreen();
+                } else if (state is Authenticated) {
+                  return HomeScreen();
+                } else {
+                  return Container(color: AppColors.surface);
+                }
+              },
+            ),
           ),
         ),
       ),

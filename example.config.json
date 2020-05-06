@@ -1,5 +1,7 @@
 {
   "privacyPolicyUrl": "https://example.com/privacy.html",
   "termsOfServiceUrl": "https://example.com/tos.html",
-  "sourceUrl": "https://github.com/52inc/AppsAgainstHumanity"
+  "sourceUrl": "https://github.com/52inc/AppsAgainstHumanity",
+  "wiredashProjectId": "some_project_id",
+  "wiredashSecret": "some_secret_key"
 }
