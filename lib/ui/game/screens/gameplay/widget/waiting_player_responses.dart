@@ -53,7 +53,7 @@ class PlayerResponseCard extends StatelessWidget {
       margin: const EdgeInsets.all(8),
       child: Material(
         borderRadius: BorderRadius.circular(16),
-        color: Colors.white,
+        color: context.theme.cardColor,
         elevation: 2,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -71,7 +71,7 @@ class PlayerResponseCard extends StatelessWidget {
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                   style: context.theme.textTheme.bodyText2.copyWith(
-                    color: Colors.black87,
+                    color: context.colorOnCard,
                   ),
                 ),
               ),
@@ -82,12 +82,12 @@ class PlayerResponseCard extends StatelessWidget {
                 child: hasSubmittedResponse
                     ? Icon(
                         MdiIcons.checkboxMarkedCircleOutline,
-                        color: AppColors.primary,
+                        color: context.primaryColor,
                         size: 32,
                       )
                     : Icon(
                         MdiIcons.checkboxBlankCircleOutline,
-                        color: Colors.black54,
+                        color: context.secondaryColorOnCard,
                         size: 32,
                       ),
               ),

@@ -4,6 +4,7 @@ import 'package:appsagainsthumanity/internal.dart';
 class Preference extends StatelessWidget {
   final String title;
   final Color titleColor;
+  final FontWeight titleWeight;
   final String subtitle;
   final Widget icon;
   final Widget trailing;
@@ -12,6 +13,7 @@ class Preference extends StatelessWidget {
   Preference({
     @required this.title,
     this.titleColor,
+    this.titleWeight,
     this.subtitle,
     this.icon,
     this.trailing,
@@ -25,6 +27,7 @@ class Preference extends StatelessWidget {
         title,
         style: context.theme.textTheme.subtitle1.copyWith(
           color: titleColor ?? context.colorOnCard,
+          fontWeight: titleWeight ?? FontWeight.normal
         ),
       ),
       subtitle: subtitle != null

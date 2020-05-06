@@ -44,7 +44,7 @@ class _PlayerResponsePickerState extends State<PlayerResponsePicker> {
                 Align(
                   alignment: Alignment.bottomCenter,
                   child: Container(
-                    margin: const EdgeInsets.only(bottom: 24),
+                    margin: const EdgeInsets.only(bottom: 32),
                     child: _buildSubmittingWidget(context),
                   ),
                 ),
@@ -52,7 +52,7 @@ class _PlayerResponsePickerState extends State<PlayerResponsePicker> {
                 Align(
                   alignment: Alignment.bottomCenter,
                   child: Container(
-                    margin: const EdgeInsets.only(bottom: 24),
+                    margin: const EdgeInsets.only(bottom: 32),
                     child: _buildSubmitCardsButton(context),
                   ),
                 )
@@ -133,10 +133,10 @@ class HandCard extends StatelessWidget {
       margin: const EdgeInsets.symmetric(horizontal: 4),
       width: double.maxFinite,
       child: Material(
-        color: AppColors.responseCardBackground,
+        color: context.responseCardHandColor,
         shape: RoundedRectangleBorder(
           side: BorderSide(
-            color: Colors.black12,
+            color: context.responseBorderColor,
             width: 1.0,
           ),
           borderRadius: BorderRadius.only(
@@ -173,7 +173,7 @@ class HandCard extends StatelessWidget {
       child: Text(
         text,
         style: context.theme.textTheme.headline5.copyWith(
-          color: Colors.black87,
+          color: context.colorOnCard,
         ),
       ),
     );
@@ -182,12 +182,15 @@ class HandCard extends StatelessWidget {
   Widget _buildCaptionText(BuildContext context, String text) {
     return Container(
       width: double.maxFinite,
-      margin: const EdgeInsets.all(textPadding),
+      margin: const EdgeInsets.only(right: textPadding, bottom: 16),
       alignment: Alignment.bottomRight,
       child: Text(
         text,
         textAlign: TextAlign.end,
-        style: context.theme.textTheme.caption.copyWith(color: Colors.black26, fontStyle: FontStyle.italic),
+        style: context.theme.textTheme.caption.copyWith(
+          color: context.secondaryColorOnCard,
+          fontStyle: FontStyle.italic,
+        ),
       ),
     );
   }

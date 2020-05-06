@@ -28,7 +28,6 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
       bottomNavigationBar: BottomAppBar(
         notchMargin: 8,
         shape: CircularNotchedRectangle(),
-        color: AppColors.surfaceDark,
         child: Container(
           height: 56,
           child: Row(
@@ -75,10 +74,6 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
       ),
       body: BlocListener<GameBloc, GameViewState>(
         condition: (previous, current) {
-          print("Winner Check:");
-          print("  current=${current.game.turn?.winner}");
-          print("  previous=${previous.game.turn?.winner}");
-          print("  hasChange=${current.game.turn?.winner != previous.game.turn?.winner}");
           return current.game.turn?.winner != previous.game.turn?.winner;
         },
         listener: (context, state) {

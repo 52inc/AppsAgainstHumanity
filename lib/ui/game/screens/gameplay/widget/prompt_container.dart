@@ -6,6 +6,7 @@ import 'package:appsagainsthumanity/ui/game/screens/gameplay/widget/response_car
 import 'package:appsagainsthumanity/ui/game/screens/gameplay/widget/waiting_player_responses.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
 class PromptContainer extends StatelessWidget {
   static const textPadding = 20.0;
@@ -74,9 +75,37 @@ class PromptContainer extends StatelessWidget {
         } else {
           var responseCardStack = buildResponseCardStack(state.selectedCards);
           if (responseCardStack != null) {
-            return Container(
-              margin: const EdgeInsets.symmetric(horizontal: 16),
-              child: responseCardStack,
+            return Dismissible(
+              key: Key("responses"),
+              direction: DismissDirection.down,
+              movementDuration: Duration(milliseconds: 0),
+              background: Column(
+                children: [
+                  Container(
+                    margin: const EdgeInsets.only(top: 24),
+                    alignment: Alignment.topCenter,
+                    child: Text(
+                      "Clear Responses".toUpperCase(),
+                      style: context.theme.textTheme.subtitle1
+                          .copyWith(color: context.primaryColor, fontWeight: FontWeight.w600),
+                    ),
+                  ),
+                  Container(
+                    margin: const EdgeInsets.only(top: 4),
+                    child: Icon(
+                      MdiIcons.chevronTripleDown,
+                      color: context.primaryColor,
+                    ),
+                  ),
+                ],
+              ),
+              onDismissed: (direction) {
+                context.bloc<GameBloc>().add(ClearPickedResponseCards());
+              },
+              child: Container(
+                margin: const EdgeInsets.symmetric(horizontal: 16),
+                child: responseCardStack,
+              ),
             );
           } else {
             return Container();
@@ -122,18 +151,26 @@ class PromptContainer extends StatelessWidget {
   }
 
   Widget _buildPromptText(BuildContext context, GameViewState state) {
-    return Container(
-      width: double.maxFinite,
-      margin: const EdgeInsets.symmetric(vertical: textPadding, horizontal: textPadding + 16),
-      child: BlocBuilder<GameBloc, GameViewState>(
-        builder: (context, state) {
-          return Text(
-            state.currentPromptText,
-            style: context.theme.textTheme.headline5.copyWith(
-              color: Colors.white,
-            ),
-          );
-        },
+    return GestureDetector(
+      onLongPress: () {
+        Scaffold.of(context).showSnackBar(SnackBar(
+          content: Text(state.game?.turn?.promptCard?.source ?? ""),
+          behavior: SnackBarBehavior.floating,
+        ));
+      },
+      child: Container(
+        width: double.maxFinite,
+        margin: const EdgeInsets.symmetric(vertical: textPadding, horizontal: textPadding + 16),
+        child: BlocBuilder<GameBloc, GameViewState>(
+          builder: (context, state) {
+            return Text(
+              state.currentPromptText,
+              style: context.theme.textTheme.headline5.copyWith(
+                color: Colors.white,
+              ),
+            );
+          },
+        ),
       ),
     );
   }

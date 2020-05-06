@@ -36,6 +36,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
       builder: (context, state) {
         return Scaffold(
           appBar: AppBar(
+            brightness: Brightness.dark,
+            textTheme: context.theme.textTheme,
+            iconTheme: context.theme.iconTheme,
             title: Text("Profile"),
             backgroundColor: AppColors.surfaceDark,
           ),
