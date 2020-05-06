@@ -42,6 +42,8 @@ class GameBloc extends Bloc<GameEvent, GameViewState> {
       yield* _mapDownvoteToState();
     } else if (event is PickResponseCard) {
       yield* _mapPickResponseCardToState(event);
+    } else if (event is ClearPickedResponseCards) {
+      yield* _mapClearPickedResponseCardsToState();
     } else if (event is SubmitResponses) {
       yield* _mapSubmitResponsesToState();
     } else if (event is PickWinner) {
@@ -147,6 +149,10 @@ class GameBloc extends Bloc<GameEvent, GameViewState> {
       // The lack of a special is an indication of PICK 1 only
       yield state.copyWith(selectedCards: [event.card]);
     }
+  }
+
+  Stream<GameViewState> _mapClearPickedResponseCardsToState() async* {
+    yield state.copyWith(selectedCards: []);
   }
 
   Stream<GameViewState> _mapSubmitResponsesToState() async* {

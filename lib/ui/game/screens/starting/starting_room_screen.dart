@@ -11,6 +11,9 @@ class StartingRoomScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        brightness: Brightness.dark,
+        textTheme: context.theme.textTheme,
+        iconTheme: context.theme.iconTheme,
         title: Text("Game is starting..."),
         bottom: PreferredSize(
           preferredSize: Size.fromHeight(72),

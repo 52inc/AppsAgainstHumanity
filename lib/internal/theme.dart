@@ -19,7 +19,7 @@ class AppColors {
     static const surfaceDark = Color(0xFF303030);
     static const responseCardBackground = Color(0xFFF2F2F2);
 
-    static const error = Color(0xFFEF5350);
+    static const error = Color(0xFFFF5252);
 
     static const addPhotoBackground = Color(0xFF666666);
     static const addPhotoForeground = Colors.white70;
@@ -28,8 +28,9 @@ class AppColors {
 class AppThemes {
     AppThemes._();
 
-    static ThemeData get light =>
-        ThemeData(
+    static ThemeData get light {
+        final textTheme = Typography.material2018(platform: defaultTargetPlatform).white;
+        return ThemeData(
             brightness: Brightness.light,
             primaryColor: AppColors.primary,
             primaryColorDark: AppColors.primaryDark,
@@ -37,7 +38,7 @@ class AppThemes {
             accentColor: AppColors.primary,
             canvasColor: AppColors.surface,
             cardColor: Colors.white,
-            textTheme: Typography.material2018(platform: defaultTargetPlatform).white,
+            textTheme: textTheme,
             iconTheme: const IconThemeData(color: Colors.white),
             disabledColor: Colors.white38,
             unselectedWidgetColor: Colors.white70,
@@ -45,8 +46,15 @@ class AppThemes {
             appBarTheme: AppBarTheme(
                 color: AppColors.surfaceDark
             ),
+            snackBarTheme: SnackBarThemeData(
+                backgroundColor: AppColors.surfaceLight,
+                contentTextStyle: textTheme.subtitle1,
+                actionTextColor: AppColors.primary,
+                disabledActionTextColor: Colors.white30,
+            ),
             bottomAppBarColor: AppColors.surfaceDark,
         );
+    }
 
     static ThemeData get dark =>
         ThemeData(
@@ -61,6 +69,12 @@ class AppThemes {
             cardColor: Colors.grey[700],
             appBarTheme: AppBarTheme(
                 color: AppColors.surface
+            ),
+            snackBarTheme: SnackBarThemeData(
+                backgroundColor: AppColors.surfaceDark,
+                contentTextStyle: Typography.material2018(platform: defaultTargetPlatform).white.subtitle1,
+                actionTextColor: AppColors.primary,
+                disabledActionTextColor: Colors.white30,
             ),
             bottomAppBarColor: AppColors.surface,
         );
@@ -94,6 +108,42 @@ extension ThemeExt on BuildContext {
             return Colors.white54;
         } else {
             return Colors.black38;
+        }
+    }
+
+    Color get tertiaryColorOnCard {
+        var brightness = theme.brightness;
+        if (brightness == Brightness.dark) {
+            return Colors.white38;
+        } else {
+            return Colors.black26;
+        }
+    }
+
+    Color get responseCardColor {
+        var brightness = theme.brightness;
+        if (brightness == Brightness.dark) {
+            return Colors.grey[600];
+        } else {
+            return AppColors.responseCardBackground;
+        }
+    }
+
+    Color get responseCardHandColor {
+        var brightness = theme.brightness;
+        if (brightness == Brightness.dark) {
+            return Colors.grey[500];
+        } else {
+            return AppColors.responseCardBackground;
+        }
+    }
+
+    Color get responseBorderColor {
+        var brightness = theme.brightness;
+        if (brightness == Brightness.dark) {
+            return Colors.white12;
+        } else {
+            return Colors.black12;
         }
     }
 }

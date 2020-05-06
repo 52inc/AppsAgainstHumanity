@@ -50,6 +50,7 @@ class SettingsScreen extends StatelessWidget {
               Preference(
                 title: "Delete account",
                 titleColor: AppColors.error,
+                titleWeight: FontWeight.bold,
                 icon: Icon(
                   MdiIcons.deleteForeverOutline,
                   color: AppColors.error,

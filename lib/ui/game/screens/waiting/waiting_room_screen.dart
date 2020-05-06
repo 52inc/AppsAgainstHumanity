@@ -57,27 +57,42 @@ class WaitingRoomScreen extends StatelessWidget {
                   ),
                 ),
 
-                Container(
-                  child: OutlineButton(
-                    child: Text("INVITE"),
-                    onPressed: () {
-
-                    },
-                  )
+                Expanded(
+                  child: Row(
+                    mainAxisSize: MainAxisSize.max,
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      Container(
+                        margin: const EdgeInsets.only(right: 16, top: 4),
+                        child: OutlineButton(
+                          child: Text("INVITE"),
+                          color: context.primaryColor,
+                          textColor: context.primaryColor,
+                          highlightedBorderColor: context.primaryColor,
+                          splashColor: context.primaryColor.withOpacity(0.40),
+                          borderSide: BorderSide(color: context.primaryColor),
+                          onPressed: () async {
+                            var link = await DynamicLinks.createLink(state.game.id);
+                            await Share.share(link.toString());
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
                 )
               ],
             ),
           ),
         ),
-        actions: [
-          IconButton(
-            icon: Icon(Icons.group_add),
-            onPressed: () async {
-              var link = await DynamicLinks.createLink(state.game.id);
-              await Share.share(link.toString());
-            },
-          )
-        ],
+//        actions: [
+//          IconButton(
+//            icon: Icon(Icons.group_add),
+//            onPressed: () async {
+//              var link = await DynamicLinks.createLink(state.game.id);
+//              await Share.share(link.toString());
+//            },
+//          )
+//        ],
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       floatingActionButton: state.isOurGame

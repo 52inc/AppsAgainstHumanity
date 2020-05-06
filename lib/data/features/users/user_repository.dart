@@ -38,10 +38,10 @@ class UserRepository {
       var doc = _userDocument(firebaseUser);
       return doc.snapshots().map((snapshot) {
         return User(
-            id: snapshot.documentID,
-            name: snapshot['name'],
-            avatarUrl: snapshot['avatarUrl'],
-            updatedAt: (snapshot['updatedAt'] as Timestamp).toDate(),
+          id: snapshot.documentID,
+          name: snapshot['name'],
+          avatarUrl: snapshot['avatarUrl'],
+          updatedAt: (snapshot['updatedAt'] as Timestamp).toDate(),
         );
       });
     });
@@ -49,9 +49,17 @@ class UserRepository {
 
   Future<void> updateDisplayName(String name) {
     return currentUserOrThrow((firebaseUser) async {
+
+      // Be sure to update our Auth Obj
+      await firebaseUser.updateProfile(
+          UserUpdateInfo()
+              ..displayName = name
+              ..photoUrl = firebaseUser.photoUrl
+      );
+
       await _userDocument(firebaseUser).updateData({
         'name': name,
-        'updatedAt': Timestamp.now()
+        'updatedAt': Timestamp.now(),
       });
     });
   }
@@ -61,9 +69,16 @@ class UserRepository {
       var ref = _profilePhotoReference(firebaseUser);
       await ref.delete();
 
+      // Be sure to update our Auth Obj
+      await firebaseUser.updateProfile(
+          UserUpdateInfo()
+            ..displayName = firebaseUser.displayName
+            ..photoUrl = null
+      );
+
       await _userDocument(firebaseUser).updateData({
         'avatarUrl': null,
-        'updatedAt': Timestamp.now()
+        'updatedAt': Timestamp.now(),
       });
     });
   }
@@ -74,9 +89,16 @@ class UserRepository {
       var refSnapshot = await ref.putFile(image).onComplete;
       var downloadUrl = await refSnapshot.ref.getDownloadURL();
 
+      // Be sure to update our Auth Obj
+      await firebaseUser.updateProfile(
+          UserUpdateInfo()
+            ..displayName = firebaseUser.displayName
+            ..photoUrl = downloadUrl
+      );
+
       await _userDocument(firebaseUser).updateData({
         'avatarUrl': downloadUrl.toString(),
-        'updatedAt': Timestamp.now()
+        'updatedAt': Timestamp.now(),
       });
     });
   }
@@ -93,8 +115,10 @@ class UserRepository {
       var acct = await _googleSignIn.signIn();
       var auth = await acct.authentication;
 
-      var result = await _auth
-          .signInWithCredential(GoogleAuthProvider.getCredential(idToken: auth.idToken, accessToken: auth.accessToken));
+      var result = await _auth.signInWithCredential(GoogleAuthProvider.getCredential(
+        idToken: auth.idToken,
+        accessToken: auth.accessToken,
+      ));
 
       return _finishSigningInWithResult(result);
     } catch (error) {
@@ -154,15 +178,17 @@ class UserRepository {
           updateInfo.photoUrl = result.user.photoUrl;
           await result.user.updateProfile(updateInfo);
           await result.user.reload();
-          print("Updated user's name to $name");
+          print("Updated user's name to ${result.user.displayName}");
         }
 
         // Create the user obj acct in FB
         var userDoc = _userDocument(result.user);
 
-        await userDoc.setData(
-            {"name": result.user.displayName, "avatarUrl": result.user.photoUrl, "updatedAt": Timestamp.now()},
-            merge: true);
+        await userDoc.setData({
+          "name": result.user.displayName,
+          "avatarUrl": result.user.photoUrl,
+          "updatedAt": Timestamp.now(),
+        }, merge: true);
 
         Logger("UserRepository").fine(
             "Signed-in! User(id=${result.user.uid}, name=${result.user.displayName}, photoUrl=${result.user.photoUrl})");
@@ -198,13 +224,10 @@ class UserRepository {
   }
 
   DocumentReference _userDocument(FirebaseUser user) {
-    return _db.collection(FirebaseConstants.COLLECTION_USERS)
-        .document(user.uid);
+    return _db.collection(FirebaseConstants.COLLECTION_USERS).document(user.uid);
   }
 
   StorageReference _profilePhotoReference(FirebaseUser user) {
-    return _storage.ref()
-        .child(FirebaseConstants.COLLECTION_USERS)
-        .child(user.uid);
+    return _storage.ref().child(FirebaseConstants.COLLECTION_USERS).child(user.uid);
   }
 }

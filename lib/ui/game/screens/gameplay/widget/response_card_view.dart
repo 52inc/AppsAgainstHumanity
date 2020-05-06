@@ -19,11 +19,11 @@ class ResponseCardView extends StatelessWidget {
     return Container(
       width: double.maxFinite,
       child: Material(
-        color: AppColors.responseCardBackground,
-        shadowColor: AppColors.responseCardBackground,
+        color: context.responseCardColor,
+        shadowColor: context.responseCardColor,
         shape: RoundedRectangleBorder(
           side: BorderSide(
-            color: Colors.black12,
+            color: context.responseBorderColor,
             width: 1.0,
           ),
           borderRadius: BorderRadius.only(
@@ -52,7 +52,7 @@ class ResponseCardView extends StatelessWidget {
       child: Text(
         text,
         style: context.theme.textTheme.headline5.copyWith(
-          color: Colors.black87,
+          color: context.colorOnCard,
         ),
       ),
     );

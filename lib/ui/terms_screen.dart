@@ -1,12 +1,10 @@
 import 'dart:async';
-import 'dart:convert';
 
 import 'package:appsagainsthumanity/authentication_bloc/authentication_bloc.dart';
 import 'package:appsagainsthumanity/internal.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:webview_flutter/webview_flutter.dart';
-import 'package:flutter/services.dart' show rootBundle;
 
 class TermsOfServiceScreen extends StatefulWidget {
   @override
@@ -34,6 +32,9 @@ class _TermsOfServiceScreenState extends State<TermsOfServiceScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        brightness: Brightness.dark,
+        textTheme: context.theme.textTheme,
+        iconTheme: context.theme.iconTheme,
         title: Text("Terms of service"),
       ),
       body: Stack(
@@ -43,7 +44,7 @@ class _TermsOfServiceScreenState extends State<TermsOfServiceScreen> {
             child: WebView(
               onWebViewCreated: (controller) {
                 webViewController = controller;
-                _loadTermsOfServiceFromAssets();
+                _loadTermsOfServiceFromUrl();
               },
             ),
           ),
@@ -72,8 +73,9 @@ class _TermsOfServiceScreenState extends State<TermsOfServiceScreen> {
               width: double.maxFinite,
               margin: const EdgeInsets.all(16),
               child: RaisedButton(
+                padding: const EdgeInsets.symmetric(vertical: 16),
                 child: Text("I AGREE"),
-                color: AppColors.secondary,
+                color: context.primaryColor,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8),
                 ),
@@ -89,10 +91,8 @@ class _TermsOfServiceScreenState extends State<TermsOfServiceScreen> {
     );
   }
 
-  void _loadTermsOfServiceFromAssets() async {
-    var tosString = await rootBundle.loadString('assets/tos.html');
-    var tosBase64 = base64Encode(const Utf8Encoder().convert(tosString));
-    await webViewController.loadUrl('data:text/html;base64,$tosBase64');
+  void _loadTermsOfServiceFromUrl() async {
+    await webViewController.loadUrl(Config.termsOfServiceUrl);
     _loadingStream.add(false);
   }
 }
