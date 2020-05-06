@@ -19,6 +19,8 @@ class AppColors {
     static const surfaceDark = Color(0xFF303030);
     static const responseCardBackground = Color(0xFFF2F2F2);
 
+    static const error = Color(0xFFEF5350);
+
     static const addPhotoBackground = Color(0xFF666666);
     static const addPhotoForeground = Colors.white70;
 }

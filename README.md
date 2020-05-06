@@ -29,6 +29,9 @@ firebase.initializeApp(firebaseConfig);
 firebase.analytics();
 ```
 
+### Setup Wiredash
+Setup an account @ [wiredash.io](https://wiredash.io/) and create a new project to generate a `projectId` and `secret` that you will use in the following config. Or, you can remove the `Wiredash` widget from the `lib/app.dart` widget tree.
+
 ### Setup Config
 
 Add your own configuration file to the `/lib` folder. Use this example: `example.config.json`
@@ -38,6 +41,8 @@ Add your own configuration file to the `/lib` folder. Use this example: `example
   "privacyPolicyUrl": "https://example.com/privacy.html",
   "termsOfServiceUrl": "https://example.com/tos.html",
   "sourceUrl": "https://github.com/52inc/AppsAgainstHumanity"
+  "wiredashProjectId": "some_wiredash_projectId",
+  "wiredashSecret": "some_wiredash_secret"
 }
 ```
 

@@ -11,6 +11,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:package_info/package_info.dart';
+import 'package:wiredash/wiredash.dart';
 
 class SettingsScreen extends StatelessWidget {
   @override
@@ -48,10 +49,10 @@ class SettingsScreen extends StatelessWidget {
               ),
               Preference(
                 title: "Delete account",
-                titleColor: Colors.redAccent,
+                titleColor: AppColors.error,
                 icon: Icon(
                   MdiIcons.deleteForeverOutline,
-                  color: Colors.redAccent,
+                  color: AppColors.error,
                 ),
                 onTap: () {
                   _deleteAccount(context);
@@ -105,6 +106,18 @@ class SettingsScreen extends StatelessWidget {
           PreferenceCategory(
             title: "About",
             children: [
+              Preference(
+                title: "Feedback",
+                subtitle: "Provide feedback on issues or improvements",
+                icon: Icon(
+                  MdiIcons.faceAgent,
+                  color: context.secondaryColorOnCard
+                ),
+                onTap: () {
+                  Wiredash.of(context).show();
+                },
+              ),
+
               Preference(
                 title: "Contribute",
                 subtitle: "Checkout the source code on GitHub!",
