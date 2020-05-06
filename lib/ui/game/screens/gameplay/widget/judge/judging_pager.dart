@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:appsagainsthumanity/data/features/cards/model/response_card.dart';
 import 'package:appsagainsthumanity/ui/game/bloc/bloc.dart';
 import 'package:appsagainsthumanity/ui/game/screens/gameplay/widget/judge/judge_dredd.dart';
@@ -18,7 +20,7 @@ class JudgingPager extends StatelessWidget {
   Widget build(BuildContext context) {
       var responses = state.game.turn?.responses ?? Map<String, List<ResponseCard>>();
       var playerResponses = responses.entries.map((e) => PlayerResponse(e.key, e.value.toList())).toList();
-      playerResponses.shuffle();
+      playerResponses.shuffle(Random(state.game.round ?? DateTime.now().millisecondsSinceEpoch));
       controller.setCurrentResponse(playerResponses[0], 0, playerResponses.length);
       return PageView.builder(
           controller: controller.pageController,

@@ -17,6 +17,9 @@ class CreateGameState {
   final bool isLoading;
   final String error;
 
+  int get totalPrompts => selectedSets?.sumBy((cs) => cs.prompts ?? 0);
+  int get totalResponses => selectedSets?.sumBy((cs) => cs.responses ?? 0);
+
   CreateGameState({
     @required this.cardSets,
     @required this.selectedSets,
