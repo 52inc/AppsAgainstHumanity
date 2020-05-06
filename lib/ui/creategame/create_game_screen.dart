@@ -62,6 +62,7 @@ class _CreateGameScreenState extends State<CreateGameScreen> {
   Widget _buildScaffold() {
     return BlocBuilder<CreateGameBloc, CreateGameState>(
       builder: (context, state) {
+        print("Prompts: ${state.totalPrompts}, Responses: ${state.totalResponses}");
         return DefaultTabController(
           length: 2,
           child: Scaffold(
@@ -97,7 +98,7 @@ class _CreateGameScreenState extends State<CreateGameScreen> {
                       child: Container(
                         margin: const EdgeInsets.symmetric(horizontal: 16),
                         child: Text(
-                          state.isLoading ? "Loading..." : "${state.selectedSets.size} Selected",
+                          state.isLoading ? "Loading..." : "${state.totalPrompts} Prompts ${state.totalResponses} Responses",
                           style: context.theme.textTheme.headline6,
                         ),
                       ),

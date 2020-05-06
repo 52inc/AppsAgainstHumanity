@@ -23,6 +23,9 @@ class WaitingRoomScreen extends StatelessWidget {
   Widget _buildScaffold(BuildContext context, GameViewState state) {
     return Scaffold(
       appBar: AppBar(
+        brightness: Brightness.dark,
+        textTheme: context.theme.textTheme,
+        iconTheme: context.theme.iconTheme,
         title: Text("Waiting for players"),
         bottom: PreferredSize(
           preferredSize: Size.fromHeight(72),
@@ -46,13 +49,22 @@ class WaitingRoomScreen extends StatelessWidget {
                       Text(
                         state.game.gid,
                         style: context.theme.textTheme.headline4.copyWith(
-                          color: Colors.white,
+                          color: context.primaryColor,
                           fontWeight: FontWeight.bold,
                         ),
                       )
                     ],
                   ),
                 ),
+
+                Container(
+                  child: OutlineButton(
+                    child: Text("INVITE"),
+                    onPressed: () {
+
+                    },
+                  )
+                )
               ],
             ),
           ),

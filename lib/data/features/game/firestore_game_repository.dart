@@ -180,7 +180,7 @@ class FirestoreGameRepository extends GameRepository {
     final HttpsCallable callable = CloudFunctions.instance.getHttpsCallable(functionName: 'submitResponses');
     dynamic response = await callable.call(<String, dynamic>{
       'game_id': gameDocumentId,
-      'responses': cards.map((e) => e.cid).toList()
+      'indexed_responses': cards.asMap().map((key, value) => MapEntry(key.toString(), value.cid))
     });
     print("Responses Submitted! $response");
   }
