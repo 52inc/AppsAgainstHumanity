@@ -21,6 +21,7 @@ class GameViewState {
   bool get isOurGame => userId == game?.ownerId;
 
   Player get currentJudge => players?.firstWhere((p) => p.id == game.turn?.judgeId);
+  Player get lastJudge => players?.firstWhere((p) => !(game.turn?.winner?.responses?.containsKey(p.id) ?? true));
 
   /// Get the current prompt card text with any macros computed from the text string. For now this is just
   /// the a simple replace of the judge's name for its specific replacer text.
@@ -28,6 +29,21 @@ class GameViewState {
   String get currentPromptText {
     var prompt = game.turn?.promptCard;
     var judge = currentJudge;
+    if (judge != null && prompt != null) {
+      return prompt.text.replaceAll("{JUDGE_NAME}", judge.name);
+    } else if (prompt != null) {
+      return prompt.text;
+    } else {
+      return "";
+    }
+  }
+
+  /// Get the current prompt card text with any macros computed from the text string. For now this is just
+  /// the a simple replace of the judge's name for its specific replacer text.
+  /// TODO: Extract this into a tool that can take a configurable macro list for smart injecting text into prompts
+  String get lastPromptText {
+    var prompt = game.turn?.winner?.promptCard;
+    var judge = lastJudge;
     if (judge != null && prompt != null) {
       return prompt.text.replaceAll("{JUDGE_NAME}", judge.name);
     } else if (prompt != null) {

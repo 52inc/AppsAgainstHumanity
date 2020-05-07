@@ -19,6 +19,9 @@ class TurnWinner extends Equatable {
   @JsonKey(toJson: responsesToJson)
   final List<ResponseCard> response;
 
+  @JsonKey(toJson: playerResponsesToJson, nullable: true)
+  final Map<String, List<ResponseCard>> responses;
+
   TurnWinner({
     this.playerId,
     this.playerName,
@@ -26,6 +29,7 @@ class TurnWinner extends Equatable {
     this.isRandoCardrissian,
     this.promptCard,
     this.response,
+    this.responses
   });
 
   factory TurnWinner.fromJson(Map<String, dynamic> json) => _$TurnWinnerFromJson(json);
@@ -34,13 +38,18 @@ class TurnWinner extends Equatable {
 
   @override
   String toString() {
-    return 'TurnWinner{playerId: $playerId, playerName: $playerName, playerAvatarUrl: $playerAvatarUrl, isRandoCardrissian: $isRandoCardrissian, promptCard: $promptCard, response: $response}';
+    return 'TurnWinner{playerId: $playerId, playerName: $playerName, playerAvatarUrl: $playerAvatarUrl, '
+        'isRandoCardrissian: $isRandoCardrissian, promptCard: $promptCard, response: $response, responses: $responses}';
   }
 
   @override
-  List<Object> get props => [playerId, playerName, playerAvatarUrl, isRandoCardrissian, promptCard, response];
+  List<Object> get props => [playerId, playerName, playerAvatarUrl, isRandoCardrissian, promptCard, response, responses];
 }
 
 Map<String, dynamic> turnWinnerToJson(TurnWinner turnWinner) => turnWinner?.toJson();
 
 List<Map<String, dynamic>> responsesToJson(List<ResponseCard> cards) => cards?.map((e) => e.toJson())?.toList();
+
+Map<String, dynamic> playerResponsesToJson(Map<String, List<ResponseCard>> responses) {
+  return responses?.map((k, e) => MapEntry(k, e.map((e) => e.toJson()).toList()));
+}

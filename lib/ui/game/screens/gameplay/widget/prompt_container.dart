@@ -154,7 +154,7 @@ class PromptContainer extends StatelessWidget {
     return GestureDetector(
       onLongPress: () {
         Scaffold.of(context).showSnackBar(SnackBar(
-          content: Text(state.game?.turn?.promptCard?.source ?? ""),
+          content: Text(state.game?.turn?.promptCard?.set ?? ""),
           behavior: SnackBarBehavior.floating,
         ));
       },

@@ -6,12 +6,14 @@ class GameBottomSheet extends StatelessWidget {
   final String subtitle;
   final Widget child;
   final List<Widget> actions;
+  final EdgeInsets margin;
 
-  GameBottomSheet({this.title, this.subtitle, @required this.child, this.actions});
+  GameBottomSheet({this.title, this.subtitle, @required this.child, this.actions, this.margin});
 
   @override
   Widget build(BuildContext context) {
     return Container(
+      margin: margin,
       child: Material(
         clipBehavior: Clip.hardEdge,
         borderRadius: BorderRadius.only(

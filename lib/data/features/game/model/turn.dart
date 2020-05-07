@@ -14,8 +14,8 @@ class Turn {
   @JsonKey(toJson: _promptCardToJson)
   final PromptCard promptCard;
 
-  @JsonKey(toJson: _responsesToJson)
-  final Map<String, Set<ResponseCard>> responses;
+  @JsonKey(toJson: responsesToJson)
+  final Map<String, List<ResponseCard>> responses;
 
   @JsonKey(nullable: true, toJson: turnWinnerToJson)
   final TurnWinner winner;
@@ -34,7 +34,7 @@ class Turn {
   Turn copyWith({
     String judgeId,
     PromptCard promptCard,
-    Map<String, Set<ResponseCard>> responses,
+    Map<String, List<ResponseCard>> responses,
     TurnWinner winner,
   }) {
     return Turn(
@@ -47,6 +47,6 @@ class Turn {
 
 Map<String, dynamic> _promptCardToJson(PromptCard card) => card.toJson();
 
-Map<String, dynamic> _responsesToJson(Map<String, Set<ResponseCard>> responses) {
+Map<String, dynamic> responsesToJson(Map<String, List<ResponseCard>> responses) {
   return responses?.map((k, e) => MapEntry(k, e.map((e) => e.toJson()).toList()));
 }
