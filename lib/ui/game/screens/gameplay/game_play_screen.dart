@@ -1,3 +1,4 @@
+import 'package:appsagainsthumanity/data/features/game/model/turn_winner.dart';
 import 'package:appsagainsthumanity/internal.dart';
 import 'package:appsagainsthumanity/ui/game/bloc/bloc.dart';
 import 'package:appsagainsthumanity/ui/game/screens/gameplay/widget/game_bottom_sheet.dart';
@@ -7,7 +8,7 @@ import 'package:appsagainsthumanity/ui/game/screens/gameplay/widget/player_list.
 import 'package:appsagainsthumanity/ui/game/screens/gameplay/widget/player_response_picker.dart';
 import 'package:appsagainsthumanity/ui/game/screens/gameplay/widget/prompt_container.dart';
 import 'package:appsagainsthumanity/ui/game/screens/gameplay/widget/re_deal_button.dart';
-import 'package:appsagainsthumanity/ui/game/screens/gameplay/widget/turn_winner_sheet.dart';
+import 'package:appsagainsthumanity/ui/game/screens/gameplay/widget/winning/turn_winner_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
@@ -81,16 +82,7 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
           var turnWinner = state.game.turn?.winner;
           if (turnWinner != null) {
             print("Showing winner sheet");
-            showModalBottomSheet(
-              context: context,
-              backgroundColor: Colors.transparent,
-              builder: (context) {
-                return GameBottomSheet(
-                  title: "Round ${state.game.round}",
-                  child: TurnWinnerSheet(turnWinner),
-                );
-              },
-            );
+            _showWinnerBottomSheet(context, state);
           }
         },
         child: _buildBody(),
@@ -120,6 +112,27 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
           )
         ],
       ),
+    );
+  }
+
+  void _showWinnerBottomSheet(BuildContext context, GameViewState state) {
+    print("Showing winner sheet");
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      isScrollControlled: true,
+      builder: (context) {
+        return DraggableScrollableSheet(
+          initialChildSize: 0.75,
+          maxChildSize: 0.97,
+          builder: (context, scrollController) {
+            return GameBottomSheet(
+              title: "Round ${state.game.round}",
+              child: TurnWinnerSheet(state, scrollController),
+            );
+          },
+        );
+      },
     );
   }
 

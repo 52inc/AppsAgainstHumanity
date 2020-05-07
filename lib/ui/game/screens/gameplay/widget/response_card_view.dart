@@ -59,7 +59,7 @@ class ResponseCardView extends StatelessWidget {
   }
 }
 
-Widget buildResponseCardStack(List<ResponseCard> cards) {
+Widget buildResponseCardStack(List<ResponseCard> cards, {Widget lastChild}) {
   if (cards.isNotEmpty) {
     var nextCard = cards.first;
     var remaining = cards.sublist(1);
@@ -67,8 +67,8 @@ Widget buildResponseCardStack(List<ResponseCard> cards) {
       key: ValueKey(nextCard),
       card: nextCard,
       child: remaining.isNotEmpty
-        ? buildResponseCardStack(remaining)
-        : null,
+        ? buildResponseCardStack(remaining, lastChild: lastChild)
+        : lastChild,
     );
   } else {
     return null;

@@ -27,6 +27,11 @@ class PromptCard extends Equatable {
 
   @override
   List<Object> get props => [cid, text, special, set, source];
+
+  @override
+  String toString() {
+    return 'PromptCard{cid: $cid, text: $text, special: $special, set: $set, source: $source}';
+  }
 }
 
 Map<String, dynamic> promptCardToJson(PromptCard card) => card?.toJson();
