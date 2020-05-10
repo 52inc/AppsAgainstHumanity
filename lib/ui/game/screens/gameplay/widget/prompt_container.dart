@@ -165,9 +165,7 @@ class PromptContainer extends StatelessWidget {
           builder: (context, state) {
             return Text(
               state.currentPromptText,
-              style: context.theme.textTheme.headline5.copyWith(
-                color: Colors.white,
-              ),
+              style: context.cardTextStyle(Colors.white),
             );
           },
         ),
