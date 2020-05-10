@@ -80,6 +80,28 @@ class AppThemes {
         );
 }
 
+extension TextAppearanceExt on BuildContext {
+
+    TextStyle cardTextStyle(Color textColor) {
+        final base = theme.textTheme.headline5;
+        final screenWidth = MediaQuery.of(this).size.width;
+
+        double fontSize = base.fontSize;
+        if (screenWidth > 360 && screenWidth <= 400) {
+            fontSize = 20.0; // Headline 6 Size
+        } else if (screenWidth > 300 && screenWidth <= 360) {
+            fontSize = 18.0; // Subtitle 1
+        } else if (screenWidth <= 300) {
+            fontSize = 16.0;
+        }
+
+        return base.copyWith(
+            color: textColor,
+            fontSize: fontSize
+        );
+    }
+}
+
 extension ThemeExt on BuildContext {
 
     ThemeData get theme => Theme.of(this);

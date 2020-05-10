@@ -171,7 +171,7 @@ class WaitingRoomScreen extends StatelessWidget {
       leading: CircleAvatar(
         backgroundImage: AssetImage("assets/rando_cardrissian.png"),
       ),
-      trailing: Icon(MdiIcons.robot),
+      trailing: Icon(MdiIcons.robot, color: Colors.white),
       onTap: () async {
         await context.repository<GameRepository>()
             .addRandoCardrissian(gameDocumentId);

@@ -51,9 +51,7 @@ class ResponseCardView extends StatelessWidget {
       margin: const EdgeInsets.all(textPadding),
       child: Text(
         text,
-        style: context.theme.textTheme.headline5.copyWith(
-          color: context.colorOnCard,
-        ),
+        style: context.cardTextStyle(context.colorOnCard),
       ),
     );
   }

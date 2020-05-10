@@ -22,7 +22,6 @@ class PromptCardView extends StatelessWidget {
   Widget build(BuildContext context) {
     // We only want this block builder to update when the prompt changes
     var prompt = state.game.turn?.winner?.promptCard;
-    print("Prompt: $prompt");
     return Container(
       margin: const EdgeInsets.only(top: 8),
       child: Column(
@@ -80,9 +79,7 @@ class PromptCardView extends StatelessWidget {
         margin: const EdgeInsets.symmetric(vertical: textPadding, horizontal: textPadding).add(margin),
         child: Text(
           state.lastPromptText,
-          style: context.theme.textTheme.headline5.copyWith(
-            color: Colors.white,
-          ),
+          style: context.cardTextStyle(Colors.white),
         ),
       ),
     );

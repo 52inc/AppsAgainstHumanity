@@ -95,13 +95,23 @@ class FirestoreGameRepository extends GameRepository {
   }
 
   @override
-  Future<void> leaveGame(String gameDocumentId) {
+  Future<void> leaveGame(UserGame game) {
     return currentUserOrThrow((firebaseUser) async {
-      final HttpsCallable callable = CloudFunctions.instance.getHttpsCallable(functionName: 'leaveGame');
-      HttpsCallableResult response = await callable.call(<String, dynamic>{
-        'game_id': gameDocumentId
-      });
-      print("Game left! ${response.data}");
+      if (game.state == GameState.completed) {
+        // We should just delete the usergame ourselfs
+        await db.collection(FirebaseConstants.COLLECTION_USERS)
+            .document(firebaseUser.uid)
+            .collection(FirebaseConstants.COLLECTION_GAMES)
+            .document(game.id)
+            .delete();
+        print("Game already completed, so we just deleted the reference");
+      } else {
+        final HttpsCallable callable = CloudFunctions.instance.getHttpsCallable(functionName: 'leaveGame');
+        HttpsCallableResult response = await callable.call(<String, dynamic>{
+          'game_id': game.id
+        });
+        print("Game left! ${response.data}");
+      }
     });
   }
 

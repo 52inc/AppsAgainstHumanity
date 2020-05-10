@@ -11,26 +11,6 @@ class CompletedGameScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      bottomNavigationBar: BottomAppBar(
-        color: AppColors.primary,
-        child: Container(
-          height: 56,
-          child: Row(
-            children: [
-              Container(
-                margin: const EdgeInsets.symmetric(horizontal: 16),
-                child: IconButton(
-                  icon: Icon(
-                    Icons.close,
-                    color: Colors.black87,
-                  ),
-                  onPressed: () => Navigator.of(context).pop(),
-                ),
-              )
-            ],
-          ),
-        ),
-      ),
       body: _buildBody(),
     );
   }
@@ -48,7 +28,7 @@ class CompletedGameScreen extends StatelessWidget {
               child: Text(
                 "Winner",
                 style: context.theme.textTheme.headline2.copyWith(
-                  color: AppColors.secondary,
+                  color: Colors.white,
                 ),
               ),
             ),
@@ -85,6 +65,8 @@ class CompletedGameScreen extends StatelessWidget {
               width: double.maxFinite,
               child: OutlineButton(
                 child: Text("QUIT"),
+                textColor: Colors.white,
+                borderSide: BorderSide(color: Colors.white),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8),
                 ),
