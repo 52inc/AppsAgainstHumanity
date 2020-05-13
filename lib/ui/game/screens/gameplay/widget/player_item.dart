@@ -102,6 +102,7 @@ class PlayerItem extends StatelessWidget {
                           ),
                           onPressed: () {
                             // Kick Player
+                            Analytics().logSelectContent(contentType: 'action', itemId: 'kick_player');
                             context.bloc<GameBloc>().add(KickPlayer(player.id));
                           },
                         ),

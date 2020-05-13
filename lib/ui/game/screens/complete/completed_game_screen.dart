@@ -54,6 +54,7 @@ class CompletedGameScreen extends StatelessWidget {
                     borderRadius: BorderRadius.circular(8)
                   ),
                   onPressed: () {
+                    Analytics().logSelectContent(contentType: 'game', itemId: 'create_new_game');
                     Navigator.of(context).pushReplacement(MaterialPageRoute(
                       builder: (context) => CreateGameScreen()
                     ));
@@ -73,6 +74,7 @@ class CompletedGameScreen extends StatelessWidget {
                 highlightedBorderColor: AppColors.primary,
                 splashColor: AppColors.primary,
                 onPressed: () {
+                  Analytics().logSelectContent(contentType: 'game', itemId: 'quit');
                   Navigator.of(context).pop();
                 },
               ),

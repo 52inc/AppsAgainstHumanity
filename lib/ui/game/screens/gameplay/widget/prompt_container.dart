@@ -100,6 +100,7 @@ class PromptContainer extends StatelessWidget {
                 ],
               ),
               onDismissed: (direction) {
+                Analytics().logSelectContent(contentType: 'action', itemId: 'clear_choices');
                 context.bloc<GameBloc>().add(ClearPickedResponseCards());
               },
               child: Container(
@@ -153,6 +154,7 @@ class PromptContainer extends StatelessWidget {
   Widget _buildPromptText(BuildContext context, GameViewState state) {
     return GestureDetector(
       onLongPress: () {
+        Analytics().logSelectContent(contentType: 'action', itemId: 'view_prompt_source');
         Scaffold.of(context).showSnackBar(SnackBar(
           content: Text(state.game?.turn?.promptCard?.set ?? ""),
           behavior: SnackBarBehavior.floating,

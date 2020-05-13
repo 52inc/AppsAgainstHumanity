@@ -26,6 +26,7 @@ class _CreateGameScreenState extends State<CreateGameScreen> {
         )..add(ScreenLoaded()),
         child: MultiBlocListener(
           listeners: [
+            // Error Listener
             BlocListener<CreateGameBloc, CreateGameState>(
               condition: (previous, current) => current.error != previous.error,
               listener: (context, state) {
@@ -44,6 +45,8 @@ class _CreateGameScreenState extends State<CreateGameScreen> {
                 }
               },
             ),
+
+            // New Game Listener
             BlocListener<CreateGameBloc, CreateGameState>(
               condition: (previous, current) => current.createdGame?.id != previous.createdGame?.id,
               listener: (context, state) {
@@ -62,7 +65,6 @@ class _CreateGameScreenState extends State<CreateGameScreen> {
   Widget _buildScaffold() {
     return BlocBuilder<CreateGameBloc, CreateGameState>(
       builder: (context, state) {
-        print("Prompts: ${state.totalPrompts}, Responses: ${state.totalResponses}");
         return DefaultTabController(
           length: 2,
           child: Scaffold(
@@ -113,6 +115,7 @@ class _CreateGameScreenState extends State<CreateGameScreen> {
                     child: Icon(Icons.check),
                     onPressed: () async {
                       // Start game?
+                      Analytics().logSelectContent(contentType: 'action', itemId: 'create_game');
                       context.bloc<CreateGameBloc>().add(CreateGame());
                     },
                   )
@@ -149,6 +152,7 @@ class _CreateGameScreenState extends State<CreateGameScreen> {
           min: 1,
           max: 15,
           onValueChanged: (value) {
+            Analytics().logSelectContent(contentType: 'game_option', itemId: 'prizes_to_win');
             context.bloc<CreateGameBloc>().add(ChangePrizesToWin(value));
           },
         ),
@@ -159,6 +163,7 @@ class _CreateGameScreenState extends State<CreateGameScreen> {
           min: 5,
           max: 30,
           onValueChanged: (value) {
+            Analytics().logSelectContent(contentType: 'game_option', itemId: 'player_limit');
             context.bloc<CreateGameBloc>().add(ChangePlayerLimit(value));
           },
         ),
@@ -168,6 +173,7 @@ class _CreateGameScreenState extends State<CreateGameScreen> {
           activeColor: AppColors.primary,
           value: state.pick2Enabled,
           onChanged: (value) {
+            Analytics().logSelectContent(contentType: 'game_option', itemId: 'pick2');
             context.bloc<CreateGameBloc>().add(ChangePick2Enabled(value));
           },
         ),
@@ -177,6 +183,7 @@ class _CreateGameScreenState extends State<CreateGameScreen> {
           activeColor: AppColors.primary,
           value: state.draw2pick3Enabled,
           onChanged: (value) {
+            Analytics().logSelectContent(contentType: 'game_option', itemId: 'draw2_pick3');
             context.bloc<CreateGameBloc>().add(ChangeDraw2Pick3Enabled(value));
           },
         ),
@@ -246,6 +253,7 @@ class HeaderItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
+        Analytics().logSelectContent(contentType: 'card_set_source', itemId: title);
         context.bloc<CreateGameBloc>().add(CardSourceSelected(title, isChecked));
       },
       child: Column(
@@ -263,6 +271,7 @@ class HeaderItem extends StatelessWidget {
                   value: isChecked,
                   tristate: true,
                   onChanged: (value) {
+                    Analytics().logSelectContent(contentType: 'card_set_source', itemId: title);
                     context.bloc<CreateGameBloc>().add(CardSourceSelected(title, value));
                   },
                   activeColor: AppColors.primary,
@@ -303,10 +312,12 @@ class CardSetListItem extends StatelessWidget {
         value: isSelected,
         activeColor: AppColors.primary,
         onChanged: (value) {
+          Analytics().logSelectContent(contentType: 'card_set', itemId: cardSet.name);
           context.bloc<CreateGameBloc>().add(CardSetSelected(cardSet));
         },
       ),
       onTap: () {
+        Analytics().logSelectContent(contentType: 'card_set', itemId: cardSet.name);
         context.bloc<CreateGameBloc>().add(CardSetSelected(cardSet));
       },
     );

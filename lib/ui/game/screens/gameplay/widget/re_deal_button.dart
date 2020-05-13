@@ -51,6 +51,7 @@ class ReDealButton extends StatelessWidget {
                     );
                   });
               if (result ?? false) {
+                Analytics().logSelectContent(contentType: 'action', itemId: 'redeal_hand');
                 await context.repository<GameRepository>().reDealHand(state.game.id);
               }
             },

@@ -23,6 +23,18 @@ class Analytics with FirebaseAnalytics {
   }
 
   @override
+  Future<void> logSelectContent({String contentType, String itemId}) {
+    return _firebaseAnalytics?.logSelectContent(contentType: contentType, itemId: itemId)
+        ?? Future.value();
+  }
+
+  @override
+  Future<void> logViewItemList({String itemCategory}) {
+    return _firebaseAnalytics?.logViewItemList(itemCategory: itemCategory)
+        ?? Future.value();
+  }
+
+  @override
   Future<void> logLogin({String loginMethod}) {
     return _firebaseAnalytics?.logLogin(loginMethod: loginMethod)
         ?? Future.value();

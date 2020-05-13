@@ -69,6 +69,7 @@ class PromptCardView extends StatelessWidget {
   Widget _buildPromptText(BuildContext context, GameViewState state) {
     return GestureDetector(
       onLongPress: () {
+        Analytics().logSelectContent(contentType: 'action', itemId: 'view_prompt_source');
         Scaffold.of(context).showSnackBar(SnackBar(
           content: Text(state.game?.turn?.winner?.promptCard?.set ?? ""),
           behavior: SnackBarBehavior.floating,

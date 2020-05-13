@@ -24,7 +24,7 @@ class App extends StatelessWidget {
       theme: WiredashThemeData(
         brightness: Brightness.dark,
         primaryColor: AppColors.primary,
-        secondaryColor: AppColors.secondary
+        secondaryColor: AppColors.primaryVariant
       ),
       navigatorKey: _navigatorKey,
       child: MaterialApp(

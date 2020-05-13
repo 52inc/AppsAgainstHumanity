@@ -34,6 +34,7 @@ class SettingsScreen extends StatelessWidget {
             children: [
               UserPreference(
                 onTap: (user) {
+                  Analytics().logSelectContent(contentType: 'setting', itemId: 'profile');
                   Navigator.of(context).push(MaterialPageRoute(builder: (_) => ProfileScreen()));
                 },
               ),
@@ -71,6 +72,7 @@ class SettingsScreen extends StatelessWidget {
                   color: context.secondaryColorOnCard,
                 ),
                 onTap: () {
+                  Analytics().logSelectContent(contentType: 'setting', itemId: 'privacy_policy');
                   showWebView(
                     context,
                     "Privacy Policy",
@@ -85,6 +87,7 @@ class SettingsScreen extends StatelessWidget {
                   color: context.secondaryColorOnCard,
                 ),
                 onTap: () {
+                  Analytics().logSelectContent(contentType: 'setting', itemId: 'terms_of_service');
                   showWebView(
                     context,
                     "Terms of service",
@@ -99,6 +102,7 @@ class SettingsScreen extends StatelessWidget {
                   color: context.secondaryColorOnCard,
                 ),
                 onTap: () {
+                  Analytics().logSelectContent(contentType: 'setting', itemId: 'oss_licenses');
                   showLicensePage(context: context);
                 },
               ),
@@ -115,6 +119,7 @@ class SettingsScreen extends StatelessWidget {
                   color: context.secondaryColorOnCard
                 ),
                 onTap: () {
+                  Analytics().logSelectContent(contentType: 'setting', itemId: 'feedback');
                   Wiredash.of(context).show();
                 },
               ),
@@ -127,6 +132,7 @@ class SettingsScreen extends StatelessWidget {
                   color: context.secondaryColorOnCard,
                 ),
                 onTap: () {
+                  Analytics().logSelectContent(contentType: 'setting', itemId: 'contribute');
                   showWebView(
                     context,
                     "Contribute",
@@ -141,9 +147,10 @@ class SettingsScreen extends StatelessWidget {
                   color: context.secondaryColorOnCard,
                 ),
                 onTap: () {
+                  Analytics().logSelectContent(contentType: 'setting', itemId: 'author');
                   showWebView(
                     context,
-                    "Author",
+                    "52inc",
                     "https://52inc.com",
                   );
                 },
@@ -158,8 +165,9 @@ class SettingsScreen extends StatelessWidget {
                         MdiIcons.application,
                         color: context.secondaryColorOnCard,
                       ),
-                      subtitle:
-                          packageInfo != null ? "${packageInfo.version}+${packageInfo.buildNumber}" : "Loading...",
+                      subtitle: packageInfo != null
+                          ? "${packageInfo.version}+${packageInfo.buildNumber}"
+                          : "Loading...",
                     );
                   }),
             ],
@@ -214,6 +222,7 @@ class SettingsScreen extends StatelessWidget {
         });
 
     if (result ?? false) {
+      Analytics().logSelectContent(contentType: 'setting', itemId: 'delete_account');
       var userRepository = context.repository<UserRepository>();
       try {
         await userRepository.deleteAccount();

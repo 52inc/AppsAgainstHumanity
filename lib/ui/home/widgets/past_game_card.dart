@@ -111,6 +111,7 @@ class PastGame extends StatelessWidget {
   }
 
   void openGame(BuildContext context) async {
+    Analytics().logSelectContent(contentType: 'past_game', itemId: 'open');
     try {
       var existingGame = await context.repository<GameRepository>().getGame(game.id);
       Navigator.of(context).push(GamePageRoute(existingGame));
@@ -147,6 +148,7 @@ class PastGame extends StatelessWidget {
         });
 
     if (result == true) {
+      Analytics().logSelectContent(contentType: 'past_game', itemId: 'leave');
       context.bloc<HomeBloc>().add(LeaveGame(game));
     }
   }

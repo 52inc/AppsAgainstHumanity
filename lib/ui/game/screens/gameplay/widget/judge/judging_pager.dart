@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:appsagainsthumanity/data/features/cards/model/response_card.dart';
+import 'package:appsagainsthumanity/internal.dart';
 import 'package:appsagainsthumanity/ui/game/bloc/bloc.dart';
 import 'package:appsagainsthumanity/ui/game/screens/gameplay/widget/judge/judge_dredd.dart';
 import 'package:appsagainsthumanity/ui/game/screens/gameplay/widget/judge/player_response.dart';
@@ -33,6 +34,7 @@ class JudgingPager extends StatelessWidget {
               );
           },
           onPageChanged: (index) {
+              Analytics().logSelectContent(contentType: 'judge', itemId: 'response_change_$index');
               var playerResponse = playerResponses[index];
               controller.setCurrentResponse(playerResponse, index, playerResponses.length);
           },

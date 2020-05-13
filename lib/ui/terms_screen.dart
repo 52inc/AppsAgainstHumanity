@@ -80,6 +80,7 @@ class _TermsOfServiceScreenState extends State<TermsOfServiceScreen> {
                   borderRadius: BorderRadius.circular(8),
                 ),
                 onPressed: () {
+                  Analytics().logSelectContent(contentType: 'action', itemId: "terms_of_service");
                   context.bloc<AuthenticationBloc>()
                       .add(AgreeToTerms());
                 },

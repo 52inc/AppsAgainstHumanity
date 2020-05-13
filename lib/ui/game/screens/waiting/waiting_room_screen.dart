@@ -72,6 +72,7 @@ class WaitingRoomScreen extends StatelessWidget {
                           splashColor: context.primaryColor.withOpacity(0.40),
                           borderSide: BorderSide(color: context.primaryColor),
                           onPressed: () async {
+                            Analytics().logShare(contentType: 'game', itemId: 'invite', method: 'dynamic_link');
                             var link = await DynamicLinks.createLink(state.game.id);
                             await Share.share(link.toString());
                           },
@@ -101,6 +102,7 @@ class WaitingRoomScreen extends StatelessWidget {
               label: Text("START GAME"),
               backgroundColor: AppColors.primary,
               onPressed: () async {
+                Analytics().logSelectContent(contentType: 'action', itemId: 'start_game');
                 context.bloc<GameBloc>()
                     .add(StartGame());
               })
@@ -173,6 +175,7 @@ class WaitingRoomScreen extends StatelessWidget {
       ),
       trailing: Icon(MdiIcons.robot, color: Colors.white),
       onTap: () async {
+        Analytics().logSelectContent(contentType: 'players', itemId: 'invite_rando_cardrissian');
         await context.repository<GameRepository>()
             .addRandoCardrissian(gameDocumentId);
       },
