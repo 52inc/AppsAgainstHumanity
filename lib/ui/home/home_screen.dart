@@ -1,12 +1,9 @@
 import 'dart:io';
 
-import 'package:appsagainsthumanity/data/features/game/game_repository.dart';
 import 'package:appsagainsthumanity/data/features/game/model/player.dart';
 import 'package:appsagainsthumanity/data/features/users/model/user.dart';
-import 'package:appsagainsthumanity/data/features/game/model/game_state.dart';
 import 'package:appsagainsthumanity/internal/push.dart';
 import 'package:appsagainsthumanity/ui/creategame/create_game_screen.dart';
-import 'package:appsagainsthumanity/ui/game/game_screen.dart';
 import 'package:appsagainsthumanity/ui/home/bloc/bloc.dart';
 import 'package:appsagainsthumanity/ui/home/widgets/join_room_dialog.dart';
 import 'package:appsagainsthumanity/ui/home/widgets/past_game_card.dart';
@@ -17,7 +14,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:appsagainsthumanity/internal.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-import 'package:timeago/timeago.dart' as timeago;
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -82,6 +78,8 @@ class _HomeScreenState extends State<HomeScreen> {
             padding: EdgeInsets.only(bottom: MediaQuery.of(context).padding.bottom),
             child: Column(
               children: [
+
+                // Title and Past games cards
                 AspectRatio(
                   aspectRatio: 312 / 436,
                   child: PageView(
@@ -92,6 +90,8 @@ class _HomeScreenState extends State<HomeScreen> {
                     ],
                   ),
                 ),
+
+                // Bottom options
                 Expanded(
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -103,6 +103,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           icon: MdiIcons.gamepad,
                           label: "START GAME",
                           onTap: () {
+                            Analytics().logSelectContent(contentType: 'action', itemId: 'start_game');
                             PushNotifications().checkPermissions();
                             Navigator.of(context).push(MaterialPageRoute(builder: (context) => CreateGameScreen()));
                           },
@@ -119,6 +120,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         label: state.joiningGame != null ? "JOINING GAME..." : "JOIN GAME",
                         onTap: state.joiningGame == null
                             ? () {
+                                Analytics().logSelectContent(contentType: 'action', itemId: 'join_game');
                                 PushNotifications().checkPermissions();
                                 _joinGame(context);
                               }
@@ -173,6 +175,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         color: context.colorOnCard,
                       ),
                       onPressed: () {
+                        Analytics().logSelectContent(contentType: 'action', itemId: 'settings');
                         Navigator.of(context).push(MaterialPageRoute(builder: (_) => SettingsScreen()));
                       },
                     ),
@@ -280,6 +283,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget _buildUserTile(BuildContext context, User user) {
     return ListTile(
       onTap: () {
+        Analytics().logSelectContent(contentType: 'action', itemId: 'profile');
         Navigator.of(context).push(MaterialPageRoute(builder: (_) => ProfileScreen()));
       },
       contentPadding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),

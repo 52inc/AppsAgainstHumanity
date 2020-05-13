@@ -1,4 +1,3 @@
-import 'package:appsagainsthumanity/data/features/game/model/turn_winner.dart';
 import 'package:appsagainsthumanity/internal.dart';
 import 'package:appsagainsthumanity/ui/game/bloc/bloc.dart';
 import 'package:appsagainsthumanity/ui/game/screens/gameplay/widget/game_bottom_sheet.dart';
@@ -116,7 +115,7 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
   }
 
   void _showWinnerBottomSheet(BuildContext context, GameViewState state) {
-    print("Showing winner sheet");
+    Analytics().logViewItemList(itemCategory: 'turn_winner');
     showModalBottomSheet(
       context: context,
       backgroundColor: Colors.transparent,
@@ -137,6 +136,7 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
   }
 
   void _showPlayerBottomSheet(BuildContext context) {
+    Analytics().logViewItemList(itemCategory: 'players');
     showModalBottomSheet(
         context: context,
         backgroundColor: Colors.transparent,

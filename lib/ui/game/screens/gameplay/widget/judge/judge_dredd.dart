@@ -80,6 +80,7 @@ class _JudgeDreddState extends State<JudgeDredd> {
       onPressed: () async {
         var currentPlayerResponse = controller.currentPlayerResponse;
         if (currentPlayerResponse != null) {
+          Analytics().logSelectContent(contentType: 'judge', itemId: 'pick_winner');
           print("Winner selected! ${currentPlayerResponse.playerId}");
           context.bloc<GameBloc>()
               .add(PickWinner(currentPlayerResponse.playerId));
@@ -158,8 +159,10 @@ class _JudgeDreddState extends State<JudgeDredd> {
             onTap: isVisible
                 ? () {
                     if (isLeft) {
+                      Analytics().logSelectContent(contentType: 'judge', itemId: 'previous_choice');
                       controller.prevPage();
                     } else {
+                      Analytics().logSelectContent(contentType: 'judge', itemId: 'next_choice');
                       controller.nextPage();
                     }
                   }

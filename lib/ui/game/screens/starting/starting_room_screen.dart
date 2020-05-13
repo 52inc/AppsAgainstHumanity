@@ -37,7 +37,7 @@ class StartingRoomScreen extends StatelessWidget {
                       Text(
                         state.game.gid,
                         style: context.theme.textTheme.headline4.copyWith(
-                          color: Colors.white,
+                          color: context.primaryColor,
                           fontWeight: FontWeight.bold,
                         ),
                       )
