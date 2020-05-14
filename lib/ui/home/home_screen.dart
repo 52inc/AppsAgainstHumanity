@@ -137,6 +137,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
+  /// TODO: Abstract into it's own widget
   Widget _buildTitleCard(BuildContext context, HomeState state, {bool includeMargin = true}) {
     var topMargin = MediaQuery.of(context).padding.top + (Platform.isAndroid ? 24 : 0);
     return Container(

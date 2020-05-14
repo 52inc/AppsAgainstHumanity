@@ -173,12 +173,35 @@ class SettingsScreen extends StatelessWidget {
             ],
           ),
           Container(
-            height: 56,
+            margin: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
             alignment: Alignment.center,
-            child: Text(
-              "Made with 💙 by 52inc",
-              textAlign: TextAlign.center,
-              style: context.theme.textTheme.subtitle1.copyWith(color: Colors.white54),
+            child: Column(
+              children: [
+                GestureDetector(
+                  onTap: () {
+                    showWebView(context, "Cards Against Humanity", "https://cardsagainsthumanity.com");
+                  },
+                  child: Container(
+                    child: Text(
+                      "All CAH or \"Cards Against Humanity\" question and answer text are licensed under Creative Commons BY-NC-SA 4.0 by the owner Cards Against Humanity, LLC. This application is NOT official, produced, endorsed or supported by Cards Against Humanity, LLC.",
+                      textAlign: TextAlign.center,
+                      style: context.theme.textTheme.bodyText2.copyWith(
+                        color: Colors.white60,
+                      ),
+                    ),
+                  ),
+                ),
+
+                Container(
+                  margin: const EdgeInsets.only(top: 16),
+                  child: GestureDetector(
+                    onTap: () {
+                      showWebView(context, "CC BY-NC-SA 4.0", "https://creativecommons.org/licenses/by-nc-sa/4.0/legalcode");
+                    },
+                    child: Image.asset('assets/cc_by_nc_sa.png', width: 96,),
+                  ),
+                ),
+              ],
             ),
           )
         ],

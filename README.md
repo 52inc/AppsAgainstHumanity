@@ -40,7 +40,7 @@ Add your own configuration file to the `/lib` folder. Use this example: `example
 {
   "privacyPolicyUrl": "https://example.com/privacy.html",
   "termsOfServiceUrl": "https://example.com/tos.html",
-  "sourceUrl": "https://github.com/52inc/AppsAgainstHumanity"
+  "sourceUrl": "https://github.com/52inc/AppsAgainstHumanity",
   "wiredashProjectId": "some_wiredash_projectId",
   "wiredashSecret": "some_wiredash_secret"
 }
@@ -79,3 +79,9 @@ Please follow the guidelines set forth in the [CONTRIBUTING](CONTRIBUTING.md) do
 GNU General Public License v3.0
 
 See [LICENSE](LICENSE) to see the full text.
+
+# Attribution
+
+All CAH or "Cards Against Humanity" question and answer text are licensed under Creative Commons BY-NC-SA 4.0 by the owner Cards Against Humanity, LLC. This application is NOT official, produced, endorsed or supported by Cards Against Humanity, LLC.
+
+[![CC-BY-NC-SA](assets/cc_by_nc_sa.png)]
