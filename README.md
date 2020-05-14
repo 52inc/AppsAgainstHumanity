@@ -82,6 +82,8 @@ See [LICENSE](LICENSE) to see the full text.
 
 # Attribution
 
+All CAH or "Cards Against Humanity" question and answer text are hosted externally and are never included in the binary itself for the app that is uploaded to Google Play and Apple's App Store.
+
 All CAH or "Cards Against Humanity" question and answer text are licensed under Creative Commons BY-NC-SA 4.0 by the owner Cards Against Humanity, LLC. This application is NOT official, produced, endorsed or supported by Cards Against Humanity, LLC.
 
 [![CC-BY-NC-SA](assets/cc_by_nc_sa.png)]
