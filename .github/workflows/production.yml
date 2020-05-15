@@ -1,0 +1,50 @@
+name: Play Store
+
+# Only deploy a beta to AppDistribution when we are preparing a new release
+on:
+  push:
+    tags:
+      - v**
+
+jobs:
+  deploy-android:
+    runs-on: ubuntu-latest
+    container:
+      image:  google/dart:latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Install Flutter
+        uses: subosito/flutter-action@v1
+        with:
+          channel: 'dev'
+
+      - name: Fetch dependencies
+        run: flutter pub get
+        
+      - name: Setup Secrets
+        run: |
+          echo $GOOGLE_SERVICES_JSON | tee android/app/google-services.json
+          echo $CONFIG_JSON | tee lib/config.json
+          echo $KEY_PROPERTIES | tee android/key.properties
+          echo $SIGNING_KEY | base64 --decode > android/distribution/aah.jks
+        env:
+          GOOGLE_SERVICES_JSON: ${{ secrets.GOOGLE_SERVICES_JSON }}
+          CONFIG_JSON: ${{ secrets.CONFIG }}
+          KEY_PROPERTIES: ${{ secrets.KEY_PROPERTIES }}
+          SIGNING_KEY: ${{ secrets.SIGNING_KEY }}
+          
+      - name: Run Code Generate
+        run: ./regenerate.sh
+        
+      - name: Build APK
+        run: flutter build appbundle
+
+      - name: Upload to Google Play Store
+        uses: r0adkll/upload-google-play@v1
+        with:
+          serviceAccountJsonRaw: ${{ secrets.SERVICE_ACCOUNT_JSON }}
+          packageName: com.ftinc.appsagainsthumanity
+          releaseFile: build/app/outputs/bundle/release/app-release.aab
+          track: production
+          whatsNewDirectory: distribution/whatsnew
