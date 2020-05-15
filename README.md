@@ -29,6 +29,9 @@ firebase.initializeApp(firebaseConfig);
 firebase.analytics();
 ```
 
+### Import Card Data
+You can find and import all the card data from this [Google Sheet](https://docs.google.com/spreadsheets/d/1lsy7lIwBe-DWOi2PALZPf5DgXHx9MEvKfRw1GaWQkzg/edit) (or the [mirror here](https://docs.google.com/spreadsheets/d/1H808p0SA8zCfU44PG_ZoNi4eBawB2CiQFI7ttVTGRNQ/edit)) using the node.js script located at `/importer`
+
 ### Setup Wiredash
 Setup an account @ [wiredash.io](https://wiredash.io/) and create a new project to generate a `projectId` and `secret` that you will use in the following config. Or, you can remove the `Wiredash` widget from the `lib/app.dart` widget tree.
 
