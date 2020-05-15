@@ -1,10 +1,17 @@
+import 'dart:io';
+
 import 'package:firebase_analytics/firebase_analytics.dart';
 
 class Analytics with FirebaseAnalytics {
-  Analytics._();
-
   static Analytics _instance = Analytics._();
-  static FirebaseAnalytics _firebaseAnalytics = FirebaseAnalytics();
+
+  FirebaseAnalytics _firebaseAnalytics;
+
+  Analytics._() {
+    if (Platform.isAndroid || Platform.isIOS) {
+      _firebaseAnalytics = FirebaseAnalytics();
+    }
+  }
 
   factory Analytics() {
     return _instance;
