@@ -1,11 +1,3 @@
-• Added ability to leave a game (long click on game in Past Games card)
-• Improved asynchronous feedback on tasks (more loading spinners)
-• Made the game code case insensitive, so that lower case works when joining a game
-• Fixed the ordering on multi-card responses
-• Added Wiredash for collecting feedback (Settings => Feedback)
-• Added DarkMode support
-• Fixed sign-in bug from apple-id sign in
-• Added ability to swipe down and dismiss selected cards when submitting a response to a prompt
-• Added ability to see card source for a Prompt card by long pressing on its text
-• Improved the 'Winner' sheet so that you can see the prompt + winning response, and a pageable list of other responses submitted
-• Improved support for smaller screen devices
+• Improved disclaimer language in the settings
+• Added analytic calls
+• Developer packs are now super-secret and require a special action to unlock them
