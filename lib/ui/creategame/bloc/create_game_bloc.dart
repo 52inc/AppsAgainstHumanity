@@ -39,7 +39,10 @@ class CreateGameBloc extends Bloc<CreateGameEvent, CreateGameState> {
   Stream<CreateGameState> _mapScreenLoadedToState() async* {
     try {
       var cardSets = await cardsRepository.getAvailableCardSets();
-      yield state.copyWith(cardSets: cardSets.toImmutableList(), isLoading: false);
+      var filteredCardSets = cardSets.where((cs) {
+        return (cs.source == "Developer" && AppPreferences().developerPackEnabled) || cs.source != "Developer";
+      }).toList();
+      yield state.copyWith(cardSets: filteredCardSets.toImmutableList(), isLoading: false);
     } catch (e) {
       yield state.copyWith(isLoading: false, error: e.toString());
     }

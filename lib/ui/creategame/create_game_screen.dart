@@ -260,6 +260,7 @@ class HeaderItem extends StatelessWidget {
         children: [
           Divider(
             height: 1,
+            color: Colors.white12,
           ),
           Container(
             height: 48,

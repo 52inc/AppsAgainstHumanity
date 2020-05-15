@@ -1,7 +1,10 @@
 import 'package:appsagainsthumanity/authentication_bloc/authentication_bloc.dart';
+import 'package:appsagainsthumanity/data/app_preferences.dart';
 import 'package:appsagainsthumanity/data/features/users/user_repository.dart';
 import 'package:appsagainsthumanity/internal.dart';
+import 'package:appsagainsthumanity/ui/creategame/create_game_screen.dart';
 import 'package:appsagainsthumanity/ui/profile/profile_screen.dart';
+import 'package:appsagainsthumanity/ui/settings/widgets/frequent_tap_detector.dart';
 import 'package:appsagainsthumanity/ui/settings/widgets/preference.dart';
 import 'package:appsagainsthumanity/ui/settings/widgets/preference_header.dart';
 import 'package:appsagainsthumanity/ui/settings/widgets/user_preference.dart';
@@ -13,7 +16,14 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 import 'package:package_info/package_info.dart';
 import 'package:wiredash/wiredash.dart';
 
-class SettingsScreen extends StatelessWidget {
+import 'package:flutter/foundation.dart' as Foundation;
+
+class SettingsScreen extends StatefulWidget {
+  @override
+  _SettingsScreenState createState() => _SettingsScreenState();
+}
+
+class _SettingsScreenState extends State<SettingsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -114,16 +124,12 @@ class SettingsScreen extends StatelessWidget {
               Preference(
                 title: "Feedback",
                 subtitle: "Provide feedback on issues or improvements",
-                icon: Icon(
-                  MdiIcons.faceAgent,
-                  color: context.secondaryColorOnCard
-                ),
+                icon: Icon(MdiIcons.faceAgent, color: context.secondaryColorOnCard),
                 onTap: () {
                   Analytics().logSelectContent(contentType: 'setting', itemId: 'feedback');
                   Wiredash.of(context).show();
                 },
               ),
-
               Preference(
                 title: "Contribute",
                 subtitle: "Checkout the source code on GitHub!",
@@ -159,19 +165,75 @@ class SettingsScreen extends StatelessWidget {
                   stream: PackageInfo.fromPlatform().asStream(),
                   builder: (context, snapshot) {
                     var packageInfo = snapshot.data;
-                    return Preference(
-                      title: "Version",
-                      icon: Icon(
-                        MdiIcons.application,
-                        color: context.secondaryColorOnCard,
+                    return FrequentTapDetector(
+                      threshold: 5,
+                      onTapCountReachedCallback: () {
+                        if (!AppPreferences().developerPackEnabled) {
+                          Analytics().logSelectContent(contentType: 'setting', itemId: 'developer_packs');
+                          AppPreferences().developerPackEnabled = true;
+                          setState(() {});
+                          Scaffold.of(context).showSnackBar(SnackBar(
+                            content: Text("Developer Packs Unlocked!"),
+                            behavior: SnackBarBehavior.floating,
+                            action: SnackBarAction(
+                              label: "VIEW",
+                              textColor: context.primaryColor,
+                              onPressed: () {
+                                Navigator.of(context)
+                                    .pushReplacement(MaterialPageRoute(builder: (_) => CreateGameScreen()));
+                              },
+                            ),
+                          ));
+                        }
+                      },
+                      child: Preference(
+                        title: "Version",
+                        icon: Icon(
+                          MdiIcons.application,
+                          color: context.secondaryColorOnCard,
+                        ),
+                        subtitle:
+                            packageInfo != null ? "${packageInfo.version}+${packageInfo.buildNumber}" : "Loading...",
                       ),
-                      subtitle: packageInfo != null
-                          ? "${packageInfo.version}+${packageInfo.buildNumber}"
-                          : "Loading...",
                     );
                   }),
             ],
           ),
+          if (Foundation.kDebugMode)
+            PreferenceCategory(
+              title: "Debug",
+              children: [
+                Preference(
+                  title: "Reset preferences",
+                  subtitle: "Clear out the preferences to their default state",
+                  icon: Icon(
+                    MdiIcons.restore,
+                    color: context.secondaryColorOnCard,
+                  ),
+                  onTap: () {
+                    AppPreferences().clear();
+                    setState(() {});
+                  },
+                ),
+                Preference(
+                  title: "Developer packs",
+                  subtitle: "Custom card packs from the developer",
+                  trailing: AppPreferences().developerPackEnabled
+                      ? Text(
+                          "ENABLED",
+                          style: context.theme.textTheme.button.copyWith(color: Colors.green),
+                        )
+                      : Text(
+                          "DISABLED",
+                          style: context.theme.textTheme.button.copyWith(color: Colors.redAccent),
+                        ),
+                  icon: Image.asset(
+                    'assets/ic_logo.png',
+                    color: context.secondaryColorOnCard,
+                  ),
+                ),
+              ],
+            ),
           Container(
             margin: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
             alignment: Alignment.center,
@@ -191,14 +253,17 @@ class SettingsScreen extends StatelessWidget {
                     ),
                   ),
                 ),
-
                 Container(
                   margin: const EdgeInsets.only(top: 16),
                   child: GestureDetector(
                     onTap: () {
-                      showWebView(context, "CC BY-NC-SA 4.0", "https://creativecommons.org/licenses/by-nc-sa/4.0/legalcode");
+                      showWebView(
+                          context, "CC BY-NC-SA 4.0", "https://creativecommons.org/licenses/by-nc-sa/4.0/legalcode");
                     },
-                    child: Image.asset('assets/cc_by_nc_sa.png', width: 96,),
+                    child: Image.asset(
+                      'assets/cc_by_nc_sa.png',
+                      width: 96,
+                    ),
                   ),
                 ),
               ],
