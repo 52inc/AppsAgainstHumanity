@@ -1,4 +1,4 @@
-# Contributing to SwitchShare
+# Contributing to Apps Against Humanity
 
 ## Issues
 
