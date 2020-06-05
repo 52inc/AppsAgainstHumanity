@@ -32,6 +32,7 @@ class App extends StatelessWidget {
         title: 'Apps Against Humanity',
         theme: AppThemes.light,
         darkTheme: AppThemes.dark,
+        debugShowCheckedModeBanner: false,
         localizationsDelegates: [
           AppLocalizationsDelegate(),
           GlobalMaterialLocalizations.delegate,
