@@ -1,9 +1,12 @@
+import 'dart:io';
+
 import 'package:appsagainsthumanity/authentication_bloc/authentication_bloc.dart';
 import 'package:appsagainsthumanity/internal.dart';
 import 'package:appsagainsthumanity/ui/signin/bloc/bloc.dart';
 import 'package:appsagainsthumanity/ui/signin/widgets/apple_sign_in.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class SignInScreen extends StatefulWidget {
   @override
@@ -13,10 +16,17 @@ class SignInScreen extends StatefulWidget {
 class _SignInScreen extends State<SignInScreen> {
   @override
   Widget build(BuildContext context) {
+    var topMargin = MediaQuery.of(context).padding.top + (Platform.isAndroid ? 24 : 8);
     return Scaffold(
-      body: BlocProvider(
-        create: (context) => SignInBloc(userRepository: context.repository()),
-        child: _buildBody(),
+      body: Padding(
+        padding: EdgeInsets.only(
+          bottom: MediaQuery.of(context).padding.bottom,
+          top: topMargin,
+        ),
+        child: BlocProvider(
+          create: (context) => SignInBloc(userRepository: context.repository()),
+          child: _buildBody(),
+        ),
       ),
     );
   }
@@ -44,37 +54,32 @@ class _SignInScreen extends State<SignInScreen> {
       },
       builder: (context, state) {
         return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Expanded(
-              child: Container(
-                width: double.maxFinite,
-                margin: const EdgeInsets.only(left: 24, right: 24, top: 48),
-                child: Material(
-                  elevation: 4.0,
-                  borderRadius: BorderRadius.circular(16),
-                  color: Colors.white,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Container(
-                        margin: const EdgeInsets.all(24),
-                        child: Text(
-                          context.strings.appNameDisplay,
-                          style: context.theme.textTheme.headline3
-                              .copyWith(color: Colors.black87, fontWeight: FontWeight.bold, fontSize: 48),
-                        ),
-                      )
-                    ],
-                  ),
-                ),
+            Container(
+              margin: const EdgeInsets.only(left: 24, right: 24),
+              child: Text(
+                context.strings.appNameDisplay,
+                style: GoogleFonts.raleway(
+                    textStyle: context.theme.textTheme.headline3.copyWith(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 48,
+                    )),
               ),
             ),
+
+            Expanded(
+              child: Container(),
+            ),
+
             Container(
               width: double.infinity,
               alignment: Alignment.topCenter,
               margin: const EdgeInsets.only(left: 24, right: 24, top: 24),
               child: AppleSignIn(),
             ),
+
             Container(
               width: double.infinity,
               alignment: Alignment.topCenter,

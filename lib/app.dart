@@ -1,6 +1,6 @@
 import 'package:appsagainsthumanity/internal.dart';
 import 'package:appsagainsthumanity/internal/push.dart';
-import 'package:appsagainsthumanity/ui/home/home_screen.dart';
+import 'package:appsagainsthumanity/ui/home/home_screen_v2.dart';
 import 'package:appsagainsthumanity/ui/routes.dart';
 import 'package:appsagainsthumanity/ui/signin/sign_in_screen.dart';
 import 'package:appsagainsthumanity/ui/terms_screen.dart';
@@ -56,7 +56,7 @@ class App extends StatelessWidget {
                 } else if (state is NeedsAgreeToTerms) {
                   return TermsOfServiceScreen();
                 } else if (state is Authenticated) {
-                  return HomeScreen();
+                  return HomeScreenV2();
                 } else {
                   return Container(color: AppColors.surface);
                 }

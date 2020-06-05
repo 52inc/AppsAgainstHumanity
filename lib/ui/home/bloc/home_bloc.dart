@@ -60,7 +60,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
 
   Stream<HomeState> _mapLeaveGameToState(LeaveGame event) async* {
     try {
-      yield state.copyWith(leavingGame: event.game);
+      yield state.copyWith(leavingGame: event.game, games: state.games..remove(event.game));
       await _gameRepository.leaveGame(event.game);
       yield state.copyWith(leavingGame: null);
     } catch (e) {

@@ -10,6 +10,7 @@ import 'package:appsagainsthumanity/data/features/users/user_repository.dart';
 import 'package:appsagainsthumanity/data/firestore.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_functions/cloud_functions.dart';
+import 'package:flutter/services.dart';
 import 'package:kt_dart/kt.dart';
 
 class FirestoreGameRepository extends GameRepository {
@@ -76,22 +77,23 @@ class FirestoreGameRepository extends GameRepository {
 
   @override
   Future<Game> getGame(String gameDocumentId, {bool andJoin = false}) async {
-    var gameDocument = db.collection(FirebaseConstants.COLLECTION_GAMES).document(gameDocumentId);
+    var gameDocument = db.collection(FirebaseConstants.COLLECTION_GAMES)
+        .document(gameDocumentId);
 
-    var snapshot = await gameDocument.get();
-    var game = Game.fromDocument(snapshot);
-
-    if (andJoin) {
-      try {
-        game = await _addSelfToGame(gameDocumentId: gameDocumentId);
-      } catch (e, st) {
-        print("Error joining game: $e\n$st");
+    try {
+      var snapshot = await gameDocument.get();
+      return Game.fromDocument(snapshot);
+    } catch (e, st) {
+      if (e is PlatformException && andJoin) {
+        try {
+          return await _addSelfToGame(gameDocumentId: gameDocumentId);
+        } catch (e, st) {
+          print("Error joining game: $e\n$st");
+        }
       }
-    } else if (andJoin) {
-      throw 'You cannot join a game that has already started';
     }
 
-    return game;
+    return null;
   }
 
   @override
