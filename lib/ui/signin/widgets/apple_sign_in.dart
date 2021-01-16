@@ -1,31 +1,17 @@
 import 'dart:io';
-
-import 'package:apple_sign_in/apple_sign_in.dart';
 import 'package:appsagainsthumanity/ui/signin/bloc/bloc.dart';
-import 'package:device_info/device_info.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 
-class AppleSignIn extends StatefulWidget {
-  @override
-  State<StatefulWidget> createState() => _AppleSignInState();
-}
-
-class _AppleSignInState extends State<AppleSignIn> {
-  bool _supportsAppleSignIn = false;
-
-  @override
-  void initState() {
-    super.initState();
-    _checkCanSignInWithApple();
-  }
-
+class AppleSignIn extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    if (_supportsAppleSignIn) {
-      return AppleSignInButton(
-        style: ButtonStyle.whiteOutline,
-        type: ButtonType.signIn,
+    if (Platform.isIOS) {
+      return SignInWithAppleButton(
+        style: SignInWithAppleButtonStyle.white,
+        iconAlignment: IconAlignment.left,
+        height: 48,
         onPressed: () {
           context.bloc<SignInBloc>().add(LoginWithApplePressed());
         },
@@ -33,17 +19,5 @@ class _AppleSignInState extends State<AppleSignIn> {
     } else {
       return Container();
     }
-  }
-
-  void _checkCanSignInWithApple() async {
-      if (Platform.isIOS) {
-          var iosInfo = await DeviceInfoPlugin().iosInfo;
-          var version = iosInfo.systemVersion;
-          if (version.contains('13') == true) {
-              setState(() {
-                _supportsAppleSignIn = true;
-              });
-          }
-      }
   }
 }

@@ -163,8 +163,6 @@ PODS:
     - AppAuth/ExternalUserAgent (= 1.3.0)
   - AppAuth/Core (1.3.0)
   - AppAuth/ExternalUserAgent (1.3.0)
-  - apple_sign_in (0.0.1):
-    - Flutter
   - BoringSSL-GRPC (0.0.3):
     - BoringSSL-GRPC/Implementation (= 0.0.3)
     - BoringSSL-GRPC/Interface (= 0.0.3)
@@ -213,6 +211,8 @@ PODS:
   - firebase_analytics (0.0.1):
     - Firebase/Analytics (~> 6.0)
     - Firebase/Core
+    - Flutter
+  - firebase_analytics_web (0.1.0):
     - Flutter
   - firebase_auth (0.0.1):
     - Firebase/Auth (~> 6.3)
@@ -382,7 +382,11 @@ PODS:
     - Flutter
   - path_provider (0.0.1):
     - Flutter
+  - path_provider_linux (0.0.1):
+    - Flutter
   - path_provider_macos (0.0.1):
+    - Flutter
+  - path_provider_windows (0.0.1):
     - Flutter
   - PromisesObjC (1.2.8)
   - Protobuf (3.11.4)
@@ -390,21 +394,27 @@ PODS:
     - Flutter
   - shared_preferences (0.0.1):
     - Flutter
+  - shared_preferences_linux (0.0.1):
+    - Flutter
   - shared_preferences_macos (0.0.1):
     - Flutter
   - shared_preferences_web (0.0.1):
+    - Flutter
+  - shared_preferences_windows (0.0.1):
+    - Flutter
+  - sign_in_with_apple (0.0.1):
     - Flutter
   - webview_flutter (0.0.1):
     - Flutter
 
 DEPENDENCIES:
-  - apple_sign_in (from `.symlinks/plugins/apple_sign_in/ios`)
   - cloud_firestore (from `.symlinks/plugins/cloud_firestore/ios`)
   - cloud_firestore_web (from `.symlinks/plugins/cloud_firestore_web/ios`)
   - cloud_functions (from `.symlinks/plugins/cloud_functions/ios`)
   - cloud_functions_web (from `.symlinks/plugins/cloud_functions_web/ios`)
   - device_info (from `.symlinks/plugins/device_info/ios`)
   - firebase_analytics (from `.symlinks/plugins/firebase_analytics/ios`)
+  - firebase_analytics_web (from `.symlinks/plugins/firebase_analytics_web/ios`)
   - firebase_auth (from `.symlinks/plugins/firebase_auth/ios`)
   - firebase_auth_web (from `.symlinks/plugins/firebase_auth_web/ios`)
   - firebase_core (from `.symlinks/plugins/firebase_core/ios`)
@@ -419,11 +429,16 @@ DEPENDENCIES:
   - image_picker (from `.symlinks/plugins/image_picker/ios`)
   - package_info (from `.symlinks/plugins/package_info/ios`)
   - path_provider (from `.symlinks/plugins/path_provider/ios`)
+  - path_provider_linux (from `.symlinks/plugins/path_provider_linux/ios`)
   - path_provider_macos (from `.symlinks/plugins/path_provider_macos/ios`)
+  - path_provider_windows (from `.symlinks/plugins/path_provider_windows/ios`)
   - share (from `.symlinks/plugins/share/ios`)
   - shared_preferences (from `.symlinks/plugins/shared_preferences/ios`)
+  - shared_preferences_linux (from `.symlinks/plugins/shared_preferences_linux/ios`)
   - shared_preferences_macos (from `.symlinks/plugins/shared_preferences_macos/ios`)
   - shared_preferences_web (from `.symlinks/plugins/shared_preferences_web/ios`)
+  - shared_preferences_windows (from `.symlinks/plugins/shared_preferences_windows/ios`)
+  - sign_in_with_apple (from `.symlinks/plugins/sign_in_with_apple/ios`)
   - webview_flutter (from `.symlinks/plugins/webview_flutter/ios`)
 
 SPEC REPOS:
@@ -461,8 +476,6 @@ SPEC REPOS:
     - Protobuf
 
 EXTERNAL SOURCES:
-  apple_sign_in:
-    :path: ".symlinks/plugins/apple_sign_in/ios"
   cloud_firestore:
     :path: ".symlinks/plugins/cloud_firestore/ios"
   cloud_firestore_web:
@@ -475,6 +488,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/device_info/ios"
   firebase_analytics:
     :path: ".symlinks/plugins/firebase_analytics/ios"
+  firebase_analytics_web:
+    :path: ".symlinks/plugins/firebase_analytics_web/ios"
   firebase_auth:
     :path: ".symlinks/plugins/firebase_auth/ios"
   firebase_auth_web:
@@ -503,38 +518,48 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/package_info/ios"
   path_provider:
     :path: ".symlinks/plugins/path_provider/ios"
+  path_provider_linux:
+    :path: ".symlinks/plugins/path_provider_linux/ios"
   path_provider_macos:
     :path: ".symlinks/plugins/path_provider_macos/ios"
+  path_provider_windows:
+    :path: ".symlinks/plugins/path_provider_windows/ios"
   share:
     :path: ".symlinks/plugins/share/ios"
   shared_preferences:
     :path: ".symlinks/plugins/shared_preferences/ios"
+  shared_preferences_linux:
+    :path: ".symlinks/plugins/shared_preferences_linux/ios"
   shared_preferences_macos:
     :path: ".symlinks/plugins/shared_preferences_macos/ios"
   shared_preferences_web:
     :path: ".symlinks/plugins/shared_preferences_web/ios"
+  shared_preferences_windows:
+    :path: ".symlinks/plugins/shared_preferences_windows/ios"
+  sign_in_with_apple:
+    :path: ".symlinks/plugins/sign_in_with_apple/ios"
   webview_flutter:
     :path: ".symlinks/plugins/webview_flutter/ios"
 
 SPEC CHECKSUMS:
   abseil: 18063d773f5366ff8736a050fe035a28f635fd27
   AppAuth: 73574f3013a1e65b9601a3ddc8b3158cce68c09d
-  apple_sign_in: 7716c7ddfa195aeab7dec0dc374ef4ff45d1adb4
   BoringSSL-GRPC: db8764df3204ccea016e1c8dd15d9a9ad63ff318
-  cloud_firestore: 31454d48df21f3e1a900015e36143c0d46a304b7
+  cloud_firestore: 2a4f8f802fb0b701cf809b283b6bec7477ebaa6f
   cloud_firestore_web: 9ec3dc7f5f98de5129339802d491c1204462bfec
   cloud_functions: cc76d33c7983c9057ef1163a560734595133091c
   cloud_functions_web: ec883775f4a3b3fad943918d2cdad4fbf51cdbf0
-  device_info: cbf09d2ec12aa7110e0b09fabe54b5bd6c8efe74
+  device_info: d7d233b645a32c40dfdc212de5cf646ca482f175
   Firebase: 5d77105d9740a07ca6b16927ca971db7e860faaf
-  firebase_analytics: dacdcfc524d722fff13dcff942f0dfa47e6be567
+  firebase_analytics: 9118044ffb98bee71d84733fc594f5134fe4bc1b
+  firebase_analytics_web: 7d539061ea4af07563a0e21044af89cab70efec0
   firebase_auth: 6838289663da45c488af0a82c246928588fcddc5
   firebase_auth_web: 0955c07bcc06e84af76b9d4e32e6f31518f2d7de
   firebase_core: dc539d4bdc69894823e4a6e557034a9e48960f21
   firebase_core_web: d501d8b946b60c8af265428ce483b0fff5ad52d1
-  firebase_dynamic_links: 7aaa8cbd086b55de330e34912dd144687e7d5c47
-  firebase_messaging: cffb57ce40958c6204f03fb0c81713e4cd1e240c
-  firebase_storage: 5e931af5cdef32331676c659bdd1ebcaba9dc78a
+  firebase_dynamic_links: 6aa278fc5e6e8cca17d5aa4c7aa46283f2b94749
+  firebase_messaging: 21344b3b3a7d9d325d63a70e3750c0c798fe1e03
+  firebase_storage: 22966fce4aa6e8848cbaa017df62107cee29f327
   FirebaseAnalytics: e83e64b1231dedcd9ddd4bdecd9bcfd6ba341679
   FirebaseAnalyticsInterop: 3f86269c38ae41f47afeb43ebf32a001f58fcdae
   FirebaseAuth: ce45d7c5d46bed90159f3a73b6efbe8976ed3573
@@ -551,7 +576,7 @@ SPEC CHECKSUMS:
   FirebaseStorage: 6c5263796af3b1be82ed173598aade47535fe125
   Flutter: 0e3d915762c693b495b44d77113d4970485de6ec
   flutter_plugin_android_lifecycle: dc0b544e129eebb77a6bfb1239d4d1c673a60a35
-  google_sign_in: f32920a589fdf4ab2918ec6dc5e5b0d5b8040ff5
+  google_sign_in: 6bd214b9c154f881422f5fe27b66aaa7bbd580cc
   google_sign_in_web: 52deb24929ac0992baff65c57956031c44ed44c3
   GoogleAppMeasurement: a08a43b8677b95ed51fcef880e36737334d804fd
   GoogleDataTransport: 574a983e829327d7c18f2627f65d9e80164ea8a4
@@ -562,20 +587,25 @@ SPEC CHECKSUMS:
   gRPC-Core: c9aef9a261a1247e881b18059b84d597293c9947
   GTMAppAuth: 4deac854479704f348309e7b66189e604cf5e01e
   GTMSessionFetcher: cea130bbfe5a7edc8d06d3f0d17288c32ffe9925
-  image_picker: 66aa71bc96850a90590a35d4c4a2907b0d823109
+  image_picker: 9c3312491f862b28d21ecd8fdf0ee14e601b3f09
   leveldb-library: 55d93ee664b4007aac644a782d11da33fba316f7
   nanopb: 18003b5e52dab79db540fe93fe9579f399bd1ccd
-  package_info: 48b108e75b8802c2d5e126f208ef540561c98aef
-  path_provider: fb74bd0465e96b594bb3b5088ee4a4e7bb1f2a9d
+  package_info: 873975fc26034f0b863a300ad47e7f1ac6c7ec62
+  path_provider: abfe2b5c733d04e238b0d8691db0cfd63a27a93c
+  path_provider_linux: 4d630dc393e1f20364f3e3b4a2ff41d9674a84e4
   path_provider_macos: f760a3c5b04357c380e2fddb6f9db6f3015897e0
+  path_provider_windows: a2b81600c677ac1959367280991971cb9a1edb3b
   PromisesObjC: c119f3cd559f50b7ae681fa59dc1acd19173b7e6
   Protobuf: 176220c526ad8bd09ab1fb40a978eac3fef665f7
   share: 0b2c3e82132f5888bccca3351c504d0003b3b410
-  shared_preferences: 430726339841afefe5142b9c1f50cb6bd7793e01
+  shared_preferences: af6bfa751691cdc24be3045c43ec037377ada40d
+  shared_preferences_linux: afefbfe8d921e207f01ede8b60373d9e3b566b78
   shared_preferences_macos: f3f29b71ccbb56bf40c9dd6396c9acf15e214087
   shared_preferences_web: 141cce0c3ed1a1c5bf2a0e44f52d31eeb66e5ea9
+  shared_preferences_windows: 36b76d6f54e76ead957e60b49e2f124b4cd3e6ae
+  sign_in_with_apple: 34f3f5456a45fd7ac5fb42905e2ad31dae061b4a
   webview_flutter: d2b4d6c66968ad042ad94cbb791f5b72b4678a96
 
 PODFILE CHECKSUM: c34e2287a9ccaa606aeceab922830efb9a6ff69a
 
-COCOAPODS: 1.8.4
+COCOAPODS: 1.10.1

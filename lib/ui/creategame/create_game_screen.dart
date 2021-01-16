@@ -4,6 +4,7 @@ import 'package:appsagainsthumanity/ui/creategame/bloc/bloc.dart';
 import 'package:appsagainsthumanity/internal.dart';
 import 'package:appsagainsthumanity/ui/creategame/widgets/CountPreference.dart';
 import 'package:appsagainsthumanity/ui/routes.dart';
+import 'package:appsagainsthumanity/util/cah_scrubber.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -201,8 +202,6 @@ class _CreateGameScreenState extends State<CreateGameScreen> {
 
   Widget _buildList(KtList<CardSet> sets, KtSet<CardSet> selected) {
     var groupedSets = sets.groupBy((cs) => cs.source);
-    print("Sets: $sets");
-    print("Grouped Sets: $groupedSets");
     var widgets = groupedSets.keys.toList().sortedWith((a, b) {
       var aW = keyWeight(a);
       var bW = keyWeight(b);
@@ -282,7 +281,7 @@ class HeaderItem extends StatelessWidget {
                   child: Container(
                     margin: const EdgeInsets.only(left: 16),
                     child: Text(
-                      title ?? "_UNKNOWN_",
+                      CahScrubber.scrub(title) ?? "_UNKNOWN_",
                       style: context.theme.textTheme.subtitle2.copyWith(
                         color: AppColors.primaryVariant,
                       ),
@@ -307,7 +306,7 @@ class CardSetListItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      title: Text(cardSet.name),
+      title: Text(CahScrubber.scrub(cardSet.name)),
       contentPadding: const EdgeInsets.symmetric(horizontal: 6),
       leading: Checkbox(
         value: isSelected,

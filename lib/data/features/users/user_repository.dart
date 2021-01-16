@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:apple_sign_in/apple_sign_in.dart';
 import 'package:appsagainsthumanity/data/app_preferences.dart';
 import 'package:appsagainsthumanity/data/features/game/model/player.dart';
 import 'package:appsagainsthumanity/data/features/users/model/user.dart';
@@ -11,6 +10,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:logging/logging.dart';
+import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 
 class UserRepository {
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -49,13 +49,10 @@ class UserRepository {
 
   Future<void> updateDisplayName(String name) {
     return currentUserOrThrow((firebaseUser) async {
-
       // Be sure to update our Auth Obj
-      await firebaseUser.updateProfile(
-          UserUpdateInfo()
-              ..displayName = name
-              ..photoUrl = firebaseUser.photoUrl
-      );
+      await firebaseUser.updateProfile(UserUpdateInfo()
+        ..displayName = name
+        ..photoUrl = firebaseUser.photoUrl);
 
       await _userDocument(firebaseUser).updateData({
         'name': name,
@@ -70,11 +67,9 @@ class UserRepository {
       await ref.delete();
 
       // Be sure to update our Auth Obj
-      await firebaseUser.updateProfile(
-          UserUpdateInfo()
-            ..displayName = firebaseUser.displayName
-            ..photoUrl = null
-      );
+      await firebaseUser.updateProfile(UserUpdateInfo()
+        ..displayName = firebaseUser.displayName
+        ..photoUrl = null);
 
       await _userDocument(firebaseUser).updateData({
         'avatarUrl': null,
@@ -90,11 +85,9 @@ class UserRepository {
       var downloadUrl = await refSnapshot.ref.getDownloadURL();
 
       // Be sure to update our Auth Obj
-      await firebaseUser.updateProfile(
-          UserUpdateInfo()
-            ..displayName = firebaseUser.displayName
-            ..photoUrl = downloadUrl
-      );
+      await firebaseUser.updateProfile(UserUpdateInfo()
+        ..displayName = firebaseUser.displayName
+        ..photoUrl = downloadUrl);
 
       await _userDocument(firebaseUser).updateData({
         'avatarUrl': downloadUrl.toString(),
@@ -115,7 +108,8 @@ class UserRepository {
       var acct = await _googleSignIn.signIn();
       var auth = await acct.authentication;
 
-      var result = await _auth.signInWithCredential(GoogleAuthProvider.getCredential(
+      var result =
+          await _auth.signInWithCredential(GoogleAuthProvider.getCredential(
         idToken: auth.idToken,
         accessToken: auth.accessToken,
       ));
@@ -128,48 +122,30 @@ class UserRepository {
   }
 
   Future<User> signInWithApple() async {
-    final AuthorizationResult result = await AppleSignIn.performRequests([
-      AppleIdRequest(requestedScopes: [Scope.email, Scope.fullName])
+    final result = await SignInWithApple.getAppleIDCredential(scopes: [
+      AppleIDAuthorizationScopes.email,
+      AppleIDAuthorizationScopes.fullName,
     ]);
 
-    switch (result.status) {
-      case AuthorizationStatus.authorized:
-        // Success
-        final AppleIdCredential appleIdCredential = result.credential;
-        OAuthProvider oAuthProvider = OAuthProvider(providerId: "apple.com");
-        final AuthCredential credential = oAuthProvider.getCredential(
-          idToken: String.fromCharCodes(appleIdCredential.identityToken),
-          accessToken: String.fromCharCodes(appleIdCredential.authorizationCode),
-        );
+    // Success
+    OAuthProvider oAuthProvider = OAuthProvider(providerId: "apple.com");
+    final AuthCredential credential = oAuthProvider.getCredential(
+      idToken: result.identityToken,
+      accessToken: result.authorizationCode,
+    );
 
-        var name = Player.DEFAULT_NAME;
-        if (appleIdCredential.fullName != null) {
-          print("Apple Name(nick=${appleIdCredential.fullName.nickname}, "
-              "given=${appleIdCredential.fullName.givenName}, "
-              "middle=${appleIdCredential.fullName.middleName}, "
-              "family=${appleIdCredential.fullName.familyName})");
-          var nameComponents = appleIdCredential.fullName;
-          name = nameComponents.nickname ??
-              "${nameComponents.givenName ?? nameComponents.middleName ?? ""} ${nameComponents.familyName ?? ""}";
-        }
-
-        final AuthResult _result = await _auth.signInWithCredential(credential);
-
-        return _finishSigningInWithResult(_result, name: name);
-        break;
-      case AuthorizationStatus.error:
-        throw result.error.localizedFailureReason;
-        break;
-      case AuthorizationStatus.cancelled:
-        print("User Cancelled operation");
-        throw 'Cancelled';
-        break;
-      default:
-        throw 'Unable to sign in';
+    var name = Player.DEFAULT_NAME;
+    if (result.givenName != null) {
+      print("Apple Name(given=${result.givenName}, family=${result.familyName})");
+      name = result.givenName;
     }
+
+    final AuthResult _result = await _auth.signInWithCredential(credential);
+    return _finishSigningInWithResult(_result, name: name);
   }
 
-  Future<User> _finishSigningInWithResult(AuthResult result, {String name}) async {
+  Future<User> _finishSigningInWithResult(AuthResult result,
+      {String name}) async {
     try {
       if (result.user != null) {
         if (name != null && result.user.displayName != name) {
@@ -224,10 +200,15 @@ class UserRepository {
   }
 
   DocumentReference _userDocument(FirebaseUser user) {
-    return _db.collection(FirebaseConstants.COLLECTION_USERS).document(user.uid);
+    return _db
+        .collection(FirebaseConstants.COLLECTION_USERS)
+        .document(user.uid);
   }
 
   StorageReference _profilePhotoReference(FirebaseUser user) {
-    return _storage.ref().child(FirebaseConstants.COLLECTION_USERS).child(user.uid);
+    return _storage
+        .ref()
+        .child(FirebaseConstants.COLLECTION_USERS)
+        .child(user.uid);
   }
 }
