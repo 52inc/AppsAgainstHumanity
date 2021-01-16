@@ -16,7 +16,8 @@ class SignInScreen extends StatefulWidget {
 class _SignInScreen extends State<SignInScreen> {
   @override
   Widget build(BuildContext context) {
-    var topMargin = MediaQuery.of(context).padding.top + (Platform.isAndroid ? 24 : 8);
+    var topMargin =
+        MediaQuery.of(context).padding.top + (Platform.isAndroid ? 24 : 8);
     return Scaffold(
       body: Padding(
         padding: EdgeInsets.only(
@@ -57,29 +58,27 @@ class _SignInScreen extends State<SignInScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Container(
-              margin: const EdgeInsets.only(left: 24, right: 24),
+              margin: const EdgeInsets.only(left: 24, right: 24, top: 32),
               child: Text(
                 context.strings.appNameDisplay,
                 style: GoogleFonts.raleway(
-                    textStyle: context.theme.textTheme.headline3.copyWith(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 48,
-                    )),
+                  textStyle: context.theme.textTheme.headline3.copyWith(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 48,
+                  ),
+                ),
               ),
             ),
-
             Expanded(
               child: Container(),
             ),
-
             Container(
               width: double.infinity,
               alignment: Alignment.topCenter,
               margin: const EdgeInsets.only(left: 24, right: 24, top: 24),
               child: AppleSignIn(),
             ),
-
             Container(
               width: double.infinity,
               alignment: Alignment.topCenter,
@@ -95,18 +94,25 @@ class _SignInScreen extends State<SignInScreen> {
                   },
                   child: Container(
                     width: double.maxFinite,
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 12,
+                    ),
                     alignment: Alignment.center,
                     child: Row(
                       children: <Widget>[
-                        Image.asset('assets/google_logo.png', width: 24, height: 24),
+                        Image.asset(
+                          'assets/google_logo.png',
+                          width: 24,
+                          height: 24,
+                        ),
                         Expanded(
                           child: Text(
                             context.strings.actionSignIn,
                             textAlign: TextAlign.center,
                             style: context.theme.textTheme.subtitle1.copyWith(
                               color: Colors.black87,
-                              fontWeight: FontWeight.w600
+                              fontWeight: FontWeight.w600,
                             ),
                           ),
                         ),

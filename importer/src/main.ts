@@ -4,13 +4,6 @@ import {computeCardId, cleanPath, hashDocumentId} from "./utils";
 const { GoogleSpreadsheet, GoogleSpreadsheetWorksheet } = require('google-spreadsheet');
 import * as admin from 'firebase-admin';
 
-const serviceAccount = require("../config/firebase_admin_sdk.json");
-admin.initializeApp({
-    credential: admin.credential.cert(serviceAccount),
-    databaseURL: "https://appsagainsthumanity-c7558.firebaseio.com"
-});
-const db = admin.firestore();
-
 const argv = require('minimist')(process.argv.slice(2));
 console.log(argv);
 
@@ -20,6 +13,18 @@ const responseLength = argv.rl || 24413;
 const documentId = argv.doc || '1lsy7lIwBe-DWOi2PALZPf5DgXHx9MEvKfRw1GaWQkzg';
 const sheetId = argv.sheet || '2018240023';
 const cardSetOnly = argv['set-only'] || false;
+const emulator = argv['emulator'] || false;
+
+if (emulator) {
+    process.env.FIRESTORE_EMULATOR_HOST="localhost:8080"
+}
+
+const serviceAccount = require("../config/firebase_admin_sdk.json");
+admin.initializeApp({
+    credential: admin.credential.cert(serviceAccount),
+    databaseURL: "https://appsagainsthumanity-c7558.firebaseio.com"
+});
+const db = admin.firestore();
 
 type CardSet = {
     id: string;
