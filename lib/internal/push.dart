@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:appsagainsthumanity/data/app_preferences.dart';
 import 'package:appsagainsthumanity/data/features/devices/device_repository.dart';
@@ -19,14 +18,19 @@ class PushNotifications {
   PushNotifications._();
 
   static PushNotifications _instance = PushNotifications._();
-  final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
+  final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
 
   factory PushNotifications() {
     return _instance;
   }
 
   void checkPermissions() {
-    _firebaseMessaging.requestNotificationPermissions();
+    _firebaseMessaging.requestPermission(
+      alert: true,
+      sound: true,
+      badge: true,
+      announcement: true,
+    );
   }
 
   void setup() {
@@ -34,23 +38,12 @@ class PushNotifications {
     _firebaseMessaging.onTokenRefresh.listen((token) {
       DeviceRepository().updatePushToken(token);
     });
-    _firebaseMessaging.configure(onLaunch: (Map<String, dynamic> message) async {
-      print("onLaunch()");
-      print(JsonEncoder().convert(message));
-    }, onMessage: (Map<String, dynamic> message) async {
-      print("onMessage()");
-      print(JsonEncoder().convert(message));
-    }, onResume: (Map<String, dynamic> message) async {
-      print("onResume()");
-      print(JsonEncoder().convert(message));
-    });
 
     checkAndUpdateToken();
   }
 
   Future<void> checkAndUpdateToken({bool force = false}) async {
-    final FirebaseMessaging messaging = FirebaseMessaging();
-    String token = await messaging.getToken();
+    String token = await _firebaseMessaging.getToken();
     if (token != AppPreferences().pushToken || force) {
       Logger.root.fine("FCM Token is different from what is stored in preferences, updating device...");
       DeviceRepository().updatePushToken(token);
@@ -68,31 +61,17 @@ class PushNavigator extends StatefulWidget {
 }
 
 class _PushNavigatorState extends State<PushNavigator> {
-  final FirebaseMessaging _firebaseMessaging = FirebaseMessaging();
   GameRepository _gameRepository;
 
   @override
   void initState() {
     super.initState();
     _gameRepository = context.repository<GameRepository>();
-    _firebaseMessaging.configure(
-      onLaunch: (Map<String, dynamic> message) async {
-        print("onLaunch()");
-        print(JsonEncoder().convert(message));
-        handleNotificationClick(message);
-      },
-      onMessage: (Map<String, dynamic> message) async {
-        // This is called when message comes while in foreground
-        print("onMessage()");
-        // Do nothing
-      },
-      onResume: (Map<String, dynamic> message) async {
-        // This is called when user is
-        print("onResume()");
-        print(JsonEncoder().convert(message));
-        handleNotificationClick(message);
-      },
-    );
+    FirebaseMessaging.onMessageOpenedApp.listen((message) {
+      print("onLaunch()");
+      print(JsonEncoder().convert(message));
+      handleNotificationClick(message.data);
+    });
 
     /// let's go ahead and sign up here to handle dynamic links
     DynamicLinks.initDynamicLinks(context, (gameId) => navigateToGame(gameId, andJoin: true));
@@ -104,7 +83,7 @@ class _PushNavigatorState extends State<PushNavigator> {
   }
 
   void handleNotificationClick(Map<String, dynamic> message) async {
-    var gameId = Platform.isAndroid ? message['data']['gameId'] : message['gameId'];
+    var gameId = message['gameId'] ?? message['data']['gameId'];
     if (gameId != null && gameId is String && gameId.isNotEmpty) {
       navigateToGame(gameId);
     }

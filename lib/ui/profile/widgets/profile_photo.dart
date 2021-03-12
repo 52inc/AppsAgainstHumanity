@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:appsagainsthumanity/data/features/users/model/user.dart';
 import 'package:appsagainsthumanity/internal.dart';
 import 'package:appsagainsthumanity/ui/profile/bloc/bloc.dart';
@@ -82,10 +84,10 @@ class ProfilePhoto extends StatelessWidget {
       context.bloc<ProfileBloc>()
           .add(DeleteProfilePhoto());
     } else if (action is UpdatePhoto) {
-      var image = await ImagePicker.pickImage(source: action.source);
+      var image = await ImagePicker().getImage(source: action.source);
       if (image != null) {
         context.bloc<ProfileBloc>()
-            .add(PhotoChanged(image));
+            .add(PhotoChanged(File(image.path)));
       }
     }
   }

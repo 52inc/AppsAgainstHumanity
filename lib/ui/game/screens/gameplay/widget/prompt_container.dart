@@ -28,10 +28,7 @@ class PromptContainer extends StatelessWidget {
               Expanded(
                 child: Stack(
                   children: [
-                    _buildPromptBackground(
-                      context: context,
-                      card: prompt,
-                    ),
+                    _buildPromptBackground(context),
                     Column(
                       children: [
                         _buildPromptText(context, state),
@@ -134,7 +131,7 @@ class PromptContainer extends StatelessWidget {
     }
   }
 
-  Widget _buildPromptBackground({@required BuildContext context, @required PromptCard card}) {
+  Widget _buildPromptBackground(BuildContext context) {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 16),
       child: Material(

@@ -18,51 +18,41 @@ class App extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Wiredash(
-      projectId: Config.wiredashProjectId,
-      secret: Config.wiredashSecret,
-      theme: WiredashThemeData(
-        brightness: Brightness.dark,
-        primaryColor: AppColors.primary,
-        secondaryColor: AppColors.primaryVariant
-      ),
+    return MaterialApp(
       navigatorKey: _navigatorKey,
-      child: MaterialApp(
-        navigatorKey: _navigatorKey,
-        title: 'Apps Against Humanity',
-        theme: AppThemes.light,
-        darkTheme: AppThemes.dark,
-        debugShowCheckedModeBanner: false,
-        localizationsDelegates: [
-          AppLocalizationsDelegate(),
-          GlobalMaterialLocalizations.delegate,
-          GlobalWidgetsLocalizations.delegate,
-          GlobalCupertinoLocalizations.delegate,
-        ],
-        supportedLocales: [
-          const Locale('en'), // English
-        ],
-        navigatorObservers: [
-          FirebaseAnalyticsObserver(analytics: Analytics()),
-          Routes.routeObserver,
-          Routes.routeTracer
-        ],
-        home: AnnotatedRegion<SystemUiOverlayStyle>(
-          value: SystemUiOverlayStyle.light,
-          child: PushNavigator(
-            child: BlocBuilder<AuthenticationBloc, AuthenticationState>(
-              builder: (context, state) {
-                if (state is Unauthenticated) {
-                  return SignInScreen();
-                } else if (state is NeedsAgreeToTerms) {
-                  return TermsOfServiceScreen();
-                } else if (state is Authenticated) {
-                  return HomeScreenV2();
-                } else {
-                  return Container(color: AppColors.surface);
-                }
-              },
-            ),
+      title: 'Apps Against Humanity',
+      theme: AppThemes.light,
+      darkTheme: AppThemes.dark,
+      debugShowCheckedModeBanner: false,
+      localizationsDelegates: [
+        AppLocalizationsDelegate(),
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: [
+        const Locale('en'), // English
+      ],
+      navigatorObservers: [
+        FirebaseAnalyticsObserver(analytics: Analytics()),
+        Routes.routeObserver,
+        Routes.routeTracer
+      ],
+      home: AnnotatedRegion<SystemUiOverlayStyle>(
+        value: SystemUiOverlayStyle.light,
+        child: PushNavigator(
+          child: BlocBuilder<AuthenticationBloc, AuthenticationState>(
+            builder: (context, state) {
+              if (state is Unauthenticated) {
+                return SignInScreen();
+              } else if (state is NeedsAgreeToTerms) {
+                return TermsOfServiceScreen();
+              } else if (state is Authenticated) {
+                return HomeScreenV2();
+              } else {
+                return Container(color: AppColors.surface);
+              }
+            },
           ),
         ),
       ),
