@@ -1,11 +1,11 @@
 {
-    "name": "appsagainsthumanity",
-    "short_name": "appsagainsthumanity",
+    "name": "apps_against_humanity",
+    "short_name": "apps_against_humanity",
     "start_url": ".",
-    "display": "minimal-ui",
+    "display": "standalone",
     "background_color": "#0175C2",
     "theme_color": "#0175C2",
-    "description": "A CaH application for both iOS and Android",
+    "description": "A new Flutter project.",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [

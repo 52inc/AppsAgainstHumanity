@@ -66,7 +66,7 @@ class _HomeScreenV2State extends State<HomeScreenV2> {
   Widget _buildBody() {
     return BlocBuilder<HomeBloc, HomeState>(
       builder: (context, state) {
-        var topMargin = MediaQuery.of(context).padding.top + (Platform.isAndroid ? 24 : 8);
+        var topMargin = MediaQuery.of(context).padding.top; //FIXME:+ (Platform.isAndroid ? 24 : 8);
         return Scaffold(
           body: Padding(
             padding: EdgeInsets.only(

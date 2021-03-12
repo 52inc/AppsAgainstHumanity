@@ -52,18 +52,19 @@ class DeviceRepository {
     }
 
     String _getPlatform() {
-        if (Platform.isAndroid) {
-            return "android";
-        } else if (Platform.isIOS) {
-            return "ios";
-        } else {
-            return "other";
-        }
+        return "unknown";
+        // if (Platform.isAndroid) {
+        //     return "android";
+        // } else if (Platform.isIOS) {
+        //     return "ios";
+        // } else {
+        //     return "other";
+        // }
     }
 
     Future<String> _getDeviceInfo() async {
-        if (Platform.isAndroid) {
-            var androidInfo = await deviceInfo.androidInfo;
+        var androidInfo = await deviceInfo.androidInfo;
+        if (androidInfo != null) {
             return "${androidInfo.manufacturer}/${androidInfo.model}/${androidInfo.product}/isPhysicalDevice(${androidInfo.isPhysicalDevice})/sdk(${androidInfo.version.sdkInt})";
         } else {
             var iosInfo = await deviceInfo.iosInfo;

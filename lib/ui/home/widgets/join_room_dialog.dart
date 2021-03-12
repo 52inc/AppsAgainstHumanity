@@ -1,5 +1,5 @@
 import 'dart:io';
-
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:appsagainsthumanity/data/firestore.dart';
 import 'package:appsagainsthumanity/internal.dart';
 import 'package:flutter/material.dart';
@@ -84,7 +84,7 @@ class _JoinRoomDialogState extends State<JoinRoomDialog> {
 }
 
 Future<String> showJoinRoomDialog(BuildContext context) {
-  if (!Platform.isAndroid && !Platform.isIOS) {
+  if (kIsWeb) {
     return showGeneralDialog<String>(
         context: context,
         pageBuilder: (context, _, __) {

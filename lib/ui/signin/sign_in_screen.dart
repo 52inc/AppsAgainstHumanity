@@ -18,7 +18,7 @@ class _SignInScreen extends State<SignInScreen> {
   @override
   Widget build(BuildContext context) {
     var topMargin =
-        MediaQuery.of(context).padding.top + (Platform.isAndroid ? 24 : 8);
+        MediaQuery.of(context).padding.top/* FIXME: + (Platform.isAndroid ? 24 : 8)*/;
     return Scaffold(
       body: Padding(
         padding: EdgeInsets.only(
