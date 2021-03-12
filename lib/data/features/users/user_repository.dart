@@ -6,19 +6,20 @@ import 'package:appsagainsthumanity/data/features/users/model/user.dart';
 import 'package:appsagainsthumanity/data/firestore.dart';
 import 'package:appsagainsthumanity/internal/push.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_functions/cloud_functions.dart';
+import 'package:firebase_auth/firebase_auth.dart' as fb;
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:logging/logging.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 
 class UserRepository {
-  final FirebaseAuth _auth = FirebaseAuth.instance;
-  final Firestore _db = Firestore.instance;
+  final fb.FirebaseAuth _auth = fb.FirebaseAuth.instance;
+  final FirebaseFirestore _db = FirebaseFirestore.instance;
   final FirebaseStorage _storage = FirebaseStorage.instance;
 
   Future<bool> isSignedIn() async {
-    return (await _auth.currentUser()) != null;
+    return _auth.currentUser != null;
   }
 
   Future<User> getUser() {
@@ -26,7 +27,7 @@ class UserRepository {
       var doc = _userDocument(firebaseUser);
       var snapshot = await doc.get();
       return User(
-          id: doc.documentID,
+          id: doc.id,
           name: snapshot['name'],
           avatarUrl: snapshot['avatarUrl'],
           updatedAt: (snapshot['updatedAt'] as Timestamp).toDate());
@@ -38,7 +39,7 @@ class UserRepository {
       var doc = _userDocument(firebaseUser);
       return doc.snapshots().map((snapshot) {
         return User(
-          id: snapshot.documentID,
+          id: snapshot.id,
           name: snapshot['name'],
           avatarUrl: snapshot['avatarUrl'],
           updatedAt: (snapshot['updatedAt'] as Timestamp).toDate(),
@@ -50,11 +51,12 @@ class UserRepository {
   Future<void> updateDisplayName(String name) {
     return currentUserOrThrow((firebaseUser) async {
       // Be sure to update our Auth Obj
-      await firebaseUser.updateProfile(UserUpdateInfo()
-        ..displayName = name
-        ..photoUrl = firebaseUser.photoUrl);
+      await firebaseUser.updateProfile(
+        displayName: name,
+        photoURL: firebaseUser.photoURL,
+      );
 
-      await _userDocument(firebaseUser).updateData({
+      await _userDocument(firebaseUser).update({
         'name': name,
         'updatedAt': Timestamp.now(),
       });
@@ -67,11 +69,12 @@ class UserRepository {
       await ref.delete();
 
       // Be sure to update our Auth Obj
-      await firebaseUser.updateProfile(UserUpdateInfo()
-        ..displayName = firebaseUser.displayName
-        ..photoUrl = null);
+      await firebaseUser.updateProfile(
+        displayName: firebaseUser.displayName,
+        photoURL: null,
+      );
 
-      await _userDocument(firebaseUser).updateData({
+      await _userDocument(firebaseUser).update({
         'avatarUrl': null,
         'updatedAt': Timestamp.now(),
       });
@@ -81,15 +84,16 @@ class UserRepository {
   Future<void> updateProfilePhoto(File image) {
     return currentUserOrThrow((firebaseUser) async {
       var ref = _profilePhotoReference(firebaseUser);
-      var refSnapshot = await ref.putFile(image).onComplete;
+      var refSnapshot = await ref.putFile(image);
       var downloadUrl = await refSnapshot.ref.getDownloadURL();
 
       // Be sure to update our Auth Obj
-      await firebaseUser.updateProfile(UserUpdateInfo()
-        ..displayName = firebaseUser.displayName
-        ..photoUrl = downloadUrl);
+      await firebaseUser.updateProfile(
+        displayName: firebaseUser.displayName,
+        photoURL: downloadUrl,
+      );
 
-      await _userDocument(firebaseUser).updateData({
+      await _userDocument(firebaseUser).update({
         'avatarUrl': downloadUrl.toString(),
         'updatedAt': Timestamp.now(),
       });
@@ -108,11 +112,12 @@ class UserRepository {
       var acct = await _googleSignIn.signIn();
       var auth = await acct.authentication;
 
-      var result =
-          await _auth.signInWithCredential(GoogleAuthProvider.getCredential(
-        idToken: auth.idToken,
-        accessToken: auth.accessToken,
-      ));
+      var result = await _auth.signInWithCredential(
+        fb.GoogleAuthProvider.credential(
+          idToken: auth.idToken,
+          accessToken: auth.accessToken,
+        ),
+      );
 
       return _finishSigningInWithResult(result);
     } catch (error) {
@@ -128,31 +133,32 @@ class UserRepository {
     ]);
 
     // Success
-    OAuthProvider oAuthProvider = OAuthProvider(providerId: "apple.com");
-    final AuthCredential credential = oAuthProvider.getCredential(
+    fb.OAuthProvider oAuthProvider = fb.OAuthProvider('apple.com');
+    final fb.AuthCredential credential = oAuthProvider.credential(
       idToken: result.identityToken,
       accessToken: result.authorizationCode,
     );
 
     var name = Player.DEFAULT_NAME;
     if (result.givenName != null) {
-      print("Apple Name(given=${result.givenName}, family=${result.familyName})");
+      print(
+          "Apple Name(given=${result.givenName}, family=${result.familyName})");
       name = result.givenName;
     }
 
-    final AuthResult _result = await _auth.signInWithCredential(credential);
+    final fb.UserCredential _result = await _auth.signInWithCredential(credential);
     return _finishSigningInWithResult(_result, name: name);
   }
 
-  Future<User> _finishSigningInWithResult(AuthResult result,
+  Future<User> _finishSigningInWithResult(fb.UserCredential result,
       {String name}) async {
     try {
       if (result.user != null) {
         if (name != null && result.user.displayName != name) {
-          var updateInfo = UserUpdateInfo();
-          updateInfo.displayName = name;
-          updateInfo.photoUrl = result.user.photoUrl;
-          await result.user.updateProfile(updateInfo);
+          await result.user.updateProfile(
+            displayName: name,
+            photoURL: result.user.photoURL,
+          );
           await result.user.reload();
           print("Updated user's name to ${result.user.displayName}");
         }
@@ -160,14 +166,14 @@ class UserRepository {
         // Create the user obj acct in FB
         var userDoc = _userDocument(result.user);
 
-        await userDoc.setData({
+        await userDoc.set({
           "name": result.user.displayName,
-          "avatarUrl": result.user.photoUrl,
+          "avatarUrl": result.user.photoURL,
           "updatedAt": Timestamp.now(),
-        }, merge: true);
+        }, SetOptions(merge: true));
 
         Logger("UserRepository").fine(
-            "Signed-in! User(id=${result.user.uid}, name=${result.user.displayName}, photoUrl=${result.user.photoUrl})");
+            "Signed-in! User(id=${result.user.uid}, name=${result.user.displayName}, photoUrl=${result.user.photoURL})");
 
         // Excellent! Let's create our device
         await PushNotifications().checkAndUpdateToken(force: true);
@@ -175,7 +181,7 @@ class UserRepository {
         return User(
             id: result.user.uid,
             name: result.user.displayName,
-            avatarUrl: result.user.photoUrl,
+            avatarUrl: result.user.photoURL,
             updatedAt: DateTime.now());
       } else {
         throw result;
@@ -194,18 +200,18 @@ class UserRepository {
 
   Future<void> deleteAccount() async {
     await AppPreferences().clear();
-    var user = await _auth.currentUser();
+    var user = _auth.currentUser;
     await user.delete();
     await _profilePhotoReference(user).delete();
   }
 
-  DocumentReference _userDocument(FirebaseUser user) {
+  DocumentReference _userDocument(fb.User user) {
     return _db
         .collection(FirebaseConstants.COLLECTION_USERS)
-        .document(user.uid);
+        .doc(user.uid);
   }
 
-  StorageReference _profilePhotoReference(FirebaseUser user) {
+  Reference _profilePhotoReference(fb.User user) {
     return _storage
         .ref()
         .child(FirebaseConstants.COLLECTION_USERS)

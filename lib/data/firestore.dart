@@ -18,16 +18,16 @@ class FirebaseConstants {
 
 class UserNotFoundException { }
 
-Future<T> currentUserOrThrow<T>(Future<T> Function(FirebaseUser user) action) async {
-    final FirebaseUser currentUser = await FirebaseAuth.instance.currentUser();
+Future<T> currentUserOrThrow<T>(Future<T> Function(User user) action) async {
+    final User currentUser = FirebaseAuth.instance.currentUser;
     if (currentUser != null) {
         return action(currentUser);
     }
     throw UserNotFoundException();
 }
 
-Stream<T> streamCurrentUserOrThrow<T>(Stream<T> Function(FirebaseUser user) action) async* {
-    final FirebaseUser currentUser = await FirebaseAuth.instance.currentUser();
+Stream<T> streamCurrentUserOrThrow<T>(Stream<T> Function(User user) action) async* {
+    final User currentUser = FirebaseAuth.instance.currentUser;
     if (currentUser != null) {
         yield* action(currentUser);
     } else {

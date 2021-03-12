@@ -56,7 +56,7 @@ class GameBloc extends Bloc<GameEvent, GameViewState> {
   }
 
   Stream<GameViewState> _mapSubscribeToState(Subscribe event) async* {
-    var user = await FirebaseAuth.instance.currentUser();
+    var user = FirebaseAuth.instance.currentUser;
     add(UserUpdated(user.uid));
 
     _gameSubscription?.cancel();

@@ -16,6 +16,11 @@ class WaitingPlayerResponses extends StatelessWidget {
       return element.id != state.game.turn?.judgeId && element.isInactive != true;
     })?.toList() ?? [];
 
+    var columnCount = 3;
+    if (MediaQuery.of(context).size.width >= 600) {
+      columnCount = 9;
+    }
+
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 16),
       child: Column(
@@ -25,7 +30,7 @@ class WaitingPlayerResponses extends StatelessWidget {
             child: GridView.builder(
                 padding: const EdgeInsets.only(left: 12, right: 12, top: 8),
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 3,
+                  crossAxisCount: columnCount,
                   childAspectRatio: 88 / 130,
                 ),
                 itemCount: players.length,

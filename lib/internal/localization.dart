@@ -23,7 +23,8 @@ class AppLocalization {
   String get appName => Intl.message('AppsAgainstHumanity', name: 'appName');
   String get appNameDisplay => Intl.message('Apps Against\nHumanity', name: 'appNameDisplay');
   String get actionSignIn => Intl.message('Sign in with Google', name: 'actionSignIn');
-  
+  String get actionSignInEmail => Intl.message('Sign in with Email', name: 'actionSignIn');
+
   String get titleNewGame => Intl.message('New game', name: 'titleNewGame');
   String get actionStartGame => Intl.message('Start game', name: 'actionStartGame');
 }

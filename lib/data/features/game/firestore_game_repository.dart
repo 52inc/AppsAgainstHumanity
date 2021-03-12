@@ -14,13 +14,13 @@ import 'package:flutter/services.dart';
 import 'package:kt_dart/kt.dart';
 
 class FirestoreGameRepository extends GameRepository {
-  final Firestore db;
+  final FirebaseFirestore db;
   final UserRepository userRepository;
 
-  FirestoreGameRepository({Firestore firestore, UserRepository userRepository})
+  FirestoreGameRepository({FirebaseFirestore firestore, UserRepository userRepository})
       : assert(userRepository != null),
         userRepository = userRepository,
-        db = firestore ?? Firestore.instance;
+        db = firestore ?? FirebaseFirestore.instance;
 
   @override
   Future<Game> createGame(
@@ -31,9 +31,9 @@ class FirestoreGameRepository extends GameRepository {
     bool draw2Pick3Enabled = true,
   }) {
     return currentUserOrThrow((firebaseUser) async {
-      var newGameDoc = db.collection(FirebaseConstants.COLLECTION_GAMES).document();
+      var newGameDoc = db.collection(FirebaseConstants.COLLECTION_GAMES).doc();
       var game = Game(
-        id: newGameDoc.documentID,
+        id: newGameDoc.id,
         gid: generateId(length: FirebaseConstants.MAX_GID_SIZE),
         ownerId: firebaseUser.uid,
         state: GameState.waitingRoom,
@@ -43,10 +43,10 @@ class FirestoreGameRepository extends GameRepository {
         draw2Pick3Enabled: draw2Pick3Enabled,
         cardSets: cardSets.map((c) => c.id).asList().toSet(),
       );
-      await newGameDoc.setData(game.toJson());
+      await newGameDoc.set(game.toJson());
 
       // Now add yourself as a player to the game
-      await _addSelfToGame(gameDocumentId: newGameDoc.documentID);
+      await _addSelfToGame(gameDocumentId: newGameDoc.id);
 
       return game;
     });
@@ -65,10 +65,10 @@ class FirestoreGameRepository extends GameRepository {
         await db.collection(FirebaseConstants.COLLECTION_GAMES)
             .where('gid', isEqualTo: gid.toUpperCase())
             .limit(1)
-            .getDocuments();
+            .get();
 
-    if (snapshots != null && snapshots.documents.isNotEmpty) {
-      var document = snapshots.documents.first;
+    if (snapshots != null && snapshots.docs.isNotEmpty) {
+      var document = snapshots.docs.first;
       return Game.fromDocument(document);
     } else {
       throw 'Unable to find a game for $gid';
@@ -78,12 +78,12 @@ class FirestoreGameRepository extends GameRepository {
   @override
   Future<Game> getGame(String gameDocumentId, {bool andJoin = false}) async {
     var gameDocument = db.collection(FirebaseConstants.COLLECTION_GAMES)
-        .document(gameDocumentId);
+        .doc(gameDocumentId);
 
     try {
       var snapshot = await gameDocument.get();
       return Game.fromDocument(snapshot);
-    } catch (e, st) {
+    } catch (e) {
       if (e is PlatformException && andJoin) {
         try {
           return await _addSelfToGame(gameDocumentId: gameDocumentId);
@@ -102,13 +102,13 @@ class FirestoreGameRepository extends GameRepository {
       if (game.state == GameState.completed) {
         // We should just delete the usergame ourselfs
         await db.collection(FirebaseConstants.COLLECTION_USERS)
-            .document(firebaseUser.uid)
+            .doc(firebaseUser.uid)
             .collection(FirebaseConstants.COLLECTION_GAMES)
-            .document(game.id)
+            .doc(game.id)
             .delete();
         print("Game already completed, so we just deleted the reference");
       } else {
-        final HttpsCallable callable = CloudFunctions.instance.getHttpsCallable(functionName: 'leaveGame');
+        final HttpsCallable callable = FirebaseFunctions.instance.httpsCallable('leaveGame');
         HttpsCallableResult response = await callable.call(<String, dynamic>{
           'game_id': game.id
         });
@@ -122,16 +122,16 @@ class FirestoreGameRepository extends GameRepository {
     return streamCurrentUserOrThrow((firebaseUser) {
       return db
           .collection(FirebaseConstants.COLLECTION_USERS)
-          .document(firebaseUser.uid)
+          .doc(firebaseUser.uid)
           .collection(FirebaseConstants.COLLECTION_GAMES)
           .snapshots()
-          .map((querySnapshot) => querySnapshot.documents.map((e) => UserGame.fromDocument(e)).toList());
+          .map((querySnapshot) => querySnapshot.docs.map((e) => UserGame.fromDocument(e)).toList());
     });
   }
 
   @override
   Stream<Game> observeGame(String gameDocumentId) {
-    var document = db.collection(FirebaseConstants.COLLECTION_GAMES).document(gameDocumentId);
+    var document = db.collection(FirebaseConstants.COLLECTION_GAMES).doc(gameDocumentId);
 
     return document.snapshots().map((snapshot) => Game.fromDocument(snapshot));
   }
@@ -140,23 +140,23 @@ class FirestoreGameRepository extends GameRepository {
   Stream<List<Player>> observePlayers(String gameDocumentId) {
     var collection = db
         .collection(FirebaseConstants.COLLECTION_GAMES)
-        .document(gameDocumentId)
+        .doc(gameDocumentId)
         .collection(FirebaseConstants.COLLECTION_PLAYERS);
 
-    return collection.snapshots().map((snapshots) => snapshots.documents.map((e) => Player.fromDocument(e)).toList());
+    return collection.snapshots().map((snapshots) => snapshots.docs.map((e) => Player.fromDocument(e)).toList());
   }
 
   @override
   Stream<List<String>> observeDownvotes(String gameDocumentId) {
     var collection = db
         .collection(FirebaseConstants.COLLECTION_GAMES)
-        .document(gameDocumentId)
+        .doc(gameDocumentId)
         .collection(FirebaseConstants.COLLECTION_DOWNVOTES)
-        .document(FirebaseConstants.DOCUMENT_TALLY);
+        .doc(FirebaseConstants.DOCUMENT_TALLY);
 
     return collection.snapshots().map((snapshot) {
       if (snapshot.data != null) {
-        return List<String>.from(snapshot.data['votes'] ?? []);
+        return List<String>.from(snapshot.data()['votes'] ?? []);
       } else {
         return [];
       }
@@ -167,9 +167,9 @@ class FirestoreGameRepository extends GameRepository {
   Future<void> addRandoCardrissian(String gameDocumentId) async {
     var document = db
         .collection(FirebaseConstants.COLLECTION_GAMES)
-        .document(gameDocumentId)
+        .doc(gameDocumentId)
         .collection(FirebaseConstants.COLLECTION_PLAYERS)
-        .document(FirebaseConstants.DOCUMENT_RANDO_CARDRISSIAN);
+        .doc(FirebaseConstants.DOCUMENT_RANDO_CARDRISSIAN);
 
     var rando = Player(
         id: FirebaseConstants.DOCUMENT_RANDO_CARDRISSIAN,
@@ -177,19 +177,19 @@ class FirestoreGameRepository extends GameRepository {
         avatarUrl: null,
         isRandoCardrissian: true);
 
-    await document.setData(rando.toJson());
+    await document.set(rando.toJson());
   }
 
   @override
   Future<void> startGame(String gameDocumentId) async {
-    final HttpsCallable callable = CloudFunctions.instance.getHttpsCallable(functionName: 'startGame');
+    final HttpsCallable callable = FirebaseFunctions.instance.httpsCallable('startGame');
     dynamic response = await callable.call(<String, dynamic>{'game_id': gameDocumentId});
     print("Start game Successful! $response");
   }
 
   @override
   Future<void> submitResponse(String gameDocumentId, List<ResponseCard> cards) async {
-    final HttpsCallable callable = CloudFunctions.instance.getHttpsCallable(functionName: 'submitResponses');
+    final HttpsCallable callable = FirebaseFunctions.instance.httpsCallable('submitResponses');
     dynamic response = await callable.call(<String, dynamic>{
       'game_id': gameDocumentId,
       'indexed_responses': cards.asMap().map((key, value) => MapEntry(key.toString(), value.cid))
@@ -202,17 +202,17 @@ class FirestoreGameRepository extends GameRepository {
     return currentUserOrThrow((firebaseUser) async {
       var gameDocument = db
           .collection(FirebaseConstants.COLLECTION_GAMES)
-          .document(gameDocumentId)
+          .doc(gameDocumentId)
           .collection(FirebaseConstants.COLLECTION_DOWNVOTES)
-          .document(FirebaseConstants.DOCUMENT_TALLY);
+          .doc(FirebaseConstants.DOCUMENT_TALLY);
 
       var snapshot = await gameDocument.get();
       if (snapshot.exists) {
-        await gameDocument.updateData({
+        await gameDocument.update({
           'votes': FieldValue.arrayUnion([firebaseUser.uid])
         });
       } else {
-        await gameDocument.setData({
+        await gameDocument.set({
           'votes': [firebaseUser.uid]
         });
       }
@@ -222,7 +222,7 @@ class FirestoreGameRepository extends GameRepository {
   @override
   Future<void> reDealHand(String gameDocumentId) {
     return currentUserOrThrow((firebaseUser) async {
-      final HttpsCallable callable = CloudFunctions.instance.getHttpsCallable(functionName: 'reDealHand');
+      final HttpsCallable callable = FirebaseFunctions.instance.httpsCallable('reDealHand');
       dynamic response = await callable.call(<String, dynamic>{'game_id': gameDocumentId});
       print("Hand re-dealt successfully! $response");
     });
@@ -230,7 +230,7 @@ class FirestoreGameRepository extends GameRepository {
 
   @override
   Future<void> pickWinner(String gameDocumentId, String playerId) async {
-    final HttpsCallable callable = CloudFunctions.instance.getHttpsCallable(functionName: 'pickWinner');
+    final HttpsCallable callable = FirebaseFunctions.instance.httpsCallable('pickWinner');
     dynamic response = await callable.call(<String, dynamic>{'game_id': gameDocumentId, 'player_id': playerId});
     print("Winner picked Successful! $response");
   }
@@ -238,7 +238,7 @@ class FirestoreGameRepository extends GameRepository {
   Future<Game> _addSelfToGame({String gameDocumentId, String gid}) async {
     var user = await userRepository.getUser();
 
-    final HttpsCallable callable = CloudFunctions.instance.getHttpsCallable(functionName: 'joinGame');
+    final HttpsCallable callable = FirebaseFunctions.instance.httpsCallable('joinGame');
     HttpsCallableResult response = await callable.call(<String, dynamic>{
       if (gameDocumentId != null)
         'game_id': gameDocumentId,
@@ -258,7 +258,7 @@ class FirestoreGameRepository extends GameRepository {
 
   @override
   Future<void> kickPlayer(String gameDocumentId, String playerId) async {
-    final HttpsCallable callable = CloudFunctions.instance.getHttpsCallable(functionName: 'kickPlayer');
+    final HttpsCallable callable = FirebaseFunctions.instance.httpsCallable('kickPlayer');
     HttpsCallableResult response = await callable.call(<String, dynamic>{
       'game_id': gameDocumentId,
       'player_id': playerId

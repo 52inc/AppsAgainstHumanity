@@ -21,8 +21,8 @@ class UserGame {
   });
 
   factory UserGame.fromDocument(DocumentSnapshot document) {
-    var game = UserGame.fromJson(document.data);
-    game.id = document.documentID;
+    var game = UserGame.fromJson(document.data());
+    game.id = document.id;
     return game;
   }
 

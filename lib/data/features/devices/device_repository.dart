@@ -10,7 +10,7 @@ class DeviceRepository {
     static DeviceRepository _instance = DeviceRepository._();
 
     final FirebaseAuth _auth = FirebaseAuth.instance;
-    final Firestore _db = Firestore.instance;
+    final FirebaseFirestore _db = FirebaseFirestore.instance;
     final DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
 
     DeviceRepository._();
@@ -21,22 +21,22 @@ class DeviceRepository {
 
     void updatePushToken(String token) async {
         AppPreferences().pushToken = token;
-        var currentUser = await _auth.currentUser();
+        var currentUser = _auth.currentUser;
         if (currentUser != null) {
             // If current token is not null, attempt to pull existing device info and copy it to new push token
             var document = _db.collection(FirebaseConstants.COLLECTION_USERS)
-                .document(currentUser.uid)
+                .doc(currentUser.uid)
                 .collection(FirebaseConstants.COLLECTION_DEVICES)
-                .document(AppPreferences().deviceId);
+                .doc(AppPreferences().deviceId);
 
             var snapshot = await document.get();
             if (snapshot.exists) {
-                await document.updateData({
+                await document.update({
                     "token": token
                 });
             } else {
                 var newDevice = await _createNewDevice(token);
-                await document.setData(newDevice);
+                await document.set(newDevice);
             }
         }
     }
@@ -57,7 +57,7 @@ class DeviceRepository {
         } else if (Platform.isIOS) {
             return "ios";
         } else {
-            return Platform.operatingSystem;
+            return "other";
         }
     }
 

@@ -7,6 +7,7 @@ import 'package:appsagainsthumanity/ui/signin/widgets/apple_sign_in.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
 class SignInScreen extends StatefulWidget {
   @override
@@ -82,7 +83,7 @@ class _SignInScreen extends State<SignInScreen> {
             Container(
               width: double.infinity,
               alignment: Alignment.topCenter,
-              margin: const EdgeInsets.all(24),
+              margin: const EdgeInsets.symmetric(horizontal: 24),
               child: Material(
                 type: MaterialType.button,
                 color: Colors.white,
@@ -109,6 +110,49 @@ class _SignInScreen extends State<SignInScreen> {
                         Expanded(
                           child: Text(
                             context.strings.actionSignIn,
+                            textAlign: TextAlign.center,
+                            style: context.theme.textTheme.subtitle1.copyWith(
+                              color: Colors.black87,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            Container(
+              width: double.infinity,
+              alignment: Alignment.topCenter,
+              margin: const EdgeInsets.all(24),
+              child: Material(
+                type: MaterialType.button,
+                color: Colors.white,
+                clipBehavior: Clip.hardEdge,
+                borderRadius: BorderRadius.circular(6),
+                child: InkWell(
+                  onTap: () {
+                    context.bloc<SignInBloc>()
+                        .add(LoginWithGooglePressed());
+                  },
+                  child: Container(
+                    width: double.maxFinite,
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 12,
+                    ),
+                    alignment: Alignment.center,
+                    child: Row(
+                      children: <Widget>[
+                        Icon(
+                          MdiIcons.email,
+                          color: Colors.black87,
+                        ),
+                        Expanded(
+                          child: Text(
+                            context.strings.actionSignInEmail,
                             textAlign: TextAlign.center,
                             style: context.theme.textTheme.subtitle1.copyWith(
                               color: Colors.black87,

@@ -39,7 +39,7 @@ class Player {
         isInactive = isInactive;
 
   factory Player.fromDocument(DocumentSnapshot documentSnapshot) =>
-      Player.fromJson(documentSnapshot.data);
+      Player.fromJson(documentSnapshot.data());
 
   factory Player.fromJson(Map<String, dynamic> json) => _$PlayerFromJson(json);
 

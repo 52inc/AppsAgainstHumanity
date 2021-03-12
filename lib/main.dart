@@ -7,6 +7,7 @@ import 'package:appsagainsthumanity/data/features/game/game_repository.dart';
 import 'package:appsagainsthumanity/data/features/users/user_repository.dart';
 import 'package:appsagainsthumanity/internal/logging_bloc_delegate.dart';
 import 'package:appsagainsthumanity/internal/push.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:logging/logging.dart';
@@ -16,6 +17,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   BlocSupervisor.delegate = LoggingBlocDelegate();
   await AppPreferences.loadInstance();
+  await Firebase.initializeApp();
 
   // Setup logger
   Logger.root.level = Level.ALL;
@@ -24,7 +26,7 @@ void main() async {
   });
 
   // Setup Push Notifications
-  PushNotifications().setup();
+  // PushNotifications().setup();
 
   runApp(buildRepositoryProvider(BlocProvider(
     create: (context) {

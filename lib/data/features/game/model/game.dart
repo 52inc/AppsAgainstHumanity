@@ -44,8 +44,8 @@ class Game {
   });
 
   factory Game.fromDocument(DocumentSnapshot snapshot) {
-    var game = Game.fromJson(snapshot.data);
-    game.id = snapshot.documentID;
+    var game = Game.fromJson(snapshot.data());
+    game.id = snapshot.id;
     return game;
   }
 
