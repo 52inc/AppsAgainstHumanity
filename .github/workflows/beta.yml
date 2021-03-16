@@ -9,15 +9,15 @@ on:
 jobs:
   deploy-android:
     runs-on: ubuntu-latest
-    container:
-      image:  google/dart:latest
     steps:
       - uses: actions/checkout@v2
-
-      - uses: takuyaohashi/setup-flutter@v1
+      - uses: actions/setup-java@v1
         with:
-          flutter-version: 'latest'
-          channel: 'dev'
+          java-version: '11'
+
+      - uses: subosito/flutter-action@master
+        with:
+          channel: stable
 
       - name: Fetch dependencies
         run: flutter pub get
@@ -25,12 +25,12 @@ jobs:
       - name: Setup Secrets
         run: |
           echo $GOOGLE_SERVICES_JSON | tee android/app/google-services.json
-          echo $CONFIG_JSON | tee lib/config.json
+          echo $CONFIG_DART | tee lib/config.dart
           echo $KEY_PROPERTIES | tee android/key.properties
           echo $SIGNING_KEY | base64 --decode > android/distribution/aah.jks
         env:
           GOOGLE_SERVICES_JSON: ${{ secrets.GOOGLE_SERVICES_JSON }}
-          CONFIG_JSON: ${{ secrets.CONFIG }}
+          CONFIG_DART: ${{ secrets.CONFIG_DART }}
           KEY_PROPERTIES: ${{ secrets.KEY_PROPERTIES }}
           SIGNING_KEY: ${{ secrets.SIGNING_KEY }}
           
