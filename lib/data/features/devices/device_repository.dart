@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:appsagainsthumanity/data/app_preferences.dart';
 import 'package:appsagainsthumanity/data/firestore.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -52,23 +53,32 @@ class DeviceRepository {
     }
 
     String _getPlatform() {
-        return "unknown";
-        // if (Platform.isAndroid) {
-        //     return "android";
-        // } else if (Platform.isIOS) {
-        //     return "ios";
-        // } else {
-        //     return "other";
-        // }
+        if (kIsWeb) {
+            return "web";
+        } else {
+            if (Platform.isAndroid) {
+                return "android";
+            } else if (Platform.isIOS) {
+                return "ios";
+            } else {
+                return "other";
+            }
+        }
+
     }
 
     Future<String> _getDeviceInfo() async {
-        var androidInfo = await deviceInfo.androidInfo;
-        if (androidInfo != null) {
-            return "${androidInfo.manufacturer}/${androidInfo.model}/${androidInfo.product}/isPhysicalDevice(${androidInfo.isPhysicalDevice})/sdk(${androidInfo.version.sdkInt})";
+        if (kIsWeb) {
+            return "Web";
         } else {
-            var iosInfo = await deviceInfo.iosInfo;
-            return "${iosInfo.model}/${iosInfo.systemName}/${iosInfo.systemVersion}";
+            var androidInfo = await deviceInfo.androidInfo;
+            if (androidInfo != null) {
+                return "${androidInfo.manufacturer}/${androidInfo.model}/${androidInfo
+                    .product}/isPhysicalDevice(${androidInfo.isPhysicalDevice})/sdk(${androidInfo.version.sdkInt})";
+            } else {
+                var iosInfo = await deviceInfo.iosInfo;
+                return "${iosInfo.model}/${iosInfo.systemName}/${iosInfo.systemVersion}";
+            }
         }
     }
 }

@@ -60,6 +60,10 @@ abstract class GameRepository {
   /// then a new prompt is drawn for this turn and the current judge remains
   Future<void> downVoteCurrentPrompt(String gameDocumentId);
 
+  /// Wave at a player to re-engage them in the game. Optionally provide a [message] to send to the
+  /// user.
+  Future<void> waveAtPlayer(String gameDocumentId, String playerId, [String message]);
+
   /// Re-deal your hand in exchange for one prize card, if you have one
   Future<void> reDealHand(String gameDocumentId);
 

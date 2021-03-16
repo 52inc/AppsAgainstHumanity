@@ -36,17 +36,37 @@ class JudgeBar extends StatelessWidget {
       title: Text(playerName),
       subtitle: Text("Current judge", style: context.theme.textTheme.bodyText2.copyWith(color: Colors.white60)),
       leading: _buildJudgeAvatar(context, player),
-      trailing: IconButton(
-        icon: Icon(
-          hasDownvoted ? MdiIcons.thumbDown : MdiIcons.thumbDownOutline,
-          color: hasDownvoted ? AppColors.primary : Colors.white,
-        ),
-        onPressed: !hasDownvoted
-            ? () {
-                Analytics().logSelectContent(contentType: 'action', itemId: 'downvote');
-                context.bloc<GameBloc>().add(DownvotePrompt());
-              }
-            : null,
+      trailing: Row(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          IconButton(
+            icon: Icon(
+              MdiIcons.humanGreeting,
+              color: Colors.white,
+            ),
+            onPressed: () {
+              Analytics().logSelectContent(contentType: 'action', itemId: 'wave');
+              context.bloc<GameBloc>().add(WaveAtPlayer(player.id));
+            },
+          ),
+          Container(
+            width: 8,
+          ),
+          IconButton(
+            icon: Icon(
+              hasDownvoted ? MdiIcons.thumbDown : MdiIcons.thumbDownOutline,
+              color: hasDownvoted ? AppColors.primary : Colors.white,
+            ),
+            onPressed: !hasDownvoted
+                ? () {
+              Analytics().logSelectContent(contentType: 'action', itemId: 'downvote');
+              context.bloc<GameBloc>().add(DownvotePrompt());
+            }
+                : null,
+          )
+        ],
       ),
     );
   }
