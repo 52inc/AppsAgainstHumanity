@@ -72,6 +72,17 @@ class DownvotesUpdated extends GameEvent {
 class DownvotePrompt extends GameEvent { }
 
 @immutable
+class WaveAtPlayer extends GameEvent {
+  final String playerId;
+  final String message;
+
+  WaveAtPlayer(this.playerId, [this.message]);
+
+  @override
+  List<Object> get props => [playerId];
+}
+
+@immutable
 class PickResponseCard extends GameEvent {
   final ResponseCard card;
 

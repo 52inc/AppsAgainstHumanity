@@ -26,90 +26,119 @@ class PlayerItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (player.isRandoCardrissian || isSelf) {
+      return _buildPlayerListTile(context);
+    } else {
+      return Dismissible(
+        key: ValueKey(player.id + "_dismissible"),
+        direction: DismissDirection.endToStart,
+        confirmDismiss: (direction) async {
+          Analytics().logSelectContent(contentType: 'action', itemId: 'wave');
+          context.bloc<GameBloc>().add(WaveAtPlayer(player.id));
+          return false;
+        },
+        background: Container(
+          color: AppColors.primary,
+          alignment: Alignment.centerRight,
+          padding: const EdgeInsets.symmetric(horizontal: 24),
+          child: Icon(
+            MdiIcons.humanGreeting,
+            color: Colors.white,
+          ),
+        ),
+        child: _buildPlayerListTile(context),
+      );
+    }
+  }
+
+  Widget _buildPlayerListTile(BuildContext context) {
     var playerName = player.name ?? Player.DEFAULT_NAME;
     if (playerName.trim().isEmpty) {
       playerName = Player.DEFAULT_NAME;
     }
     return ListTile(
-        contentPadding: EdgeInsets.only(
-          left: isOwner ? 8 : 24,
-          right: 24,
-          top: 4,
-          bottom: 4,
-        ),
-        onTap: () {},
-        title: Text(
-          playerName,
-          style: context.theme.textTheme.subtitle1.copyWith(color: Colors.white),
-        ),
-        subtitle: isJudge
-            ? Text(
-                "Judge",
-                style: context.theme.textTheme.bodyText2.copyWith(
+      contentPadding: EdgeInsets.only(
+        left: isOwner ? 8 : 24,
+        right: 24,
+        top: 4,
+        bottom: 4,
+      ),
+      onTap: () {},
+      title: Text(
+        playerName,
+        style: context.theme.textTheme.subtitle1.copyWith(color: Colors.white),
+      ),
+      subtitle: isJudge
+          ? Text(
+              "Judge",
+              style: context.theme.textTheme.bodyText2.copyWith(
+                color: AppColors.primaryVariant,
+              ),
+            )
+          : null,
+      trailing: Container(
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            if (hasDownvoted)
+              Container(
+                margin: const EdgeInsets.only(right: 16),
+                child: Icon(
+                  MdiIcons.thumbDown,
                   color: AppColors.primaryVariant,
                 ),
-              )
-            : null,
-        trailing: Container(
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              if (hasDownvoted)
-                Container(
-                  margin: const EdgeInsets.only(right: 16),
-                  child: Icon(
-                    MdiIcons.thumbDown,
-                    color: AppColors.primaryVariant,
-                  ),
-                ),
-              Icon(
-                MdiIcons.cardsPlayingOutline,
-                color: Colors.white70,
               ),
-              Container(
-                padding: const EdgeInsets.only(left: 16),
-                child: Text(
-                  "${player.prizes?.length ?? 0}",
-                  style: context.theme.textTheme.subtitle1.copyWith(fontWeight: FontWeight.w600),
-                ),
-              )
-            ],
-          ),
-        ),
-        leading: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            if (isOwner)
-              Container(
-                width: kMinInteractiveDimension,
-                height: kMinInteractiveDimension,
-                margin: const EdgeInsets.only(right: 8),
-                child: isKicking
-                    ? Container(
-                        padding: const EdgeInsets.all(12),
-                        child: CircularProgressIndicator(strokeWidth: 3,),
-                      )
-                    : Visibility(
-                        visible: !isSelf,
-                        maintainSize: true,
-                        maintainState: true,
-                        maintainAnimation: true,
-                        child: IconButton(
-                          icon: Icon(
-                            MdiIcons.karate,
-                            color: Colors.white,
-                          ),
-                          onPressed: () {
-                            // Kick Player
-                            Analytics().logSelectContent(contentType: 'action', itemId: 'kick_player');
-                            context.bloc<GameBloc>().add(KickPlayer(player.id));
-                          },
-                        ),
-                      ),
+            Icon(
+              MdiIcons.cardsPlayingOutline,
+              color: Colors.white70,
+            ),
+            Container(
+              padding: const EdgeInsets.only(left: 16),
+              child: Text(
+                "${player.prizes?.length ?? 0}",
+                style: context.theme.textTheme.subtitle1.copyWith(fontWeight: FontWeight.w600),
               ),
-            PlayerCircleAvatar(player: player),
+            )
           ],
-        ));
+        ),
+      ),
+      leading: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          if (isOwner)
+            Container(
+              width: kMinInteractiveDimension,
+              height: kMinInteractiveDimension,
+              margin: const EdgeInsets.only(right: 8),
+              child: isKicking
+                  ? Container(
+                      padding: const EdgeInsets.all(12),
+                      child: CircularProgressIndicator(
+                        strokeWidth: 3,
+                      ),
+                    )
+                  : Visibility(
+                      visible: !isSelf,
+                      maintainSize: true,
+                      maintainState: true,
+                      maintainAnimation: true,
+                      child: IconButton(
+                        icon: Icon(
+                          MdiIcons.karate,
+                          color: Colors.white,
+                        ),
+                        onPressed: () {
+                          // Kick Player
+                          Analytics().logSelectContent(contentType: 'action', itemId: 'kick_player');
+                          context.bloc<GameBloc>().add(KickPlayer(player.id));
+                        },
+                      ),
+                    ),
+            ),
+          PlayerCircleAvatar(player: player),
+        ],
+      ),
+    );
   }
 }

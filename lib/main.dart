@@ -26,7 +26,7 @@ void main() async {
   });
 
   // Setup Push Notifications
-  // PushNotifications().setup();
+  PushNotifications().setup();
 
   runApp(buildRepositoryProvider(BlocProvider(
     create: (context) {

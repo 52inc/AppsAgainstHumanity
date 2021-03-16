@@ -10,7 +10,6 @@ import 'package:firebase_analytics/observer.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:wiredash/wiredash.dart';
 import 'authentication_bloc/authentication_bloc.dart';
 
 class App extends StatelessWidget {

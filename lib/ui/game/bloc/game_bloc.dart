@@ -40,6 +40,8 @@ class GameBloc extends Bloc<GameEvent, GameViewState> {
       yield* _mapClearErrorToState();
     } else if (event is DownvotePrompt) {
       yield* _mapDownvoteToState();
+    } else if (event is WaveAtPlayer) {
+      yield* _mapWaveAtPlayerToState(event);
     } else if (event is PickResponseCard) {
       yield* _mapPickResponseCardToState(event);
     } else if (event is ClearPickedResponseCards) {
@@ -113,6 +115,14 @@ class GameBloc extends Bloc<GameEvent, GameViewState> {
   Stream<GameViewState> _mapDownvoteToState() async* {
     try {
       await gameRepository.downVoteCurrentPrompt(state.game.id);
+    } catch (e) {
+      yield state.copyWith(error: "$e");
+    }
+  }
+
+  Stream<GameViewState> _mapWaveAtPlayerToState(WaveAtPlayer event) async* {
+    try {
+      await gameRepository.waveAtPlayer(state.game.id, event.playerId, event.message);
     } catch (e) {
       yield state.copyWith(error: "$e");
     }
