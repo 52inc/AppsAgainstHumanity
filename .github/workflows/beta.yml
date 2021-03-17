@@ -21,6 +21,9 @@ jobs:
 
       - name: Fetch dependencies
         run: flutter pub get
+
+      - name: Run Code Generate
+        run: ./regenerate.sh
         
       - name: Setup Secrets
         run: |
@@ -33,10 +36,7 @@ jobs:
           CONFIG_DART: ${{ secrets.CONFIG_DART }}
           KEY_PROPERTIES: ${{ secrets.KEY_PROPERTIES }}
           SIGNING_KEY: ${{ secrets.SIGNING_KEY }}
-          
-      - name: Run Code Generate
-        run: ./regenerate.sh
-        
+
       - name: Build APK
         run: flutter build apk
         
