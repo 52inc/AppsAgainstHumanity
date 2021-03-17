@@ -42,4 +42,10 @@ class Analytics with FirebaseAnalytics {
     return _firebaseAnalytics?.logLogin(loginMethod: loginMethod)
         ?? Future.value();
   }
+
+  @override
+  Future<void> logSignUp({String signUpMethod}) {
+    return _firebaseAnalytics?.logSignUp(signUpMethod: signUpMethod)
+        ?? Future.value();
+  }
 }

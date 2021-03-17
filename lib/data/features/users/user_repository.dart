@@ -40,7 +40,7 @@ class UserRepository {
       return doc.snapshots().map((snapshot) {
         return User(
           id: snapshot.id,
-          name: snapshot['name'],
+          name: snapshot['name'] ?? Player.DEFAULT_NAME,
           avatarUrl: snapshot['avatarUrl'],
           updatedAt: (snapshot['updatedAt'] as Timestamp).toDate(),
         );
@@ -148,6 +148,21 @@ class UserRepository {
 
     final fb.UserCredential _result = await _auth.signInWithCredential(credential);
     return _finishSigningInWithResult(_result, name: name);
+  }
+
+  Future<User> signInWithEmail(String email, String password) async {
+    final fb.UserCredential _result = await _auth.signInWithEmailAndPassword(email: email, password: password);
+    return _finishSigningInWithResult(_result);
+  }
+
+  Future<User> signUpWithEmail(String email, String password, [String username]) async {
+    final fb.UserCredential _result = await _auth.createUserWithEmailAndPassword(email: email, password: password);
+    return _finishSigningInWithResult(_result, name: username);
+  }
+
+  Future<User> signInAnonymously() async {
+    final fb.UserCredential _result = await _auth.signInAnonymously();
+    return _finishSigningInWithResult(_result);
   }
 
   Future<User> _finishSigningInWithResult(fb.UserCredential result,

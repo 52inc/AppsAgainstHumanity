@@ -28,12 +28,12 @@ dependencies:
   share: ^0.6.4
   json_annotation: ^3.0.0
   wiredash: 0.6.2
+  email_validator: ^2.0.1
 
   # Architecture and Tools
   bloc: ^3.0.0
   flutter_bloc: ^3.2.0
   rxdart: ^0.23.1
-  #dartx: ^0.3.0
   kt_dart: ^0.7.0+1
   equatable: ^1.1.1
 
@@ -52,10 +52,12 @@ dependencies:
   # UI
   material_design_icons_flutter: ^4.0.5855
   timeago: ^2.0.29
-  webview_flutter: ^0.3.20+2
+  webview_flutter: ^2.0.2
+  easy_web_view: ^1.4.0-nullsafety
   flutter_signin_button: ^1.1.0
   image_picker: ^0.7.2+1
   google_fonts: ^2.0.0
+
 
 dev_dependencies:
   flutter_test:

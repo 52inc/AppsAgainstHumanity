@@ -1,7 +1,9 @@
 import 'dart:async';
 
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:appsagainsthumanity/authentication_bloc/authentication_bloc.dart';
 import 'package:appsagainsthumanity/internal.dart';
+import 'package:easy_web_view/easy_web_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:webview_flutter/webview_flutter.dart';
@@ -19,7 +21,7 @@ class _TermsOfServiceScreenState extends State<TermsOfServiceScreen> {
   @override
   void initState() {
     super.initState();
-    _loadingStream.onListen = () => _loadingStream.add(true);
+    _loadingStream.onListen = () => _loadingStream.add(kIsWeb ? false : true);
   }
 
   @override
@@ -41,10 +43,15 @@ class _TermsOfServiceScreenState extends State<TermsOfServiceScreen> {
         fit: StackFit.expand,
         children: [
           Container(
-            child: WebView(
-              onWebViewCreated: (controller) {
-                webViewController = controller;
-                _loadTermsOfServiceFromUrl();
+            margin: EdgeInsets.only(bottom: kIsWeb ? 88 : 0),
+            child: EasyWebView(
+              src: Config.termsOfServiceUrl,
+              isHtml: false,
+              isMarkdown: false,
+              convertToWidgets: false,
+              widgetsTextSelectable: false,
+              onLoaded: () {
+                _loadingStream.add(false);
               },
             ),
           ),
@@ -72,12 +79,15 @@ class _TermsOfServiceScreenState extends State<TermsOfServiceScreen> {
             child: Container(
               width: double.maxFinite,
               margin: const EdgeInsets.all(16),
-              child: RaisedButton(
-                padding: const EdgeInsets.symmetric(vertical: 16),
+              child: ElevatedButton(
                 child: Text("I AGREE"),
-                color: context.primaryColor,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
+                style: ElevatedButton.styleFrom(
+                  primary: context.primaryColor,
+                  elevation: 4,
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
                 ),
                 onPressed: () {
                   Analytics().logSelectContent(contentType: 'action', itemId: "terms_of_service");

@@ -23,6 +23,12 @@ class SignInBloc extends Bloc<SignInEvent, SignInState> {
       yield* _mapLoginWithGooglePressedToState();
     } else if (event is LoginWithApplePressed) {
       yield* _mapLoginWithApplePressedToState();
+    } else if (event is LoginAnonymouslyPressed) {
+      yield* _mapLoginAnonymouslyPressedToState();
+    } else if (event is LoginWithEmailPressed) {
+      yield* _mapLoginWithEmailPressedToState(event);
+    } else if (event is SignUpWithEmailPressed) {
+      yield* _mapSignUpWithEmailPressedToState(event);
     }
   }
 
@@ -43,6 +49,42 @@ class SignInBloc extends Bloc<SignInEvent, SignInState> {
     try {
       await _userRepository.signInWithApple();
       await Analytics().logLogin(loginMethod: "apple");
+      yield SignInState.success();
+    } catch (e, stacktrace) {
+      Logger("SignInBloc").fine("Error signing in: $e\n$stacktrace");
+      yield SignInState.failure();
+    }
+  }
+
+  Stream<SignInState> _mapLoginAnonymouslyPressedToState() async* {
+    yield SignInState.loading();
+    try {
+      await _userRepository.signInAnonymously();
+      await Analytics().logLogin(loginMethod: "anonymously");
+      yield SignInState.success();
+    } catch (e, stacktrace) {
+      Logger("SignInBloc").fine("Error signing in: $e\n$stacktrace");
+      yield SignInState.failure();
+    }
+  }
+
+  Stream<SignInState> _mapLoginWithEmailPressedToState(LoginWithEmailPressed event) async* {
+    yield SignInState.loading();
+    try {
+      await _userRepository.signInWithEmail(event.email, event.password);
+      await Analytics().logLogin(loginMethod: "email");
+      yield SignInState.success();
+    } catch (e, stacktrace) {
+      Logger("SignInBloc").fine("Error signing in: $e\n$stacktrace");
+      yield SignInState.failure();
+    }
+  }
+
+  Stream<SignInState> _mapSignUpWithEmailPressedToState(SignUpWithEmailPressed event) async* {
+    yield SignInState.loading();
+    try {
+      await _userRepository.signUpWithEmail(event.email, event.password, event.userName);
+      await Analytics().logSignUp(signUpMethod: "email");
       yield SignInState.success();
     } catch (e, stacktrace) {
       Logger("SignInBloc").fine("Error signing in: $e\n$stacktrace");

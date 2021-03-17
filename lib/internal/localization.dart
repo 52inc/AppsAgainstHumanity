@@ -23,7 +23,20 @@ class AppLocalization {
   String get appName => Intl.message('AppsAgainstHumanity', name: 'appName');
   String get appNameDisplay => Intl.message('Apps Against\nHumanity', name: 'appNameDisplay');
   String get actionSignIn => Intl.message('Sign in with Google', name: 'actionSignIn');
-  String get actionSignInEmail => Intl.message('Sign in with Email', name: 'actionSignIn');
+  String get actionSignInAnonymously => Intl.message('Sign in anonymously', name: 'actionSignInAnonymously');
+  String get actionSignInEmail => Intl.message('Sign in with Email', name: 'actionSignInEmail');
+  String get actionEmailSignUp => Intl.message('Sign up', name: 'actionEmailSignUp');
+  String get actionEmailSignIn => Intl.message('Sign in', name: 'actionEmailSignIn');
+  String get actionEmailAltSignUp => Intl.message('or sign up', name: 'actionEmailAltSignUp');
+  String get actionEmailAltSignIn => Intl.message('or sign in', name: 'actionEmailAltSignIn');
+  String get hintEmail => Intl.message('Email', name: 'hintEmail');
+  String get hintPassword => Intl.message('Password', name: 'hintPassword');
+  String get hintConfirmPassword => Intl.message('Confirm password', name: 'hintConfirmPassword');
+  String get hintUserName => Intl.message('Username', name: 'hintUserName');
+  String get errorInvalidUserName => Intl.message('Please enter a valid username', name: 'errorInvalidUserName');
+  String get errorInvalidEmailAddress => Intl.message('Please enter a valid email address', name: 'errorInvalidEmailAddress');
+  String get errorInvalidPasswordLength => Intl.message('You must enter a password of at lease 8 characters', name: 'errorInvalidPasswordLength');
+  String get errorMismatchingPasswords => Intl.message('This must match the above password', name: 'errorMismatchingPasswords');
 
   String get titleNewGame => Intl.message('New game', name: 'titleNewGame');
   String get actionStartGame => Intl.message('Start game', name: 'actionStartGame');
