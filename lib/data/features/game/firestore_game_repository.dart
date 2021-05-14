@@ -156,7 +156,11 @@ class FirestoreGameRepository extends GameRepository {
 
     return collection.snapshots().map((snapshot) {
       if (snapshot.data != null) {
-        return List<String>.from(snapshot.data()['votes'] ?? []);
+        final data = snapshot.data() ?? {};
+        print(data);
+        print("Contains votes: ${data.containsKey('votes')}");
+        print("Votes: ${data['votes']}");
+        return List<String>.from(data['votes'] ?? []);
       } else {
         return [];
       }

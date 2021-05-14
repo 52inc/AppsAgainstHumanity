@@ -60,10 +60,11 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
   Stream<ProfileState> _mapPhotoChangedToState(PhotoChanged event) async* {
       yield state.copyWith(isLoading: true, error: null);
       try {
-          await _userRepository.updateProfilePhoto(event.file);
-          yield state.copyWith(isLoading: false);
+        final imageBytes = await event.file.readAsBytes();
+        await _userRepository.updateProfilePhoto(imageBytes);
+        yield state.copyWith(isLoading: false);
       } catch (e) {
-          yield state.copyWith(isLoading: false, error: e.toString());
+        yield state.copyWith(isLoading: false, error: e.toString());
       }
   }
   

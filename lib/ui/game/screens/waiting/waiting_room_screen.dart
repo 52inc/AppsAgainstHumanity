@@ -1,13 +1,16 @@
+
 import 'package:appsagainsthumanity/data/features/game/game_repository.dart';
 import 'package:appsagainsthumanity/data/features/game/model/player.dart';
 import 'package:appsagainsthumanity/internal.dart';
 import 'package:appsagainsthumanity/internal/dynamic_links.dart';
 import 'package:appsagainsthumanity/ui/game/bloc/bloc.dart';
 import 'package:appsagainsthumanity/ui/widgets/player_circle_avatar.dart';
+import 'package:clipboard/clipboard.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:share/share.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 
 class WaitingRoomScreen extends StatelessWidget {
   @override
@@ -64,17 +67,22 @@ class WaitingRoomScreen extends StatelessWidget {
                     children: [
                       Container(
                         margin: const EdgeInsets.only(right: 16, top: 4),
-                        child: OutlineButton(
+                        child: OutlinedButton(
                           child: Text("INVITE"),
-                          color: context.primaryColor,
-                          textColor: context.primaryColor,
-                          highlightedBorderColor: context.primaryColor,
-                          splashColor: context.primaryColor.withOpacity(0.40),
-                          borderSide: BorderSide(color: context.primaryColor),
+                          style: OutlinedButton.styleFrom(
+                            primary: context.primaryColor,
+                            textStyle: context.theme.textTheme.button.copyWith(
+                              color: context.primaryColor,
+                            ),
+                            side: BorderSide(color: context.primaryColor),
+                            padding: const EdgeInsets.all(16)
+                          ),
+                          // highlightedBorderColor: context.primaryColor,
+                          // splashColor: context.primaryColor.withOpacity(0.40),
                           onPressed: () async {
                             Analytics().logShare(contentType: 'game', itemId: 'invite', method: 'dynamic_link');
                             var link = await DynamicLinks.createLink(state.game.id);
-                            await Share.share(link.toString());
+                            _shareLink(context, link.toString());
                           },
                         ),
                       ),
@@ -111,7 +119,7 @@ class WaitingRoomScreen extends StatelessWidget {
         bloc: context.bloc<GameBloc>(),
         listener: (context, state) {
           if (state.error != null) {
-            Scaffold.of(context)
+            context.scaffold
               ..hideCurrentSnackBar()
               ..showSnackBar(
                 SnackBar(
@@ -181,4 +189,30 @@ class WaitingRoomScreen extends StatelessWidget {
       },
     );
   }
+
+  void _shareLink(BuildContext context, String link) async {
+    if (kIsWeb) {
+      // await shareWeb(link);
+      await FlutterClipboard.copy(link);
+      context.scaffold.showSnackBar(
+        SnackBar(
+          content: Text("Link copied to clipboard!"),
+        )
+      );
+    } else {
+      await Share.share(link.toString());
+    }
+  }
+
+  Future<void> shareWeb(String linkToShare) async {
+    if (!kIsWeb) {
+      throw UnimplementedError('Share is only implemented on Web');
+    }
+
+    // final html.HtmlDocument doc = js.context['document'];
+    // final html.AnchorElement link = doc.createElement('a');
+    // link.href = linkToShare;
+    // link.click();
+  }
+
 }

@@ -86,8 +86,9 @@ class ProfilePhoto extends StatelessWidget {
     } else if (action is UpdatePhoto) {
       var image = await ImagePicker().getImage(source: action.source);
       if (image != null) {
+        print("Photo selected: ${image.path}");
         context.bloc<ProfileBloc>()
-            .add(PhotoChanged(File(image.path)));
+            .add(PhotoChanged(image));
       }
     }
   }

@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:appsagainsthumanity/data/app_preferences.dart';
 import 'package:appsagainsthumanity/data/features/game/model/player.dart';
@@ -81,10 +82,10 @@ class UserRepository {
     });
   }
 
-  Future<void> updateProfilePhoto(File image) {
+  Future<void> updateProfilePhoto(Uint8List imageBytes) {
     return currentUserOrThrow((firebaseUser) async {
       var ref = _profilePhotoReference(firebaseUser);
-      var refSnapshot = await ref.putFile(image);
+      var refSnapshot = await ref.putData(imageBytes);
       var downloadUrl = await refSnapshot.ref.getDownloadURL();
 
       // Be sure to update our Auth Obj

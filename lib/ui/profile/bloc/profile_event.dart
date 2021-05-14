@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:appsagainsthumanity/data/features/users/model/user.dart';
 import 'package:equatable/equatable.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:meta/meta.dart';
 
 abstract class ProfileEvent extends Equatable {
@@ -35,7 +36,7 @@ class DisplayNameChanged extends ProfileEvent {
 
 @immutable
 class PhotoChanged extends ProfileEvent {
-  final File file;
+  final PickedFile file;
 
   PhotoChanged(this.file);
 
