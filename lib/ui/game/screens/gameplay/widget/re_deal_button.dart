@@ -10,7 +10,9 @@ class ReDealButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<GameBloc, GameViewState>(
       builder: (context, state) {
-        if (!state.areWeJudge && !state.haveWeSubmittedResponse && (state.currentPlayer?.prizes?.length ?? 0) > 0) {
+        if (!state.areWeJudge &&
+            !state.haveWeSubmittedResponse &&
+            (state.currentPlayer?.prizes?.length ?? 0) > 0) {
           return IconButton(
             icon: Icon(MdiIcons.cardsVariant),
             tooltip: "Re-deal your hand",
@@ -27,22 +29,27 @@ class ReDealButton extends StatelessWidget {
                       content: RichText(
                         text: TextSpan(text: 'Spend ', children: [
                           TextSpan(
-                              text: '1 of ${state.currentPlayer.prizes.length} prize cards',
+                              text:
+                                  '1 of ${state.currentPlayer.prizes.length} prize cards',
                               style: TextStyle(fontWeight: FontWeight.bold)),
                           TextSpan(text: ' to deal you a new hand?')
                         ]),
                       ),
                       actions: [
-                        FlatButton(
+                        TextButton(
                           child: Text('CANCEL'),
-                          textColor: AppColors.secondary,
+                          style: TextButton.styleFrom(
+                            primary: AppColors.secondary,
+                          ),
                           onPressed: () {
                             Navigator.of(context).pop(false);
                           },
                         ),
-                        FlatButton(
+                        TextButton(
                           child: Text('DEAL'),
-                          textColor: AppColors.secondary,
+                          style: TextButton.styleFrom(
+                            primary: AppColors.secondary,
+                          ),
                           onPressed: () {
                             Navigator.of(context).pop(true);
                           },
@@ -51,8 +58,11 @@ class ReDealButton extends StatelessWidget {
                     );
                   });
               if (result ?? false) {
-                Analytics().logSelectContent(contentType: 'action', itemId: 'redeal_hand');
-                await context.repository<GameRepository>().reDealHand(state.game.id);
+                Analytics().logSelectContent(
+                    contentType: 'action', itemId: 'redeal_hand');
+                await context
+                    .repository<GameRepository>()
+                    .reDealHand(state.game.id);
               }
             },
           );

@@ -53,16 +53,19 @@ class _JudgeDreddState extends State<JudgeDredd> {
                   return Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
-                      _buildPageButton(context: context, iconData: Icons.keyboard_arrow_left, isVisible: showLeft),
-
+                      _buildPageButton(
+                          context: context,
+                          iconData: Icons.keyboard_arrow_left,
+                          isVisible: showLeft),
                       if (widget.state.isSubmitting)
                         _buildPickingWinnerIndicator(context),
-
                       if (!widget.state.isSubmitting)
                         _buildPickWinnerButton(context),
-
                       _buildPageButton(
-                          context: context, iconData: Icons.keyboard_arrow_right, isLeft: false, isVisible: showRight),
+                          context: context,
+                          iconData: Icons.keyboard_arrow_right,
+                          isLeft: false,
+                          isVisible: showRight),
                     ],
                   );
                 }),
@@ -73,16 +76,20 @@ class _JudgeDreddState extends State<JudgeDredd> {
   }
 
   Widget _buildPickWinnerButton(BuildContext context) {
-    return RaisedButton.icon(
-      padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
-      shape: StadiumBorder(),
-      color: AppColors.primary,
+    return ElevatedButton.icon(
+      style: ElevatedButton.styleFrom(
+        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+        shape: StadiumBorder(),
+        primary: AppColors.primary,
+      ),
       onPressed: () async {
         var currentPlayerResponse = controller.currentPlayerResponse;
         if (currentPlayerResponse != null) {
-          Analytics().logSelectContent(contentType: 'judge', itemId: 'pick_winner');
+          Analytics()
+              .logSelectContent(contentType: 'judge', itemId: 'pick_winner');
           print("Winner selected! ${currentPlayerResponse.playerId}");
-          context.bloc<GameBloc>()
+          context
+              .bloc<GameBloc>()
               .add(PickWinner(currentPlayerResponse.playerId));
         }
       },
@@ -104,11 +111,13 @@ class _JudgeDreddState extends State<JudgeDredd> {
   }
 
   Widget _buildPickingWinnerIndicator(BuildContext context) {
-    return RaisedButton.icon(
-      padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
-      shape: StadiumBorder(),
-      color: AppColors.primary,
-      disabledColor: AppColors.primary,
+    return ElevatedButton.icon(
+      onPressed: () {},
+      style: ElevatedButton.styleFrom(
+        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+        shape: StadiumBorder(),
+        primary: AppColors.primary,
+      ),
       icon: Container(
         width: 24,
         height: 24,
@@ -159,10 +168,12 @@ class _JudgeDreddState extends State<JudgeDredd> {
             onTap: isVisible
                 ? () {
                     if (isLeft) {
-                      Analytics().logSelectContent(contentType: 'judge', itemId: 'previous_choice');
+                      Analytics().logSelectContent(
+                          contentType: 'judge', itemId: 'previous_choice');
                       controller.prevPage();
                     } else {
-                      Analytics().logSelectContent(contentType: 'judge', itemId: 'next_choice');
+                      Analytics().logSelectContent(
+                          contentType: 'judge', itemId: 'next_choice');
                       controller.nextPage();
                     }
                   }
@@ -184,7 +195,8 @@ class _JudgeDreddState extends State<JudgeDredd> {
 class JudgementController {
   static const double VIEWPORT_FRACTION = 0.945;
 
-  final PageController pageController = PageController(viewportFraction: VIEWPORT_FRACTION);
+  final PageController pageController =
+      PageController(viewportFraction: VIEWPORT_FRACTION);
   final StreamController<int> _pageChanges = StreamController.broadcast();
 
   PlayerResponse _currentPlayerResponse;

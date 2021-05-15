@@ -6,7 +6,7 @@ import 'package:appsagainsthumanity/data/features/users/model/user.dart';
 import 'package:appsagainsthumanity/data/firestore.dart';
 import 'package:appsagainsthumanity/internal/push.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:cloud_functions/cloud_functions.dart';
+// import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_auth/firebase_auth.dart' as fb;
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -146,7 +146,8 @@ class UserRepository {
       name = result.givenName;
     }
 
-    final fb.UserCredential _result = await _auth.signInWithCredential(credential);
+    final fb.UserCredential _result =
+        await _auth.signInWithCredential(credential);
     return _finishSigningInWithResult(_result, name: name);
   }
 
@@ -206,9 +207,7 @@ class UserRepository {
   }
 
   DocumentReference _userDocument(fb.User user) {
-    return _db
-        .collection(FirebaseConstants.COLLECTION_USERS)
-        .doc(user.uid);
+    return _db.collection(FirebaseConstants.COLLECTION_USERS).doc(user.uid);
   }
 
   Reference _profilePhotoReference(fb.User user) {

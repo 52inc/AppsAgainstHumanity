@@ -1,4 +1,4 @@
-import 'package:appsagainsthumanity/app.dart';
+// import 'package:appsagainsthumanity/app.dart';
 import 'package:flutter/material.dart';
 import 'package:appsagainsthumanity/internal.dart';
 
@@ -13,7 +13,7 @@ class HomeOutlineButton extends StatelessWidget {
     @required this.icon,
     @required this.text,
     this.textColor = AppColors.primaryVariant,
-  this.borderColor = AppColors.primaryVariant,
+    this.borderColor = AppColors.primaryVariant,
     this.onTap,
   });
 

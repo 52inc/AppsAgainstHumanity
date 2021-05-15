@@ -1,4 +1,4 @@
-import 'dart:io';
+// import 'dart:io';
 
 import 'package:appsagainsthumanity/internal/push.dart';
 import 'package:appsagainsthumanity/ui/creategame/create_game_screen.dart';
@@ -25,15 +25,17 @@ class _HomeScreenV2State extends State<HomeScreenV2> {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => HomeBloc(context.repository(), context.repository())..add(HomeStarted()),
+      create: (context) => HomeBloc(context.repository(), context.repository())
+        ..add(HomeStarted()),
       child: MultiBlocListener(
         listeners: [
           // Error Listener
           BlocListener<HomeBloc, HomeState>(
-            condition: (previous, current) => previous.error != current.error && current.error != null,
+            condition: (previous, current) =>
+                previous.error != current.error && current.error != null,
             listener: (context, state) {
               if (state.error != null) {
-                Scaffold.of(context)
+                ScaffoldMessenger.of(context)
                   ..hideCurrentSnackBar()
                   ..showSnackBar(
                     SnackBar(
@@ -50,7 +52,8 @@ class _HomeScreenV2State extends State<HomeScreenV2> {
 
           // Joined Game listener that opens a 'joined' game
           BlocListener<HomeBloc, HomeState>(
-            condition: (previous, current) => previous.joinedGame?.id != current.joinedGame?.id,
+            condition: (previous, current) =>
+                previous.joinedGame?.id != current.joinedGame?.id,
             listener: (context, state) {
               if (state.joinedGame != null) {
                 Navigator.of(context).push(GamePageRoute(state.joinedGame));
@@ -76,7 +79,6 @@ class _HomeScreenV2State extends State<HomeScreenV2> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-
                 // Title
                 Container(
                   margin: const EdgeInsets.only(left: 24, right: 24),
@@ -103,8 +105,10 @@ class _HomeScreenV2State extends State<HomeScreenV2> {
                       UserWidget(
                         state: state,
                         onTap: () {
-                          Analytics().logSelectContent(contentType: 'action', itemId: 'profile');
-                          Navigator.of(context).push(MaterialPageRoute(builder: (_) => ProfileScreen()));
+                          Analytics().logSelectContent(
+                              contentType: 'action', itemId: 'profile');
+                          Navigator.of(context).push(MaterialPageRoute(
+                              builder: (_) => ProfileScreen()));
                         },
                       ),
                       HomeOutlineButton(
@@ -113,11 +117,16 @@ class _HomeScreenV2State extends State<HomeScreenV2> {
                           color: AppColors.primaryVariant,
                         ),
                         text: "New Game",
-                        onTap: state.joiningGame == null ? () {
-                          Analytics().logSelectContent(contentType: 'action', itemId: 'start_game');
-                          PushNotifications().checkPermissions();
-                          Navigator.of(context).push(MaterialPageRoute(builder: (context) => CreateGameScreen()));
-                        } : null,
+                        onTap: state.joiningGame == null
+                            ? () {
+                                Analytics().logSelectContent(
+                                    contentType: 'action',
+                                    itemId: 'start_game');
+                                PushNotifications().checkPermissions();
+                                Navigator.of(context).push(MaterialPageRoute(
+                                    builder: (context) => CreateGameScreen()));
+                              }
+                            : null,
                       ),
                       JoinGameWidget(state),
                     ],

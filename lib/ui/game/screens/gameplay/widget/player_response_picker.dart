@@ -11,7 +11,8 @@ class PlayerResponsePicker extends StatefulWidget {
 }
 
 class _PlayerResponsePickerState extends State<PlayerResponsePicker> {
-  final PageController _pageController = PageController(viewportFraction: 0.945);
+  final PageController _pageController =
+      PageController(viewportFraction: 0.945);
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +20,6 @@ class _PlayerResponsePickerState extends State<PlayerResponsePicker> {
       builder: (context, state) {
         // Determine if we need to show the response picker, or to hide this part
         if (!state.areWeJudge && !state.haveWeSubmittedResponse) {
-
           // Get the player's current hand, omitting any card's they MAY have submitted
           var hand = state.currentHand.reversed.toList();
           return Stack(
@@ -65,11 +65,12 @@ class _PlayerResponsePickerState extends State<PlayerResponsePicker> {
   }
 
   Widget _buildSubmittingWidget(BuildContext context) {
-    return RaisedButton.icon(
-      padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
-      shape: StadiumBorder(),
-      color: AppColors.primary,
-      disabledColor: AppColors.primary,
+    return ElevatedButton.icon(
+      style: ElevatedButton.styleFrom(
+        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+        shape: StadiumBorder(),
+        primary: AppColors.primary,
+      ),
       onPressed: null,
       icon: Container(
         width: 24,
@@ -92,12 +93,15 @@ class _PlayerResponsePickerState extends State<PlayerResponsePicker> {
   }
 
   Widget _buildSubmitCardsButton(BuildContext context) {
-    return RaisedButton.icon(
-      padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
-      shape: StadiumBorder(),
-      color: AppColors.primary,
+    return ElevatedButton.icon(
+      style: ElevatedButton.styleFrom(
+        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+        shape: StadiumBorder(),
+        primary: AppColors.primary,
+      ),
       onPressed: () async {
-        Analytics().logSelectContent(contentType: 'action', itemId: 'submit_responses');
+        Analytics().logSelectContent(
+            contentType: 'action', itemId: 'submit_responses');
         context.bloc<GameBloc>().add(SubmitResponses());
       },
       icon: Icon(
@@ -152,7 +156,8 @@ class HandCard extends StatelessWidget {
           highlightColor: AppColors.primary.withOpacity(0.26),
           splashColor: AppColors.primary.withOpacity(0.26),
           onTap: () {
-            Analytics().logSelectContent(contentType: 'action', itemId: 'picked_response');
+            Analytics().logSelectContent(
+                contentType: 'action', itemId: 'picked_response');
             context.bloc<GameBloc>().add(PickResponseCard(card));
           },
           child: Column(
