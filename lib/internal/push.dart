@@ -6,11 +6,11 @@ import 'package:appsagainsthumanity/data/features/game/game_repository.dart';
 import 'package:appsagainsthumanity/data/features/game/model/turn.dart';
 import 'package:appsagainsthumanity/internal/dynamic_links.dart';
 import 'package:appsagainsthumanity/ui/routes.dart';
-import 'package:appsagainsthumanity/internal.dart';
+// import 'package:appsagainsthumanity/internal.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+// import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:logging/logging.dart';
 
@@ -45,7 +45,8 @@ class PushNotifications {
   Future<void> checkAndUpdateToken({bool force = false}) async {
     String token = await _firebaseMessaging.getToken();
     if (token != AppPreferences().pushToken || force) {
-      Logger.root.fine("FCM Token is different from what is stored in preferences, updating device...");
+      Logger.root.fine(
+          "FCM Token is different from what is stored in preferences, updating device...");
       DeviceRepository().updatePushToken(token);
     }
   }
@@ -74,7 +75,8 @@ class _PushNavigatorState extends State<PushNavigator> {
     });
 
     /// let's go ahead and sign up here to handle dynamic links
-    DynamicLinks.initDynamicLinks(context, (gameId) => navigateToGame(gameId, andJoin: true));
+    DynamicLinks.initDynamicLinks(
+        context, (gameId) => navigateToGame(gameId, andJoin: true));
   }
 
   @override
@@ -126,7 +128,7 @@ class _PushNavigatorState extends State<PushNavigator> {
               ..push(GamePageRoute(game));
           }
         } else {
-            print("Unable to join the Game($gameId)");
+          print("Unable to join the Game($gameId)");
         }
       } catch (e) {
         print(e);

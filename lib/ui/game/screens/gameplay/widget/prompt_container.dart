@@ -83,8 +83,9 @@ class PromptContainer extends StatelessWidget {
                     alignment: Alignment.topCenter,
                     child: Text(
                       "Clear Responses".toUpperCase(),
-                      style: context.theme.textTheme.subtitle1
-                          .copyWith(color: context.primaryColor, fontWeight: FontWeight.w600),
+                      style: context.theme.textTheme.subtitle1.copyWith(
+                          color: context.primaryColor,
+                          fontWeight: FontWeight.w600),
                     ),
                   ),
                   Container(
@@ -97,7 +98,8 @@ class PromptContainer extends StatelessWidget {
                 ],
               ),
               onDismissed: (direction) {
-                Analytics().logSelectContent(contentType: 'action', itemId: 'clear_choices');
+                Analytics().logSelectContent(
+                    contentType: 'action', itemId: 'clear_choices');
                 context.bloc<GameBloc>().add(ClearPickedResponseCards());
               },
               child: Container(
@@ -114,7 +116,9 @@ class PromptContainer extends StatelessWidget {
   }
 
   Widget _buildPromptSpecial(BuildContext context, PromptCard promptCard) {
-    if (promptCard != null && promptCard.special != null && promptCard.special.isNotEmpty) {
+    if (promptCard != null &&
+        promptCard.special != null &&
+        promptCard.special.isNotEmpty) {
       return Container(
         height: 36,
         alignment: Alignment.centerRight,
@@ -151,15 +155,17 @@ class PromptContainer extends StatelessWidget {
   Widget _buildPromptText(BuildContext context, GameViewState state) {
     return GestureDetector(
       onLongPress: () {
-        Analytics().logSelectContent(contentType: 'action', itemId: 'view_prompt_source');
-        Scaffold.of(context).showSnackBar(SnackBar(
+        Analytics().logSelectContent(
+            contentType: 'action', itemId: 'view_prompt_source');
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           content: Text(state.game?.turn?.promptCard?.set ?? ""),
           behavior: SnackBarBehavior.floating,
         ));
       },
       child: Container(
         width: double.maxFinite,
-        margin: const EdgeInsets.symmetric(vertical: textPadding, horizontal: textPadding + 16),
+        margin: const EdgeInsets.symmetric(
+            vertical: textPadding, horizontal: textPadding + 16),
         child: BlocBuilder<GameBloc, GameViewState>(
           builder: (context, state) {
             return Text(

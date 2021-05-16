@@ -1,8 +1,9 @@
-import 'dart:io';
+// import 'dart:io';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:appsagainsthumanity/data/firestore.dart';
 import 'package:appsagainsthumanity/internal.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class JoinRoomDialog extends StatefulWidget {
   @override
@@ -25,18 +26,17 @@ class _JoinRoomDialogState extends State<JoinRoomDialog> {
       mainAxisSize: MainAxisSize.min,
       children: [
         Container(
-            margin: const EdgeInsets.only(left: 24, right: 24, top: 24),
+          margin: const EdgeInsets.only(left: 24, right: 24, top: 24),
           child: Form(
             key: _formKey,
             child: TextFormField(
               controller: _gameInputController,
               decoration: InputDecoration(
-                border: OutlineInputBorder(),
-                labelText: 'Game ID',
-                labelStyle: context.theme.textTheme.caption
-              ),
+                  border: OutlineInputBorder(),
+                  labelText: 'Game ID',
+                  labelStyle: context.theme.textTheme.caption),
               maxLength: FirebaseConstants.MAX_GID_SIZE,
-              maxLengthEnforced: true,
+              maxLengthEnforcement: MaxLengthEnforcement.enforced,
               keyboardType: TextInputType.text,
               autofocus: true,
               textCapitalization: TextCapitalization.characters,
@@ -54,20 +54,24 @@ class _JoinRoomDialogState extends State<JoinRoomDialog> {
           ),
         ),
         Container(
-            margin: const EdgeInsets.only(bottom: 8, top: 8),
+          margin: const EdgeInsets.only(bottom: 8, top: 8),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
-              FlatButton(
+              TextButton(
                 child: Text('CANCEL'),
-                textColor: AppColors.primary,
+                style: TextButton.styleFrom(
+                  primary: AppColors.primary,
+                ),
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
               ),
-              FlatButton(
+              TextButton(
                 child: Text('JOIN'),
-                textColor: AppColors.primary,
+                style: TextButton.styleFrom(
+                  primary: AppColors.primary,
+                ),
                 onPressed: () {
                   if (_formKey.currentState.validate()) {
                     var gameId = _gameInputController.text;
@@ -93,7 +97,8 @@ Future<String> showJoinRoomDialog(BuildContext context) {
             child: AlertDialog(
               title: Text('Join a game'),
               content: JoinRoomDialog(),
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16)),
               contentPadding: const EdgeInsets.all(0),
             ),
           );
@@ -107,7 +112,8 @@ Future<String> showJoinRoomDialog(BuildContext context) {
             child: AlertDialog(
               title: Text('Join a game'),
               content: JoinRoomDialog(),
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16)),
               contentPadding: const EdgeInsets.all(0),
             ),
           );

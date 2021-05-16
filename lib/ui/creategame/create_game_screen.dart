@@ -1,5 +1,5 @@
 import 'package:appsagainsthumanity/data/features/cards/model/card_set.dart';
-import 'package:appsagainsthumanity/data/features/game/game_repository.dart';
+// import 'package:appsagainsthumanity/data/features/game/game_repository.dart';
 import 'package:appsagainsthumanity/ui/creategame/bloc/bloc.dart';
 import 'package:appsagainsthumanity/internal.dart';
 import 'package:appsagainsthumanity/ui/creategame/widgets/CountPreference.dart';
@@ -32,7 +32,7 @@ class _CreateGameScreenState extends State<CreateGameScreen> {
               condition: (previous, current) => current.error != previous.error,
               listener: (context, state) {
                 if (state.error != null) {
-                  Scaffold.of(context)
+                  ScaffoldMessenger.of(context)
                     ..hideCurrentSnackBar()
                     ..showSnackBar(
                       SnackBar(
@@ -49,10 +49,12 @@ class _CreateGameScreenState extends State<CreateGameScreen> {
 
             // New Game Listener
             BlocListener<CreateGameBloc, CreateGameState>(
-              condition: (previous, current) => current.createdGame?.id != previous.createdGame?.id,
+              condition: (previous, current) =>
+                  current.createdGame?.id != previous.createdGame?.id,
               listener: (context, state) {
                 if (state.createdGame != null) {
-                  Navigator.of(context).pushReplacement(GamePageRoute(state.createdGame));
+                  Navigator.of(context)
+                      .pushReplacement(GamePageRoute(state.createdGame));
                 }
               },
             ),
@@ -73,7 +75,8 @@ class _CreateGameScreenState extends State<CreateGameScreen> {
               brightness: Brightness.dark,
               title: Text(
                 context.strings.titleNewGame,
-                style: context.theme.textTheme.headline6.copyWith(color: Colors.white),
+                style: context.theme.textTheme.headline6
+                    .copyWith(color: Colors.white),
               ),
               leading: IconButton(
                 icon: Icon(Icons.arrow_back, color: Colors.white),
@@ -101,7 +104,9 @@ class _CreateGameScreenState extends State<CreateGameScreen> {
                       child: Container(
                         margin: const EdgeInsets.symmetric(horizontal: 16),
                         child: Text(
-                          state.isLoading ? "Loading..." : "${state.totalPrompts} Prompts ${state.totalResponses} Responses",
+                          state.isLoading
+                              ? "Loading..."
+                              : "${state.totalPrompts} Prompts ${state.totalResponses} Responses",
                           style: context.theme.textTheme.headline6,
                         ),
                       ),
@@ -110,17 +115,20 @@ class _CreateGameScreenState extends State<CreateGameScreen> {
                 ),
               ),
             ),
-            floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
-            floatingActionButton: state.selectedSets.isNotEmpty() && !state.isLoading
-                ? FloatingActionButton(
-                    child: Icon(Icons.check),
-                    onPressed: () async {
-                      // Start game?
-                      Analytics().logSelectContent(contentType: 'action', itemId: 'create_game');
-                      context.bloc<CreateGameBloc>().add(CreateGame());
-                    },
-                  )
-                : null,
+            floatingActionButtonLocation:
+                FloatingActionButtonLocation.endDocked,
+            floatingActionButton:
+                state.selectedSets.isNotEmpty() && !state.isLoading
+                    ? FloatingActionButton(
+                        child: Icon(Icons.check),
+                        onPressed: () async {
+                          // Start game?
+                          Analytics().logSelectContent(
+                              contentType: 'action', itemId: 'create_game');
+                          context.bloc<CreateGameBloc>().add(CreateGame());
+                        },
+                      )
+                    : null,
             body: TabBarView(
               children: [
                 _buildCardSetLists(state),
@@ -137,7 +145,9 @@ class _CreateGameScreenState extends State<CreateGameScreen> {
     return Column(
       children: [
         Expanded(
-          child: state.isLoading ? _buildLoading() : _buildList(state.cardSets, state.selectedSets),
+          child: state.isLoading
+              ? _buildLoading()
+              : _buildList(state.cardSets, state.selectedSets),
         ),
       ],
     );
@@ -153,7 +163,8 @@ class _CreateGameScreenState extends State<CreateGameScreen> {
           min: 1,
           max: 15,
           onValueChanged: (value) {
-            Analytics().logSelectContent(contentType: 'game_option', itemId: 'prizes_to_win');
+            Analytics().logSelectContent(
+                contentType: 'game_option', itemId: 'prizes_to_win');
             context.bloc<CreateGameBloc>().add(ChangePrizesToWin(value));
           },
         ),
@@ -164,7 +175,8 @@ class _CreateGameScreenState extends State<CreateGameScreen> {
           min: 5,
           max: 30,
           onValueChanged: (value) {
-            Analytics().logSelectContent(contentType: 'game_option', itemId: 'player_limit');
+            Analytics().logSelectContent(
+                contentType: 'game_option', itemId: 'player_limit');
             context.bloc<CreateGameBloc>().add(ChangePlayerLimit(value));
           },
         ),
@@ -174,7 +186,8 @@ class _CreateGameScreenState extends State<CreateGameScreen> {
           activeColor: AppColors.primary,
           value: state.pick2Enabled,
           onChanged: (value) {
-            Analytics().logSelectContent(contentType: 'game_option', itemId: 'pick2');
+            Analytics()
+                .logSelectContent(contentType: 'game_option', itemId: 'pick2');
             context.bloc<CreateGameBloc>().add(ChangePick2Enabled(value));
           },
         ),
@@ -184,7 +197,8 @@ class _CreateGameScreenState extends State<CreateGameScreen> {
           activeColor: AppColors.primary,
           value: state.draw2pick3Enabled,
           onChanged: (value) {
-            Analytics().logSelectContent(contentType: 'game_option', itemId: 'draw2_pick3');
+            Analytics().logSelectContent(
+                contentType: 'game_option', itemId: 'draw2_pick3');
             context.bloc<CreateGameBloc>().add(ChangeDraw2Pick3Enabled(value));
           },
         ),
@@ -211,11 +225,19 @@ class _CreateGameScreenState extends State<CreateGameScreen> {
         return aW.compareTo(bW);
       }
     }).flatMap((key) {
-      var items = groupedSets.get(key).map((cs) => CardSetListItem(cs, selected.contains(cs)));
+      var items = groupedSets
+          .get(key)
+          .map((cs) => CardSetListItem(cs, selected.contains(cs)));
       var allItemsSelected = items.all((i) => i.isSelected);
       var noItemsSelected = items.none((i) => i.isSelected);
       return mutableListOf<Widget>(
-        HeaderItem(key, allItemsSelected ? true : noItemsSelected ? false : null),
+        HeaderItem(
+            key,
+            allItemsSelected
+                ? true
+                : noItemsSelected
+                    ? false
+                    : null),
       )..addAll(items);
     });
 
@@ -252,8 +274,11 @@ class HeaderItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        Analytics().logSelectContent(contentType: 'card_set_source', itemId: title);
-        context.bloc<CreateGameBloc>().add(CardSourceSelected(title, isChecked));
+        Analytics()
+            .logSelectContent(contentType: 'card_set_source', itemId: title);
+        context
+            .bloc<CreateGameBloc>()
+            .add(CardSourceSelected(title, isChecked));
       },
       child: Column(
         children: [
@@ -271,8 +296,11 @@ class HeaderItem extends StatelessWidget {
                   value: isChecked,
                   tristate: true,
                   onChanged: (value) {
-                    Analytics().logSelectContent(contentType: 'card_set_source', itemId: title);
-                    context.bloc<CreateGameBloc>().add(CardSourceSelected(title, value));
+                    Analytics().logSelectContent(
+                        contentType: 'card_set_source', itemId: title);
+                    context
+                        .bloc<CreateGameBloc>()
+                        .add(CardSourceSelected(title, value));
                   },
                   activeColor: AppColors.primary,
                   checkColor: Colors.white,
@@ -312,12 +340,14 @@ class CardSetListItem extends StatelessWidget {
         value: isSelected,
         activeColor: AppColors.primary,
         onChanged: (value) {
-          Analytics().logSelectContent(contentType: 'card_set', itemId: cardSet.name);
+          Analytics()
+              .logSelectContent(contentType: 'card_set', itemId: cardSet.name);
           context.bloc<CreateGameBloc>().add(CardSetSelected(cardSet));
         },
       ),
       onTap: () {
-        Analytics().logSelectContent(contentType: 'card_set', itemId: cardSet.name);
+        Analytics()
+            .logSelectContent(contentType: 'card_set', itemId: cardSet.name);
         context.bloc<CreateGameBloc>().add(CardSetSelected(cardSet));
       },
     );

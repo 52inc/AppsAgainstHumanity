@@ -48,45 +48,45 @@ class _TermsOfServiceScreenState extends State<TermsOfServiceScreen> {
               },
             ),
           ),
-
           StreamBuilder<bool>(
-              stream: _loadingStream.stream,
-              builder: (context, snapshot) {
-                if (snapshot.data ?? false) {
-                  return Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: <Widget>[
-                      Container(
-                        child: CircularProgressIndicator(),
-                      ),
-                    ],
-                  );
-                } else {
-                  return Container();
-                }
+            stream: _loadingStream.stream,
+            builder: (context, snapshot) {
+              if (snapshot.data ?? false) {
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[
+                    Container(
+                      child: CircularProgressIndicator(),
+                    ),
+                  ],
+                );
+              } else {
+                return Container();
               }
+            },
           ),
-
           Align(
             alignment: Alignment.bottomCenter,
             child: Container(
               width: double.maxFinite,
               margin: const EdgeInsets.all(16),
-              child: RaisedButton(
-                padding: const EdgeInsets.symmetric(vertical: 16),
+              child: ElevatedButton(
                 child: Text("I AGREE"),
-                color: context.primaryColor,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
+                style: ElevatedButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  primary: context.primaryColor,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
                 ),
                 onPressed: () {
-                  Analytics().logSelectContent(contentType: 'action', itemId: "terms_of_service");
-                  context.bloc<AuthenticationBloc>()
-                      .add(AgreeToTerms());
+                  Analytics().logSelectContent(
+                      contentType: 'action', itemId: "terms_of_service");
+                  context.bloc<AuthenticationBloc>().add(AgreeToTerms());
                 },
               ),
             ),
-          )
+          ),
         ],
       ),
     );

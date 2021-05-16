@@ -1,4 +1,4 @@
-import 'dart:io';
+// import 'dart:io';
 
 import 'package:appsagainsthumanity/authentication_bloc/authentication_bloc.dart';
 import 'package:appsagainsthumanity/internal.dart';
@@ -36,7 +36,7 @@ class _SignInScreen extends State<SignInScreen> {
     return BlocConsumer<SignInBloc, SignInState>(
       listener: (context, state) {
         if (state.isFailure) {
-          Scaffold.of(context)
+          ScaffoldMessenger.of(context)
             ..hideCurrentSnackBar()
             ..showSnackBar(
               SnackBar(
@@ -133,8 +133,7 @@ class _SignInScreen extends State<SignInScreen> {
                 borderRadius: BorderRadius.circular(6),
                 child: InkWell(
                   onTap: () {
-                    context.bloc<SignInBloc>()
-                        .add(LoginWithGooglePressed());
+                    context.bloc<SignInBloc>().add(LoginWithGooglePressed());
                   },
                   child: Container(
                     width: double.maxFinite,
