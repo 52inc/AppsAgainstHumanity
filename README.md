@@ -1,4 +1,5 @@
-# Apps Against Humanity
+# Apps Against ~Humanity~ Fellowships 
+_Working title for 'rebrand'. The idea is to shift to a build-your-own-cards kinds of layout where users can create/import their own card sets and share them on a 'marketplace' where you can download any shared cardset. This would allow us to further de-couple the Cards Against Humanity cards and branding to better comply with the app store reviews_
 
 A Flutter Cards Against Humanity app for Android, iOS, and Web
 
