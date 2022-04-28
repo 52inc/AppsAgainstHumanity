@@ -28,19 +28,19 @@ class Game {
   final String winner;
 
   Game({
-    this.id,
-    @required this.gid,
-    @required this.ownerId,
-    @required this.state,
-    @required this.cardSets,
+    required this.id,
+    required this.gid,
+    required this.ownerId,
+    required this.state,
+    required this.cardSets,
     this.round = 1,
     this.prizesToWin = PRIZES_TO_WIN,
     this.playerLimit = PLAYER_LIMIT,
     this.pick2Enabled = true,
     this.draw2Pick3Enabled = true,
-    this.judgeRotation,
-    this.turn,
-    this.winner,
+    required this.judgeRotation,
+    required this.turn,
+    required this.winner,
   });
 
   factory Game.fromDocument(DocumentSnapshot snapshot) {
@@ -54,16 +54,16 @@ class Game {
   Map<String, dynamic> toJson() => _$GameToJson(this);
 
   Game copyWith({
-    String id,
-    String gid,
-    String ownerId,
-    GameState state,
-    int round,
-    int prizesToWin,
-    List<String> judgeRotation,
-    Set<String> cardSets,
-    Turn turn,
-    String winner,
+    String? id,
+    String? gid,
+    String? ownerId,
+    GameState? state,
+    int? round,
+    int? prizesToWin,
+    List<String>? judgeRotation,
+    Set<String>? cardSets,
+    Turn? turn,
+    String? winner,
   }) {
     return Game(
       id: id ?? this.id,
@@ -80,4 +80,4 @@ class Game {
   }
 }
 
-Map<String, dynamic> _turnToJson(Turn turn) => turn?.toJson();
+Map<String, dynamic> _turnToJson(Turn turn) => turn.toJson();

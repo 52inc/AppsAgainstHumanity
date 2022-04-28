@@ -8,11 +8,19 @@ import 'package:logging/logging.dart';
 import 'package:meta/meta.dart';
 
 class SignInBloc extends Bloc<SignInEvent, SignInState> {
-  UserRepository _userRepository;
+  UserRepository userRepository;
 
-  SignInBloc({@required UserRepository userRepository})
-    : assert(userRepository != null),
-        _userRepository = userRepository;
+  // This prob ain't right
+  SignInBloc({required this.userRepository})
+      : super(
+          SignInState(
+            isSuccess: true,
+            isFailure: false,
+            isSubmitting: false,
+          ),
+        ) {
+    userRepository = UserRepository();
+  }
 
   @override
   SignInState get initialState => SignInState.empty();
@@ -35,7 +43,7 @@ class SignInBloc extends Bloc<SignInEvent, SignInState> {
   Stream<SignInState> _mapLoginWithGooglePressedToState() async* {
     yield SignInState.loading();
     try {
-      await _userRepository.signInWithGoogle();
+      await userRepository.signInWithGoogle();
       await Analytics().logLogin(loginMethod: "google");
       yield SignInState.success();
     } catch (e, stacktrace) {
@@ -47,7 +55,7 @@ class SignInBloc extends Bloc<SignInEvent, SignInState> {
   Stream<SignInState> _mapLoginWithApplePressedToState() async* {
     yield SignInState.loading();
     try {
-      await _userRepository.signInWithApple();
+      await userRepository.signInWithApple();
       await Analytics().logLogin(loginMethod: "apple");
       yield SignInState.success();
     } catch (e, stacktrace) {
@@ -59,7 +67,7 @@ class SignInBloc extends Bloc<SignInEvent, SignInState> {
   Stream<SignInState> _mapLoginAnonymouslyPressedToState() async* {
     yield SignInState.loading();
     try {
-      await _userRepository.signInAnonymously();
+      await userRepository.signInAnonymously();
       await Analytics().logLogin(loginMethod: "anonymously");
       yield SignInState.success();
     } catch (e, stacktrace) {
@@ -68,10 +76,11 @@ class SignInBloc extends Bloc<SignInEvent, SignInState> {
     }
   }
 
-  Stream<SignInState> _mapLoginWithEmailPressedToState(LoginWithEmailPressed event) async* {
+  Stream<SignInState> _mapLoginWithEmailPressedToState(
+      LoginWithEmailPressed event) async* {
     yield SignInState.loading();
     try {
-      await _userRepository.signInWithEmail(event.email, event.password);
+      await userRepository.signInWithEmail(event.email, event.password);
       await Analytics().logLogin(loginMethod: "email");
       yield SignInState.success();
     } catch (e, stacktrace) {
@@ -80,10 +89,12 @@ class SignInBloc extends Bloc<SignInEvent, SignInState> {
     }
   }
 
-  Stream<SignInState> _mapSignUpWithEmailPressedToState(SignUpWithEmailPressed event) async* {
+  Stream<SignInState> _mapSignUpWithEmailPressedToState(
+      SignUpWithEmailPressed event) async* {
     yield SignInState.loading();
     try {
-      await _userRepository.signUpWithEmail(event.email, event.password, event.userName);
+      await userRepository.signUpWithEmail(
+          event.email, event.password, event.userName);
       await Analytics().logSignUp(signUpMethod: "email");
       yield SignInState.success();
     } catch (e, stacktrace) {

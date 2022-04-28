@@ -10,7 +10,6 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 import '../bloc/bloc.dart';
 
 class MobileLayout extends StatelessWidget {
-
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -21,7 +20,7 @@ class MobileLayout extends StatelessWidget {
           child: Text(
             context.strings.appNameDisplay,
             style: GoogleFonts.raleway(
-              textStyle: context.theme.textTheme.headline3.copyWith(
+              textStyle: context.theme.textTheme.headline3!.copyWith(
                 color: Colors.white,
                 fontWeight: FontWeight.bold,
                 fontSize: 48,

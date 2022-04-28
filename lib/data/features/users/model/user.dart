@@ -12,10 +12,10 @@ class User {
   final DateTime updatedAt;
 
   User({
-    @required this.id,
-    @required this.name,
-    @required this.avatarUrl,
-    @required this.updatedAt,
+    required this.id,
+    required this.name,
+    required this.avatarUrl,
+    required this.updatedAt,
   });
 
   factory User.fromJson(Map<String, dynamic> json) => _$UserFromJson(json);

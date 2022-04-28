@@ -27,15 +27,15 @@ class Player {
   @JsonKey(includeIfNull: false)
   final List<PromptCard> prizes;
 
-  Player({
-    @required this.id,
-    @required this.name,
-    this.avatarUrl,
-    this.hand,
-    this.prizes,
-    bool isRandoCardrissian = false,
-    bool isInactive = false
-  }) : isRandoCardrissian = isRandoCardrissian,
+  Player(
+      {required this.id,
+      required this.name,
+      required this.avatarUrl,
+      required this.hand,
+      required this.prizes,
+      bool isRandoCardrissian = false,
+      bool isInactive = false})
+      : isRandoCardrissian = isRandoCardrissian,
         isInactive = isInactive;
 
   factory Player.fromDocument(DocumentSnapshot documentSnapshot) =>

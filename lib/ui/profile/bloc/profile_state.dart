@@ -9,14 +9,14 @@ class ProfileState {
 
   ProfileState({
     this.isLoading = true,
-    this.error,
-    this.user,
+    required this.error,
+    required this.user,
   });
 
   ProfileState copyWith({
-    bool isLoading,
-    String error,
-    User user,
+    bool? isLoading,
+    String? error,
+    User? user,
   }) {
     return ProfileState(
       isLoading: isLoading ?? this.isLoading,

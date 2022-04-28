@@ -6,7 +6,7 @@ part 'card_set.g.dart';
 @JsonSerializable()
 class CardSet extends Equatable {
   @JsonKey(ignore: true)
-  String id;
+  final String id;
 
   final String name;
   final int prompts;
@@ -14,14 +14,15 @@ class CardSet extends Equatable {
   final String source;
 
   CardSet({
-    this.id,
-    this.name,
-    this.prompts,
-    this.responses,
-    this.source,
+    required this.id,
+    required this.name,
+    required this.prompts,
+    required this.responses,
+    required this.source,
   });
 
-  factory CardSet.fromJson(Map<String, dynamic> json) => _$CardSetFromJson(json);
+  factory CardSet.fromJson(Map<String, dynamic> json) =>
+      _$CardSetFromJson(json);
 
   Map<String, dynamic> toJson() => _$CardSetToJson(this);
 

@@ -8,9 +8,9 @@ class FrequentTapDetector extends StatefulWidget {
   final VoidCallback onTapCountReachedCallback;
 
   FrequentTapDetector({
-    @required this.child,
+    required this.child,
     this.threshold = 5,
-    this.onTapCountReachedCallback,
+    required this.onTapCountReachedCallback,
   });
 
   @override
@@ -18,12 +18,12 @@ class FrequentTapDetector extends StatefulWidget {
 }
 
 class _FrequentTapDetectorState extends State<FrequentTapDetector> {
-  Timer _timer;
+  late Timer _timer;
   int _tapCount = 0;
 
   @override
   void dispose() {
-    _timer?.cancel();
+    _timer.cancel();
     super.dispose();
   }
 
@@ -35,7 +35,7 @@ class _FrequentTapDetectorState extends State<FrequentTapDetector> {
         _tapCount += 1;
         print("Tap Count ($_tapCount)");
         if (_tapCount >= widget.threshold) {
-          widget.onTapCountReachedCallback?.call();
+          widget.onTapCountReachedCallback.call();
           _tapCount = 0;
         } else {
           _startResetDelay();
@@ -45,7 +45,7 @@ class _FrequentTapDetectorState extends State<FrequentTapDetector> {
   }
 
   void _startResetDelay() {
-    _timer?.cancel();
+    _timer.cancel();
     _timer = Timer(Duration(milliseconds: 1000), _onResetTapCount);
   }
 

@@ -14,10 +14,10 @@ class UserGame {
   final DateTime joinedAt;
 
   UserGame({
-    this.id,
-    @required this.gid,
-    @required this.state,
-    @required this.joinedAt,
+    required this.id,
+    required this.gid,
+    required this.state,
+    required this.joinedAt,
   });
 
   factory UserGame.fromDocument(DocumentSnapshot document) {
@@ -26,7 +26,8 @@ class UserGame {
     return game;
   }
 
-  factory UserGame.fromJson(Map<String, dynamic> json) => _$UserGameFromJson(json);
+  factory UserGame.fromJson(Map<String, dynamic> json) =>
+      _$UserGameFromJson(json);
 
   Map<String, dynamic> toJson() => _$UserGameToJson(this);
 }

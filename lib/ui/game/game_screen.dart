@@ -13,7 +13,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 /// state. These states will be sub-divided into their own, bloc (or-not) controlled,
 /// screens/widgets
 class GameScreen extends StatelessWidget {
-
   final Game game;
 
   GameScreen(this.game);
@@ -21,11 +20,11 @@ class GameScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => GameBloc(game, context.repository())
-        ..add(Subscribe(game.id)),
+      create: (context) =>
+          GameBloc(game, context.repository())..add(Subscribe(game.id)),
       child: BlocBuilder<GameBloc, GameViewState>(
-        condition: (previous, current) {
-          return previous.game.state != current.game.state || 
+        buildWhen: (previous, current) {
+          return previous.game.state != current.game.state ||
               (previous.game.state == GameState.waitingRoom &&
                   current.game.state == GameState.waitingRoom &&
                   previous.isSubmitting != current.isSubmitting);

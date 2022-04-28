@@ -17,14 +17,14 @@ class Turn {
   @JsonKey(toJson: responsesToJson)
   final Map<String, List<ResponseCard>> responses;
 
-  @JsonKey(nullable: true, toJson: turnWinnerToJson)
+  @JsonKey(toJson: turnWinnerToJson)
   final TurnWinner winner;
 
   Turn({
-    @required this.judgeId,
-    @required this.promptCard,
-    @required this.responses,
-    this.winner,
+    required this.judgeId,
+    required this.promptCard,
+    required this.responses,
+    required this.winner,
   });
 
   factory Turn.fromJson(Map<String, dynamic> json) => _$TurnFromJson(json);
@@ -32,10 +32,10 @@ class Turn {
   Map<String, dynamic> toJson() => _$TurnToJson(this);
 
   Turn copyWith({
-    String judgeId,
-    PromptCard promptCard,
-    Map<String, List<ResponseCard>> responses,
-    TurnWinner winner,
+    String? judgeId,
+    PromptCard? promptCard,
+    Map<String, List<ResponseCard>>? responses,
+    TurnWinner? winner,
   }) {
     return Turn(
         judgeId: judgeId ?? this.judgeId,
@@ -47,6 +47,8 @@ class Turn {
 
 Map<String, dynamic> _promptCardToJson(PromptCard card) => card.toJson();
 
-Map<String, dynamic> responsesToJson(Map<String, List<ResponseCard>> responses) {
-  return responses?.map((k, e) => MapEntry(k, e.map((e) => e.toJson()).toList()));
+Map<String, dynamic> responsesToJson(
+    Map<String, List<ResponseCard>> responses) {
+  return responses
+      .map((k, e) => MapEntry(k, e.map((e) => e.toJson()).toList()));
 }

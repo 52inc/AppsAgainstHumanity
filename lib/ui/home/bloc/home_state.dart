@@ -14,13 +14,13 @@ class HomeState {
   final bool isLoading;
 
   HomeState({
-    @required this.user,
-    @required this.isLoading,
-    List<UserGame> games,
-    this.leavingGame,
-    this.joiningGame,
-    this.joinedGame,
-    this.error,
+    required this.user,
+    required this.isLoading,
+    List<UserGame>? games,
+    required this.leavingGame,
+    required this.joiningGame,
+    required this.joinedGame,
+    required this.error,
   }) : games = games ?? [];
 
   factory HomeState.loading() {
@@ -31,16 +31,15 @@ class HomeState {
     );
   }
 
-  HomeState copyWith({
-    User user,
-    List<UserGame> games,
-    UserGame leavingGame,
-    String joiningGame,
-    Game joinedGame,
-    bool isLoading,
-    String error,
-    bool overrideNull = false
-  }) {
+  HomeState copyWith(
+      {User? user,
+      List<UserGame>? games,
+      UserGame? leavingGame,
+      String? joiningGame,
+      Game? joinedGame,
+      bool? isLoading,
+      String? error,
+      bool overrideNull = false}) {
     return HomeState(
       user: user ?? this.user,
       games: games ?? this.games,

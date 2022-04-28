@@ -111,7 +111,7 @@ class UserRepository {
 
     try {
       var acct = await _googleSignIn.signIn();
-      var auth = await acct.authentication;
+      var auth = await acct!.authentication;
 
       var result = await _auth.signInWithCredential(
         fb.GoogleAuthProvider.credential(
@@ -144,21 +144,25 @@ class UserRepository {
     if (result.givenName != null) {
       print(
           "Apple Name(given=${result.givenName}, family=${result.familyName})");
-      name = result.givenName;
+      name = result.givenName!;
     }
 
-    final fb.UserCredential _result = await _auth.signInWithCredential(credential);
+    final fb.UserCredential _result =
+        await _auth.signInWithCredential(credential);
     return _finishSigningInWithResult(_result, name: name);
   }
 
   Future<User> signInWithEmail(String email, String password) async {
-    final fb.UserCredential _result = await _auth.signInWithEmailAndPassword(email: email, password: password);
+    final fb.UserCredential _result = await _auth.signInWithEmailAndPassword(
+        email: email, password: password);
     return _finishSigningInWithResult(_result);
   }
 
-  Future<User> signUpWithEmail(String email, String password, [String username]) async {
-    final fb.UserCredential _result = await _auth.createUserWithEmailAndPassword(email: email, password: password);
-    return _finishSigningInWithResult(_result, name: username);
+  Future<User> signUpWithEmail(String email, String password,
+      [String? username]) async {
+    final fb.UserCredential _result = await _auth
+        .createUserWithEmailAndPassword(email: email, password: password);
+    return _finishSigningInWithResult(_result, name: username!);
   }
 
   Future<User> signInAnonymously() async {
@@ -167,38 +171,37 @@ class UserRepository {
   }
 
   Future<User> _finishSigningInWithResult(fb.UserCredential result,
-      {String name}) async {
+      {String? name}) async {
     try {
-      if (result.user != null) {
-        if (name != null && result.user.displayName != name) {
-          await result.user.updateProfile(
-            displayName: name,
-            photoURL: result.user.photoURL,
-          );
-          await result.user.reload();
-          print("Updated user's name to ${result.user.displayName}");
+      if (result.user != "") {
+        if (name != "" && result.user!.displayName != name) {
+          await result.user?.updateDisplayName(name);
+          await result.user?.updatePhotoURL(result.user!.photoURL);
+          await result.user?.reload();
+          print("Updated user's name to ${result.user?.displayName}");
         }
 
         // Create the user obj acct in FB
-        var userDoc = _userDocument(result.user);
+        var userDoc = _userDocument(result.user!);
 
         await userDoc.set({
-          "name": result.user.displayName,
-          "avatarUrl": result.user.photoURL,
+          "name": result.user?.displayName,
+          "avatarUrl": result.user?.photoURL,
           "updatedAt": Timestamp.now(),
         }, SetOptions(merge: true));
 
         Logger("UserRepository").fine(
-            "Signed-in! User(id=${result.user.uid}, name=${result.user.displayName}, photoUrl=${result.user.photoURL})");
+            "Signed-in! User(id=${result.user?.uid}, name=${result.user?.displayName}, photoUrl=${result.user?.photoURL})");
 
         // Excellent! Let's create our device
         await PushNotifications().checkAndUpdateToken(force: true);
 
         return User(
-            id: result.user.uid,
-            name: result.user.displayName,
-            avatarUrl: result.user.photoURL,
-            updatedAt: DateTime.now());
+          id: result.user!.uid,
+          name: result.user!.displayName!,
+          avatarUrl: result.user!.photoURL!,
+          updatedAt: DateTime.now(),
+        );
       } else {
         throw result;
       }
@@ -217,14 +220,12 @@ class UserRepository {
   Future<void> deleteAccount() async {
     await AppPreferences().clear();
     var user = _auth.currentUser;
-    await user.delete();
+    await user!.delete();
     await _profilePhotoReference(user).delete();
   }
 
   DocumentReference _userDocument(fb.User user) {
-    return _db
-        .collection(FirebaseConstants.COLLECTION_USERS)
-        .doc(user.uid);
+    return _db.collection(FirebaseConstants.COLLECTION_USERS).doc(user.uid);
   }
 
   Reference _profilePhotoReference(fb.User user) {

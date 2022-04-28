@@ -10,11 +10,11 @@ class HomeOutlineButton extends StatelessWidget {
   final VoidCallback onTap;
 
   HomeOutlineButton({
-    @required this.icon,
-    @required this.text,
+    required this.icon,
+    required this.text,
     this.textColor = AppColors.primaryVariant,
-  this.borderColor = AppColors.primaryVariant,
-    this.onTap,
+    this.borderColor = AppColors.primaryVariant,
+    required this.onTap,
   });
 
   @override
@@ -42,7 +42,7 @@ class HomeOutlineButton extends StatelessWidget {
                   margin: const EdgeInsets.only(left: 8, right: 24),
                   child: Text(
                     text,
-                    style: context.theme.textTheme.subtitle2.copyWith(
+                    style: context.theme.textTheme.subtitle2?.copyWith(
                       color: textColor,
                     ),
                   ),

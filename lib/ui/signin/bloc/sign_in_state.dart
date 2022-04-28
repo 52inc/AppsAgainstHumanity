@@ -6,11 +6,10 @@ class SignInState {
   final bool isSuccess;
   final bool isFailure;
 
-  SignInState({
-    @required this.isSubmitting,
-    @required this.isSuccess,
-    @required this.isFailure
-  });
+  SignInState(
+      {required this.isSubmitting,
+      required this.isSuccess,
+      required this.isFailure});
 
   factory SignInState.empty() {
     return SignInState(
@@ -45,14 +44,14 @@ class SignInState {
   }
 
   SignInState copyWith({
-    bool isSubmitting,
-    bool isSuccess,
-    bool isFailure,
+    required bool isSubmitting,
+    required bool isSuccess,
+    required bool isFailure,
   }) {
     return SignInState(
-      isSubmitting: isSubmitting ?? this.isSubmitting,
-      isSuccess: isSuccess ?? this.isSuccess,
-      isFailure: isFailure ?? this.isFailure,
+      isSubmitting: isSubmitting,
+      isSuccess: isSuccess,
+      isFailure: isFailure,
     );
   }
 

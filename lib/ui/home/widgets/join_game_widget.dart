@@ -15,10 +15,11 @@ class JoinGameWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return HomeOutlineButton(
-      icon: state.joiningGame == null ? _buildIcon() : _buildLoadingIcon(),
-      text: state.joiningGame == null ? "Join Game" : "Joining Game...",
+      icon: state.joiningGame == "" ? _buildIcon() : _buildLoadingIcon(),
+      text: state.joiningGame == "" ? "Join Game" : "Joining Game...",
       onTap: () {
-        Analytics().logSelectContent(contentType: 'action', itemId: 'join_game');
+        Analytics()
+            .logSelectContent(contentType: 'action', itemId: 'join_game');
         PushNotifications().checkPermissions();
         _joinGame(context);
       },
@@ -36,7 +37,7 @@ class JoinGameWidget extends StatelessWidget {
   Widget _buildIcon() {
     return Icon(
       MdiIcons.gamepadVariantOutline,
-        color: AppColors.primaryVariant,
+      color: AppColors.primaryVariant,
     );
   }
 

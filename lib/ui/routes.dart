@@ -25,39 +25,40 @@ class GamePageRoute<T> extends MaterialPageRoute<T> {
 }
 
 class NoAnimationPageRoute<T> extends MaterialPageRoute<T> {
-  NoAnimationPageRoute({WidgetBuilder builder}) : super(builder: builder);
+  NoAnimationPageRoute({required WidgetBuilder builder})
+      : super(builder: builder);
 
   @override
-  Widget buildTransitions(
-      BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation, Widget child) {
+  Widget buildTransitions(BuildContext context, Animation<double> animation,
+      Animation<double> secondaryAnimation, Widget child) {
     return child;
   }
 }
 
 class RouteTracer extends NavigatorObserver {
-  Route<dynamic> currentRoute;
+  late Route<dynamic> currentRoute;
   bool logEnabled = false;
 
   @override
-  void didPop(Route<dynamic> route, Route<dynamic> previousRoute) {
-    currentRoute = previousRoute;
+  void didPop(Route<dynamic> route, Route<dynamic>? previousRoute) {
+    currentRoute = previousRoute as Route<dynamic>;
     if (logEnabled) print("Route Changed => $currentRoute");
   }
 
   @override
-  void didReplace({Route<dynamic> newRoute, Route<dynamic> oldRoute}) {
-    currentRoute = newRoute;
+  void didReplace({Route<dynamic>? newRoute, Route<dynamic>? oldRoute}) {
+    currentRoute = newRoute as Route<dynamic>;
     if (logEnabled) print("Route Changed => $currentRoute");
   }
 
   @override
-  void didRemove(Route<dynamic> route, Route<dynamic> previousRoute) {
-    currentRoute = previousRoute;
+  void didRemove(Route<dynamic> route, Route<dynamic>? previousRoute) {
+    currentRoute = previousRoute as Route<dynamic>;
     if (logEnabled) print("Route Changed => $currentRoute");
   }
 
   @override
-  void didPush(Route<dynamic> route, Route<dynamic> previousRoute) {
+  void didPush(Route<dynamic> route, Route<dynamic>? previousRoute) {
     currentRoute = route;
     if (logEnabled) print("Route Changed => $currentRoute");
   }

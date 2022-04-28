@@ -12,15 +12,18 @@ part 'authentication_event.dart';
 
 part 'authentication_state.dart';
 
-class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> {
-  final UserRepository _userRepository;
-  final AppPreferences _preferences;
+class AuthenticationBloc
+    extends Bloc<AuthenticationEvent, AuthenticationState> {
+  UserRepository userRepository;
+  AppPreferences preferences;
 
-  AuthenticationBloc({@required UserRepository userRepository, @required AppPreferences preferences})
-      : assert(userRepository != null),
-        assert(preferences != null),
-        _userRepository = userRepository,
-        _preferences = preferences;
+  AuthenticationBloc({
+    required this.userRepository,
+    required this.preferences,
+  }) : super(AuthenticationState()) {
+    userRepository = UserRepository();
+    preferences = AppPreferences();
+  }
 
   @override
   AuthenticationState get initialState => Uninitialized();
@@ -42,11 +45,11 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
 
   Stream<AuthenticationState> _mapAppStartedToState() async* {
     try {
-      final isSignedIn = await _userRepository.isSignedIn();
+      final isSignedIn = await userRepository.isSignedIn();
       if (isSignedIn) {
         Logger("authentication_bloc").fine("User is signed-in!");
-        final user = await _userRepository.getUser();
-        if (_preferences.agreedToTermsOfService) {
+        final user = await userRepository.getUser();
+        if (preferences.agreedToTermsOfService) {
           yield Authenticated(user);
         } else {
           yield NeedsAgreeToTerms();
@@ -60,21 +63,21 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
   }
 
   Stream<AuthenticationState> _mapLoggedInToState() async* {
-    if (_preferences.agreedToTermsOfService) {
-      yield Authenticated(await _userRepository.getUser());
+    if (preferences.agreedToTermsOfService) {
+      yield Authenticated(await userRepository.getUser());
     } else {
       yield NeedsAgreeToTerms();
     }
   }
 
   Stream<AuthenticationState> _mapAgreeToTermsToState() async* {
-    _preferences.agreedToTermsOfService = true;
-    yield Authenticated(await _userRepository.getUser());
+    preferences.agreedToTermsOfService = true;
+    yield Authenticated(await userRepository.getUser());
   }
 
   Stream<AuthenticationState> _mapLoggedOutToState() async* {
     yield Unauthenticated();
     await Analytics().logEvent(name: "logout");
-    _userRepository.signOut();
+    userRepository.signOut();
   }
 }

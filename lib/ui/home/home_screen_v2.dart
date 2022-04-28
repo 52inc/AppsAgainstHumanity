@@ -25,15 +25,17 @@ class _HomeScreenV2State extends State<HomeScreenV2> {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => HomeBloc(context.repository(), context.repository())..add(HomeStarted()),
+      create: (context) => HomeBloc(context.repository(), context.repository())
+        ..add(HomeStarted()),
       child: MultiBlocListener(
         listeners: [
           // Error Listener
           BlocListener<HomeBloc, HomeState>(
-            condition: (previous, current) => previous.error != current.error && current.error != null,
+            listenWhen: (previous, current) => previous.error != current.error,
+            // condition: (previous, current) => previous.error != current.error && current.error != null,
             listener: (context, state) {
               if (state.error != null) {
-                Scaffold.of(context)
+                ScaffoldMessenger.of(context)
                   ..hideCurrentSnackBar()
                   ..showSnackBar(
                     SnackBar(
@@ -50,7 +52,9 @@ class _HomeScreenV2State extends State<HomeScreenV2> {
 
           // Joined Game listener that opens a 'joined' game
           BlocListener<HomeBloc, HomeState>(
-            condition: (previous, current) => previous.joinedGame?.id != current.joinedGame?.id,
+            listenWhen: (previous, current) =>
+                previous.joinedGame.id != current.joinedGame.id,
+            // condition: (previous, current) => previous.joinedGame?.id != current.joinedGame?.id,
             listener: (context, state) {
               if (state.joinedGame != null) {
                 Navigator.of(context).push(GamePageRoute(state.joinedGame));
@@ -76,14 +80,13 @@ class _HomeScreenV2State extends State<HomeScreenV2> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-
                 // Title
                 Container(
                   margin: const EdgeInsets.only(left: 24, right: 24),
                   child: Text(
                     context.strings.appNameDisplay,
                     style: GoogleFonts.raleway(
-                        textStyle: context.theme.textTheme.headline3.copyWith(
+                        textStyle: context.theme.textTheme.headline3!.copyWith(
                       color: Colors.white,
                       fontWeight: FontWeight.bold,
                       fontSize: 48,
@@ -103,8 +106,10 @@ class _HomeScreenV2State extends State<HomeScreenV2> {
                       UserWidget(
                         state: state,
                         onTap: () {
-                          Analytics().logSelectContent(contentType: 'action', itemId: 'profile');
-                          Navigator.of(context).push(MaterialPageRoute(builder: (_) => ProfileScreen()));
+                          Analytics().logSelectContent(
+                              contentType: 'action', itemId: 'profile');
+                          Navigator.of(context).push(MaterialPageRoute(
+                              builder: (_) => ProfileScreen()));
                         },
                       ),
                       HomeOutlineButton(
@@ -113,11 +118,16 @@ class _HomeScreenV2State extends State<HomeScreenV2> {
                           color: AppColors.primaryVariant,
                         ),
                         text: "New Game",
-                        onTap: state.joiningGame == null ? () {
-                          Analytics().logSelectContent(contentType: 'action', itemId: 'start_game');
-                          PushNotifications().checkPermissions();
-                          Navigator.of(context).push(MaterialPageRoute(builder: (context) => CreateGameScreen()));
-                        } : null,
+                        onTap: state.joiningGame == ""
+                            ? () {
+                                Analytics().logSelectContent(
+                                    contentType: 'action',
+                                    itemId: 'start_game');
+                                PushNotifications().checkPermissions();
+                                Navigator.of(context).push(MaterialPageRoute(
+                                    builder: (context) => CreateGameScreen()));
+                              }
+                            : () {},
                       ),
                       JoinGameWidget(state),
                     ],
@@ -129,7 +139,7 @@ class _HomeScreenV2State extends State<HomeScreenV2> {
                     margin: const EdgeInsets.only(left: 24, top: 24, right: 24),
                     child: Text(
                       "Past Games",
-                      style: context.theme.textTheme.headline4.copyWith(
+                      style: context.theme.textTheme.headline4?.copyWith(
                         color: Colors.white70,
                         fontWeight: FontWeight.w500,
                         fontSize: 24,
@@ -153,7 +163,7 @@ class _HomeScreenV2State extends State<HomeScreenV2> {
                         itemCount: state.games.length,
                         itemBuilder: (context, index) {
                           var game = state.games[index];
-                          var isLeavingGame = game.id == state.leavingGame?.id;
+                          var isLeavingGame = game.id == state.leavingGame.id;
                           return PastGame(game, isLeavingGame);
                         }),
                   )

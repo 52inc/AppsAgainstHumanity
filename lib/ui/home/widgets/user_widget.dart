@@ -9,15 +9,23 @@ class UserWidget extends StatelessWidget {
   final VoidCallback onTap;
 
   UserWidget({
-    @required this.state,
-    this.onTap,
+    required this.state,
+    required this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
     return HomeOutlineButton(
-      icon: state.isLoading ? _buildLoadingIcon() : state.error != null ? _buildErrorIcon() : _buildUserIcon(),
-      text: state.isLoading ? "Loading..." : state.error != null ? "Uh oh!" : state.user.name,
+      icon: state.isLoading
+          ? _buildLoadingIcon()
+          : state.error != ""
+              ? _buildErrorIcon()
+              : _buildUserIcon(),
+      text: state.isLoading
+          ? "Loading..."
+          : state.error != ""
+              ? "Uh oh!"
+              : state.user.name,
       textColor: Colors.white,
 //      borderColor: Colors.white,
       onTap: onTap,
@@ -54,7 +62,9 @@ class UserWidget extends StatelessWidget {
       height: 24,
       child: CircleAvatar(
         radius: 20,
-        backgroundImage: state.user.avatarUrl != null ? NetworkImage(state.user.avatarUrl) : null,
+        backgroundImage: state.user.avatarUrl != ""
+            ? NetworkImage(state.user.avatarUrl)
+            : null,
         backgroundColor: AppColors.primary,
       ),
     );

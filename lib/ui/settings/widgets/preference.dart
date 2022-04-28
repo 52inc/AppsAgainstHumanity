@@ -11,13 +11,13 @@ class Preference extends StatelessWidget {
   final VoidCallback onTap;
 
   Preference({
-    @required this.title,
-    this.titleColor,
-    this.titleWeight,
-    this.subtitle,
-    this.icon,
-    this.trailing,
-    this.onTap,
+    required this.title,
+    required this.titleColor,
+    required this.titleWeight,
+    required this.subtitle,
+    required this.icon,
+    required this.trailing,
+    required this.onTap,
   });
 
   @override
@@ -25,22 +25,20 @@ class Preference extends StatelessWidget {
     return ListTile(
       title: Text(
         title,
-        style: context.theme.textTheme.subtitle1.copyWith(
-          color: titleColor ?? context.colorOnCard,
-          fontWeight: titleWeight ?? FontWeight.normal
-        ),
+        style: context.theme.textTheme.subtitle1
+            ?.copyWith(color: titleColor, fontWeight: titleWeight),
       ),
       subtitle: subtitle != null
           ? Text(
               subtitle,
-              style: context.theme.textTheme.bodyText1.copyWith(
+              style: context.theme.textTheme.bodyText1?.copyWith(
                 color: context.secondaryColorOnCard,
               ),
             )
           : null,
       leading: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 8),
-        child: icon ?? Container(width: 24, height: 24),
+        child: icon,
       ),
       trailing: trailing,
       onTap: onTap,
