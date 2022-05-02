@@ -1,4 +1,4 @@
-import 'dart:io';
+// import 'dart:io';
 
 import 'package:appsagainsthumanity/data/features/users/model/user.dart';
 import 'package:appsagainsthumanity/internal.dart';
@@ -15,8 +15,8 @@ class ProfilePhoto extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var profilePhotoUrl = user?.avatarUrl;
-    return profilePhotoUrl != null
+    var profilePhotoUrl = user.avatarUrl;
+    return profilePhotoUrl != ""
         ? _buildExistingPhotoAction(context, profilePhotoUrl)
         : _buildAddPhotoAction(context);
   }
@@ -43,12 +43,14 @@ class ProfilePhoto extends StatelessWidget {
                   size: 46.0,
                   color: AppColors.addPhotoForeground,
                 ),
-
                 Container(
                   margin: const EdgeInsets.only(top: 4),
                   child: Text(
                     "Add photo",
-                    style: Theme.of(context).textTheme.button.copyWith(color: AppColors.addPhotoForeground),
+                    style: Theme.of(context)
+                        .textTheme
+                        .button
+                        ?.copyWith(color: AppColors.addPhotoForeground),
                   ),
                 )
               ],
@@ -81,27 +83,25 @@ class ProfilePhoto extends StatelessWidget {
     var action = await _showPhotoBottomSheet(context);
     print("Result: $action");
     if (action is DeletePhoto) {
-      context.bloc<ProfileBloc>()
-          .add(DeleteProfilePhoto());
+      context.read<ProfileBloc>().add(DeleteProfilePhoto());
     } else if (action is UpdatePhoto) {
-      var image = await ImagePicker().getImage(source: action.source);
+      var image = await ImagePicker().pickImage(source: action.source);
       if (image != null) {
         print("Photo selected: ${image.path}");
-        context.bloc<ProfileBloc>()
-            .add(PhotoChanged(image));
+        context.read<ProfileBloc>().add(PhotoChanged(image));
       }
     }
   }
 
-  Future<ProfilePhotoAction> _showPhotoBottomSheet(BuildContext context) async {
+  Future<ProfilePhotoAction?> _showPhotoBottomSheet(
+      BuildContext context) async {
     return await showModalBottomSheet<ProfilePhotoAction>(
         context: context,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(16),
-            topRight: Radius.circular(16),
-          )
-        ),
+            borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(16),
+          topRight: Radius.circular(16),
+        )),
         backgroundColor: context.theme.canvasColor,
         builder: (context) {
           return Container(
@@ -111,7 +111,8 @@ class ProfilePhoto extends StatelessWidget {
                   padding: EdgeInsets.all(16),
                   child: Text(
                     "Update your profile photo",
-                    style: context.theme.textTheme.bodyText1.copyWith(color: Colors.white70),
+                    style: context.theme.textTheme.bodyText1
+                        ?.copyWith(color: Colors.white70),
                   ),
                 ),
                 ListTile(

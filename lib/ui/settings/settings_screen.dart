@@ -30,11 +30,15 @@ class _SettingsScreenState extends State<SettingsScreen> {
       appBar: AppBar(
         title: Text(
           "Settings",
-          style: context.theme.textTheme.headline6.copyWith(color: Colors.white),
+          style:
+              context.theme.textTheme.headline6?.copyWith(color: Colors.white),
         ),
         iconTheme: context.theme.iconTheme,
         backgroundColor: Colors.transparent,
-        brightness: Brightness.dark,
+        systemOverlayStyle: SystemUiOverlayStyle(
+          statusBarBrightness: Brightness.dark,
+        ),
+        // brightness: Brightness.dark,
         elevation: 0,
       ),
       body: ListView(
@@ -44,8 +48,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
             children: [
               UserPreference(
                 onTap: (user) {
-                  Analytics().logSelectContent(contentType: 'setting', itemId: 'profile');
-                  Navigator.of(context).push(MaterialPageRoute(builder: (_) => ProfileScreen()));
+                  Analytics().logSelectContent(
+                      contentType: 'setting', itemId: 'profile');
+                  Navigator.of(context)
+                      .push(MaterialPageRoute(builder: (_) => ProfileScreen()));
                 },
               ),
               Preference(
@@ -82,7 +88,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   color: context.secondaryColorOnCard,
                 ),
                 onTap: () {
-                  Analytics().logSelectContent(contentType: 'setting', itemId: 'privacy_policy');
+                  Analytics().logSelectContent(
+                      contentType: 'setting', itemId: 'privacy_policy');
                   showWebView(
                     context,
                     "Privacy Policy",
@@ -97,7 +104,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   color: context.secondaryColorOnCard,
                 ),
                 onTap: () {
-                  Analytics().logSelectContent(contentType: 'setting', itemId: 'terms_of_service');
+                  Analytics().logSelectContent(
+                      contentType: 'setting', itemId: 'terms_of_service');
                   showWebView(
                     context,
                     "Terms of service",
@@ -112,7 +120,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   color: context.secondaryColorOnCard,
                 ),
                 onTap: () {
-                  Analytics().logSelectContent(contentType: 'setting', itemId: 'oss_licenses');
+                  Analytics().logSelectContent(
+                      contentType: 'setting', itemId: 'oss_licenses');
                   showLicensePage(context: context);
                 },
               ),
@@ -124,10 +133,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
               Preference(
                 title: "Feedback",
                 subtitle: "Provide feedback on issues or improvements",
-                icon: Icon(MdiIcons.faceAgent, color: context.secondaryColorOnCard),
+                icon: Icon(MdiIcons.faceAgent,
+                    color: context.secondaryColorOnCard),
                 onTap: () {
-                  Analytics().logSelectContent(contentType: 'setting', itemId: 'feedback');
-                  Wiredash.of(context).show();
+                  Analytics().logSelectContent(
+                      contentType: 'setting', itemId: 'feedback');
+                  Wiredash.of(context)?.show();
                 },
               ),
               Preference(
@@ -138,7 +149,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   color: context.secondaryColorOnCard,
                 ),
                 onTap: () {
-                  Analytics().logSelectContent(contentType: 'setting', itemId: 'contribute');
+                  Analytics().logSelectContent(
+                      contentType: 'setting', itemId: 'contribute');
                   showWebView(
                     context,
                     "Contribute",
@@ -153,7 +165,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   color: context.secondaryColorOnCard,
                 ),
                 onTap: () {
-                  Analytics().logSelectContent(contentType: 'setting', itemId: 'author');
+                  Analytics().logSelectContent(
+                      contentType: 'setting', itemId: 'author');
                   showWebView(
                     context,
                     "52inc",
@@ -169,18 +182,21 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       threshold: 5,
                       onTapCountReachedCallback: () {
                         if (!AppPreferences().developerPackEnabled) {
-                          Analytics().logSelectContent(contentType: 'setting', itemId: 'developer_packs');
+                          Analytics().logSelectContent(
+                              contentType: 'setting',
+                              itemId: 'developer_packs');
                           AppPreferences().developerPackEnabled = true;
                           setState(() {});
-                          Scaffold.of(context).showSnackBar(SnackBar(
+                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                             content: Text("Developer Packs Unlocked!"),
                             behavior: SnackBarBehavior.floating,
                             action: SnackBarAction(
                               label: "VIEW",
                               textColor: context.primaryColor,
                               onPressed: () {
-                                Navigator.of(context)
-                                    .pushReplacement(MaterialPageRoute(builder: (_) => CreateGameScreen()));
+                                Navigator.of(context).pushReplacement(
+                                    MaterialPageRoute(
+                                        builder: (_) => CreateGameScreen()));
                               },
                             ),
                           ));
@@ -192,8 +208,9 @@ class _SettingsScreenState extends State<SettingsScreen> {
                           MdiIcons.application,
                           color: context.secondaryColorOnCard,
                         ),
-                        subtitle:
-                            packageInfo != null ? "${packageInfo.version}+${packageInfo.buildNumber}" : "Loading...",
+                        subtitle: packageInfo != null
+                            ? "${packageInfo.version}+${packageInfo.buildNumber}"
+                            : "Loading...",
                       ),
                     );
                   }),
@@ -221,11 +238,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   trailing: AppPreferences().developerPackEnabled
                       ? Text(
                           "ENABLED",
-                          style: context.theme.textTheme.button.copyWith(color: Colors.green),
+                          style: context.theme.textTheme.button!
+                              .copyWith(color: Colors.green),
                         )
                       : Text(
                           "DISABLED",
-                          style: context.theme.textTheme.button.copyWith(color: Colors.redAccent),
+                          style: context.theme.textTheme.button!
+                              .copyWith(color: Colors.redAccent),
                         ),
                   icon: Image.asset(
                     'assets/ic_logo.png',
@@ -241,13 +260,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
               children: [
                 GestureDetector(
                   onTap: () {
-                    showWebView(context, "Cards Against Humanity", "https://cardsagainsthumanity.com");
+                    showWebView(context, "Cards Against Humanity",
+                        "https://cardsagainsthumanity.com");
                   },
                   child: Container(
                     child: Text(
                       "All CAH or \"Cards Against Humanity\" question and answer text are licensed under Creative Commons BY-NC-SA 4.0 by the owner Cards Against Humanity, LLC. This application is NOT official, produced, endorsed or supported by Cards Against Humanity, LLC.",
                       textAlign: TextAlign.center,
-                      style: context.theme.textTheme.bodyText2.copyWith(
+                      style: context.theme.textTheme.bodyText2?.copyWith(
                         color: Colors.white60,
                       ),
                     ),
@@ -257,8 +277,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   margin: const EdgeInsets.only(top: 16),
                   child: GestureDetector(
                     onTap: () {
-                      showWebView(
-                          context, "CC BY-NC-SA 4.0", "https://creativecommons.org/licenses/by-nc-sa/4.0/legalcode");
+                      showWebView(context, "CC BY-NC-SA 4.0",
+                          "https://creativecommons.org/licenses/by-nc-sa/4.0/legalcode");
                     },
                     child: Image.asset(
                       'assets/cc_by_nc_sa.png',
@@ -275,32 +295,42 @@ class _SettingsScreenState extends State<SettingsScreen> {
   }
 
   void _deleteAccount(BuildContext context) async {
-    bool result = await showDialog<bool>(
+    bool? result = await showDialog<bool>(
         context: context,
         builder: (context) {
           return AlertDialog(
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
             title: Text(
               "Delete account?",
-              style: context.theme.textTheme.headline6.copyWith(color: Colors.redAccent),
+              style: context.theme.textTheme.headline6!
+                  .copyWith(color: Colors.redAccent),
             ),
             content: Text(
               "Are you sure you want to delete your account? This is permenant and cannot be undone.",
-              style: context.theme.textTheme.subtitle1.copyWith(
+              style: context.theme.textTheme.subtitle1!.copyWith(
                 fontWeight: FontWeight.bold,
               ),
             ),
             actions: [
-              FlatButton(
-                child: Text("CANCEL"),
-                textColor: Colors.white70,
+              TextButton(
+                child: Text(
+                  "CANCEL",
+                  style: TextStyle(
+                    color: Colors.white70,
+                  ),
+                ),
                 onPressed: () {
                   Navigator.of(context).pop(false);
                 },
               ),
-              FlatButton(
-                child: Text("DELETE ACCOUNT"),
-                textColor: Colors.redAccent,
+              TextButton(
+                child: Text(
+                  "DELETE ACCOUNT",
+                  style: TextStyle(
+                    color: Colors.redAccent,
+                  ),
+                ),
                 onPressed: () {
                   Navigator.of(context).pop(true);
                 },
@@ -310,18 +340,19 @@ class _SettingsScreenState extends State<SettingsScreen> {
         });
 
     if (result ?? false) {
-      Analytics().logSelectContent(contentType: 'setting', itemId: 'delete_account');
-      var userRepository = context.repository<UserRepository>();
+      Analytics()
+          .logSelectContent(contentType: 'setting', itemId: 'delete_account');
+      var userRepository = context.read<UserRepository>();
       try {
         await userRepository.deleteAccount();
-        context.bloc<AuthenticationBloc>().add(LoggedOut());
+        context.read<AuthenticationBloc>().add(LoggedOut());
         Navigator.of(context).pop();
       } catch (e) {
         if (e is PlatformException) {
           if (e.code == 'ERROR_REQUIRES_RECENT_LOGIN') {
             await userRepository.signInWithGoogle();
             await userRepository.deleteAccount();
-            context.bloc<AuthenticationBloc>().add(LoggedOut());
+            context.read<AuthenticationBloc>().add(LoggedOut());
             Navigator.of(context).pop();
           }
         }
@@ -330,22 +361,22 @@ class _SettingsScreenState extends State<SettingsScreen> {
   }
 
   void _signOut(BuildContext context) async {
-    var userRepository = context.repository<UserRepository>();
+    var userRepository = context.read<UserRepository>();
     await userRepository.signOut();
-    context.bloc<AuthenticationBloc>().add(LoggedOut());
+    context.read<AuthenticationBloc>().add(LoggedOut());
     Navigator.of(context).pop();
   }
 }
 
 class PreferenceCategory extends StatelessWidget {
-  final String title;
+  final String? title;
   final List<Widget> children;
-  final EdgeInsets margin;
+  final EdgeInsets? margin;
 
   PreferenceCategory({
     this.title,
     this.margin,
-    @required this.children,
+    required this.children,
   });
 
   @override
@@ -360,7 +391,8 @@ class PreferenceCategory extends StatelessWidget {
           padding: const EdgeInsets.only(bottom: 8),
           child: Column(
             children: [
-              if (title != null) PreferenceHeader(title: title, includeIconSpacing: false),
+              if (title != null)
+                PreferenceHeader(title: title!, includeIconSpacing: false),
               ...children,
             ],
           ),

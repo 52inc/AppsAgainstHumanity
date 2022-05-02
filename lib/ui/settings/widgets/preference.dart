@@ -3,15 +3,15 @@ import 'package:appsagainsthumanity/internal.dart';
 
 class Preference extends StatelessWidget {
   final String title;
-  final Color titleColor;
-  final FontWeight titleWeight;
-  final String subtitle;
-  final Widget icon;
-  final Widget trailing;
-  final VoidCallback onTap;
+  final Color? titleColor;
+  final FontWeight? titleWeight;
+  final String? subtitle;
+  final Widget? icon;
+  final Widget? trailing;
+  final VoidCallback? onTap;
 
   Preference({
-    @required this.title,
+    required this.title,
     this.titleColor,
     this.titleWeight,
     this.subtitle,
@@ -25,15 +25,14 @@ class Preference extends StatelessWidget {
     return ListTile(
       title: Text(
         title,
-        style: context.theme.textTheme.subtitle1.copyWith(
-          color: titleColor ?? context.colorOnCard,
-          fontWeight: titleWeight ?? FontWeight.normal
-        ),
+        style: context.theme.textTheme.subtitle1?.copyWith(
+            color: titleColor ?? context.colorOnCard,
+            fontWeight: titleWeight ?? FontWeight.normal),
       ),
-      subtitle: subtitle != null
+      subtitle: subtitle != ""
           ? Text(
-              subtitle,
-              style: context.theme.textTheme.bodyText1.copyWith(
+              subtitle!,
+              style: context.theme.textTheme.bodyText1?.copyWith(
                 color: context.secondaryColorOnCard,
               ),
             )

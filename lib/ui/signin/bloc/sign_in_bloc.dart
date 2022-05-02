@@ -5,14 +5,15 @@ import 'package:appsagainsthumanity/ui/signin/bloc/sign_in_event.dart';
 import 'package:appsagainsthumanity/ui/signin/bloc/sign_in_state.dart';
 import 'package:bloc/bloc.dart';
 import 'package:logging/logging.dart';
-import 'package:meta/meta.dart';
+// import 'package:meta/meta.dart';
 
 class SignInBloc extends Bloc<SignInEvent, SignInState> {
-  UserRepository _userRepository;
+  final UserRepository _userRepository;
 
-  SignInBloc({@required UserRepository userRepository})
-    : assert(userRepository != null),
-        _userRepository = userRepository;
+  SignInBloc({
+    required UserRepository userRepository,
+  })  : _userRepository = userRepository,
+        super(SignInState.loading());
 
   @override
   SignInState get initialState => SignInState.empty();
@@ -68,7 +69,8 @@ class SignInBloc extends Bloc<SignInEvent, SignInState> {
     }
   }
 
-  Stream<SignInState> _mapLoginWithEmailPressedToState(LoginWithEmailPressed event) async* {
+  Stream<SignInState> _mapLoginWithEmailPressedToState(
+      LoginWithEmailPressed event) async* {
     yield SignInState.loading();
     try {
       await _userRepository.signInWithEmail(event.email, event.password);
@@ -80,10 +82,12 @@ class SignInBloc extends Bloc<SignInEvent, SignInState> {
     }
   }
 
-  Stream<SignInState> _mapSignUpWithEmailPressedToState(SignUpWithEmailPressed event) async* {
+  Stream<SignInState> _mapSignUpWithEmailPressedToState(
+      SignUpWithEmailPressed event) async* {
     yield SignInState.loading();
     try {
-      await _userRepository.signUpWithEmail(event.email, event.password, event.userName);
+      await _userRepository.signUpWithEmail(
+          event.email, event.password, event.userName);
       await Analytics().logSignUp(signUpMethod: "email");
       yield SignInState.success();
     } catch (e, stacktrace) {

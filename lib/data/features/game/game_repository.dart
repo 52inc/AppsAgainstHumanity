@@ -8,12 +8,11 @@ import 'package:appsagainsthumanity/data/features/users/model/user_game.dart';
 import 'package:kt_dart/collection.dart';
 
 abstract class GameRepository {
-
   /// Create a new game with the provided list of card sets
   Future<Game> createGame(
     KtSet<CardSet> cardSets, {
-    int prizesToWin = Game.PRIZES_TO_WIN,
-    int playerLimit = Game.PLAYER_LIMIT,
+    int prizesToWin = PRIZES_TO_WIN,
+    int playerLimit = PLAYER_LIMIT,
     bool pick2Enabled = true,
     bool draw2Pick3Enabled = true,
   });
@@ -62,7 +61,8 @@ abstract class GameRepository {
 
   /// Wave at a player to re-engage them in the game. Optionally provide a [message] to send to the
   /// user.
-  Future<void> waveAtPlayer(String gameDocumentId, String playerId, [String message]);
+  Future<void> waveAtPlayer(String gameDocumentId, String playerId,
+      [String message]);
 
   /// Re-deal your hand in exchange for one prize card, if you have one
   Future<void> reDealHand(String gameDocumentId);

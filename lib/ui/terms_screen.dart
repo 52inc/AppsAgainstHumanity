@@ -2,9 +2,11 @@ import 'dart:async';
 
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:appsagainsthumanity/authentication_bloc/authentication_bloc.dart';
+// import 'package:appsagainsthumanity/config.json' as Config;
 import 'package:appsagainsthumanity/internal.dart';
 import 'package:easy_web_view/easy_web_view.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
@@ -14,7 +16,7 @@ class TermsOfServiceScreen extends StatefulWidget {
 }
 
 class _TermsOfServiceScreenState extends State<TermsOfServiceScreen> {
-  WebViewController webViewController;
+  late WebViewController webViewController;
 
   final StreamController<bool> _loadingStream = StreamController.broadcast();
 
@@ -34,8 +36,11 @@ class _TermsOfServiceScreenState extends State<TermsOfServiceScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        brightness: Brightness.dark,
-        textTheme: context.theme.textTheme,
+        systemOverlayStyle: SystemUiOverlayStyle(
+          statusBarBrightness: Brightness.dark,
+        ),
+        // brightness: Brightness.dark,
+        // textTheme: context.theme.textTheme,
         iconTheme: context.theme.iconTheme,
         title: Text("Terms of service"),
       ),
@@ -55,7 +60,6 @@ class _TermsOfServiceScreenState extends State<TermsOfServiceScreen> {
               },
             ),
           ),
-
           StreamBuilder<bool>(
               stream: _loadingStream.stream,
               builder: (context, snapshot) {
@@ -71,9 +75,7 @@ class _TermsOfServiceScreenState extends State<TermsOfServiceScreen> {
                 } else {
                   return Container();
                 }
-              }
-          ),
-
+              }),
           Align(
             alignment: Alignment.bottomCenter,
             child: Container(
@@ -90,9 +92,9 @@ class _TermsOfServiceScreenState extends State<TermsOfServiceScreen> {
                   ),
                 ),
                 onPressed: () {
-                  Analytics().logSelectContent(contentType: 'action', itemId: "terms_of_service");
-                  context.bloc<AuthenticationBloc>()
-                      .add(AgreeToTerms());
+                  Analytics().logSelectContent(
+                      contentType: 'action', itemId: "terms_of_service");
+                  context.read<AuthenticationBloc>().add(AgreeToTerms());
                 },
               ),
             ),
@@ -102,8 +104,8 @@ class _TermsOfServiceScreenState extends State<TermsOfServiceScreen> {
     );
   }
 
-  void _loadTermsOfServiceFromUrl() async {
-    await webViewController.loadUrl(Config.termsOfServiceUrl);
-    _loadingStream.add(false);
-  }
+  // void _loadTermsOfServiceFromUrl() async {
+  //   await webViewController.loadUrl(Config.termsOfServiceUrl);
+  //   _loadingStream.add(false);
+  // }
 }

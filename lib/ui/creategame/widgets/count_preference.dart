@@ -4,16 +4,16 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 
 class CountPreference extends StatelessWidget {
   final String title;
-  final String subtitle;
+  final String? subtitle;
   final int value;
-  final int min, max;
+  final int? min, max;
   final void Function(int) onValueChanged;
 
   CountPreference(
     this.value, {
-    @required this.title,
+    required this.title,
     this.subtitle,
-    @required this.onValueChanged,
+    required this.onValueChanged,
     this.min,
     this.max,
   });
@@ -22,7 +22,7 @@ class CountPreference extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListTile(
       title: Text(title),
-      subtitle: subtitle != null ? Text(subtitle) : null,
+      subtitle: subtitle != "" ? Text(subtitle!) : const SizedBox(),
       contentPadding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
       trailing: Row(
         mainAxisSize: MainAxisSize.min,
@@ -34,18 +34,20 @@ class CountPreference extends StatelessWidget {
               color: Colors.white,
             ),
             onPressed: () {
-              var newValue = (value - 1).clamp(min, max);
+              var newValue = (value - 1).clamp(min!, max!);
               onValueChanged(newValue);
             },
           ),
           Container(
             width: 36,
             height: 36,
-            decoration: BoxDecoration(color: AppColors.primary, shape: BoxShape.circle),
+            decoration:
+                BoxDecoration(color: AppColors.primary, shape: BoxShape.circle),
             alignment: Alignment.center,
             child: Text(
               value.toString(),
-              style: context.theme.textTheme.subtitle1.copyWith(color: Colors.white),
+              style: context.theme.textTheme.subtitle1
+                  ?.copyWith(color: Colors.white),
             ),
           ),
           IconButton(
@@ -55,7 +57,7 @@ class CountPreference extends StatelessWidget {
               color: Colors.white,
             ),
             onPressed: () {
-              var newValue = (value + 1).clamp(min, max);
+              var newValue = (value + 1).clamp(min!, max!);
               onValueChanged(newValue);
             },
           ),

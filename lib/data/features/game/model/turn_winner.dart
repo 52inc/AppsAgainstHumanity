@@ -9,18 +9,18 @@ part 'turn_winner.g.dart';
 @immutable
 @JsonSerializable()
 class TurnWinner extends Equatable {
-  final String playerId;
-  final String playerName;
-  final String playerAvatarUrl;
-  final bool isRandoCardrissian;
+  final String? playerId;
+  final String? playerName;
+  final String? playerAvatarUrl;
+  final bool? isRandoCardrissian;
   @JsonKey(toJson: promptCardToJson)
-  final PromptCard promptCard;
+  final PromptCard? promptCard;
 
   @JsonKey(toJson: responsesToJson)
-  final List<ResponseCard> response;
+  final List<ResponseCard>? response;
 
-  @JsonKey(toJson: playerResponsesToJson, nullable: true)
-  final Map<String, List<ResponseCard>> responses;
+  @JsonKey(toJson: playerResponsesToJson)
+  final Map<String, List<ResponseCard>>? responses;
 
   TurnWinner({
     this.playerId,
@@ -29,10 +29,11 @@ class TurnWinner extends Equatable {
     this.isRandoCardrissian,
     this.promptCard,
     this.response,
-    this.responses
+    this.responses,
   });
 
-  factory TurnWinner.fromJson(Map<String, dynamic> json) => _$TurnWinnerFromJson(json);
+  factory TurnWinner.fromJson(Map<String, dynamic> json) =>
+      _$TurnWinnerFromJson(json);
 
   Map<String, dynamic> toJson() => _$TurnWinnerToJson(this);
 
@@ -43,13 +44,25 @@ class TurnWinner extends Equatable {
   }
 
   @override
-  List<Object> get props => [playerId, playerName, playerAvatarUrl, isRandoCardrissian, promptCard, response, responses];
+  List<Object> get props => [
+        playerId as String,
+        playerName as String,
+        playerAvatarUrl as String,
+        isRandoCardrissian as bool,
+        promptCard as PromptCard,
+        response as List<ResponseCard>,
+        responses as Map<String, List<ResponseCard>>,
+      ];
 }
 
-Map<String, dynamic> turnWinnerToJson(TurnWinner turnWinner) => turnWinner?.toJson();
+Map<String, dynamic> turnWinnerToJson(TurnWinner turnWinner) =>
+    turnWinner.toJson();
 
-List<Map<String, dynamic>> responsesToJson(List<ResponseCard> cards) => cards?.map((e) => e.toJson())?.toList();
+List<Map<String, dynamic>> responsesToJson(List<ResponseCard> cards) =>
+    cards.map((e) => e.toJson()).toList();
 
-Map<String, dynamic> playerResponsesToJson(Map<String, List<ResponseCard>> responses) {
-  return responses?.map((k, e) => MapEntry(k, e.map((e) => e.toJson()).toList()));
+Map<String, dynamic> playerResponsesToJson(
+    Map<String, List<ResponseCard>> responses) {
+  return responses
+      .map((k, e) => MapEntry(k, e.map((e) => e.toJson()).toList()));
 }

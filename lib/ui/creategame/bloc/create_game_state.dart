@@ -13,17 +13,17 @@ class CreateGameState {
   final bool pick2Enabled;
   final bool draw2pick3Enabled;
 
-  final Game createdGame;
+  final Game? createdGame;
   final bool isLoading;
-  final String error;
+  final String? error;
 
-  int get totalPrompts => selectedSets?.sumBy((cs) => cs.prompts ?? 0);
-  int get totalResponses => selectedSets?.sumBy((cs) => cs.responses ?? 0);
+  int get totalPrompts => selectedSets.sumBy((cs) => cs.prompts ?? 0);
+  int get totalResponses => selectedSets.sumBy((cs) => cs.responses ?? 0);
 
   CreateGameState({
-    @required this.cardSets,
-    @required this.selectedSets,
-    @required this.isLoading,
+    required this.cardSets,
+    required this.selectedSets,
+    required this.isLoading,
     this.error,
     this.prizesToWin = 7,
     this.playerLimit = 15,
@@ -43,28 +43,27 @@ class CreateGameState {
   }
 
   CreateGameState copyWith({
-    KtList<CardSet> cardSets,
-    KtSet<CardSet> selectedSets,
-    int prizesToWin,
-    int playerLimit,
-    bool pick2Enabled,
-    bool draw2pick3Enabled,
-    bool isLoading,
-    String error,
-    Game createdGame,
-    bool overrideNull = false
+    KtList<CardSet>? cardSets,
+    KtSet<CardSet>? selectedSets,
+    int? prizesToWin,
+    int? playerLimit,
+    bool? pick2Enabled,
+    bool? draw2pick3Enabled,
+    bool? isLoading,
+    String? error,
+    Game? createdGame,
+    // bool overrideNull = false
   }) {
     return CreateGameState(
-      cardSets: cardSets ?? this.cardSets,
-      selectedSets: selectedSets ?? this.selectedSets,
-      prizesToWin: prizesToWin ?? this.prizesToWin,
-      playerLimit: playerLimit ?? this.playerLimit,
-      pick2Enabled: pick2Enabled ?? this.pick2Enabled,
-      draw2pick3Enabled: draw2pick3Enabled ?? this.draw2pick3Enabled,
-      isLoading: isLoading ?? this.isLoading,
-      error: overrideNull ? error : error ?? this.error,
-      createdGame: overrideNull ? createdGame : createdGame ?? this.createdGame
-    );
+        cardSets: cardSets ?? this.cardSets,
+        selectedSets: selectedSets ?? this.selectedSets,
+        prizesToWin: prizesToWin ?? this.prizesToWin,
+        playerLimit: playerLimit ?? this.playerLimit,
+        pick2Enabled: pick2Enabled ?? this.pick2Enabled,
+        draw2pick3Enabled: draw2pick3Enabled ?? this.draw2pick3Enabled,
+        isLoading: isLoading ?? this.isLoading,
+        error: error ?? this.error,
+        createdGame: createdGame ?? this.createdGame);
   }
 
   @override

@@ -1,8 +1,9 @@
-import 'dart:io';
+// import 'dart:io';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:appsagainsthumanity/data/firestore.dart';
 import 'package:appsagainsthumanity/internal.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class JoinRoomDialog extends StatefulWidget {
   @override
@@ -25,18 +26,17 @@ class _JoinRoomDialogState extends State<JoinRoomDialog> {
       mainAxisSize: MainAxisSize.min,
       children: [
         Container(
-            margin: const EdgeInsets.only(left: 24, right: 24, top: 24),
+          margin: const EdgeInsets.only(left: 24, right: 24, top: 24),
           child: Form(
             key: _formKey,
             child: TextFormField(
               controller: _gameInputController,
               decoration: InputDecoration(
-                border: OutlineInputBorder(),
-                labelText: 'Game ID',
-                labelStyle: context.theme.textTheme.caption
-              ),
+                  border: OutlineInputBorder(),
+                  labelText: 'Game ID',
+                  labelStyle: context.theme.textTheme.caption),
               maxLength: FirebaseConstants.MAX_GID_SIZE,
-              maxLengthEnforced: true,
+              maxLengthEnforcement: MaxLengthEnforcement.enforced,
               keyboardType: TextInputType.text,
               autofocus: true,
               textCapitalization: TextCapitalization.characters,
@@ -45,7 +45,7 @@ class _JoinRoomDialogState extends State<JoinRoomDialog> {
                 Navigator.of(context).pop(value);
               },
               validator: (value) {
-                if (value.length != FirebaseConstants.MAX_GID_SIZE) {
+                if (value?.length != FirebaseConstants.MAX_GID_SIZE) {
                   return 'Please enter a valid game id';
                 }
                 return null;
@@ -54,22 +54,30 @@ class _JoinRoomDialogState extends State<JoinRoomDialog> {
           ),
         ),
         Container(
-            margin: const EdgeInsets.only(bottom: 8, top: 8),
+          margin: const EdgeInsets.only(bottom: 8, top: 8),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
-              FlatButton(
-                child: Text('CANCEL'),
-                textColor: AppColors.primary,
+              TextButton(
+                child: Text(
+                  'CANCEL',
+                  style: TextStyle(
+                    color: AppColors.primary,
+                  ),
+                ),
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
               ),
-              FlatButton(
-                child: Text('JOIN'),
-                textColor: AppColors.primary,
+              TextButton(
+                child: Text(
+                  'JOIN',
+                  style: TextStyle(
+                    color: AppColors.primary,
+                  ),
+                ),
                 onPressed: () {
-                  if (_formKey.currentState.validate()) {
+                  if (_formKey.currentState!.validate()) {
                     var gameId = _gameInputController.text;
                     Navigator.of(context).pop(gameId);
                   }
@@ -83,34 +91,38 @@ class _JoinRoomDialogState extends State<JoinRoomDialog> {
   }
 }
 
-Future<String> showJoinRoomDialog(BuildContext context) {
+Future<String?> showJoinRoomDialog(BuildContext context) {
   if (kIsWeb) {
     return showGeneralDialog<String>(
-        context: context,
-        pageBuilder: (context, _, __) {
-          return Theme(
-            data: AppThemes.dark,
-            child: AlertDialog(
-              title: Text('Join a game'),
-              content: JoinRoomDialog(),
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-              contentPadding: const EdgeInsets.all(0),
-            ),
-          );
-        });
+      context: context,
+      pageBuilder: (context, _, __) {
+        return Theme(
+          data: AppThemes.dark,
+          child: AlertDialog(
+            title: Text('Join a game'),
+            content: JoinRoomDialog(),
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+            contentPadding: const EdgeInsets.all(0),
+          ),
+        );
+      },
+    );
   } else {
     return showDialog<String>(
-        context: context,
-        builder: (builderContext) {
-          return Theme(
-            data: AppThemes.dark,
-            child: AlertDialog(
-              title: Text('Join a game'),
-              content: JoinRoomDialog(),
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-              contentPadding: const EdgeInsets.all(0),
-            ),
-          );
-        });
+      context: context,
+      builder: (builderContext) {
+        return Theme(
+          data: AppThemes.dark,
+          child: AlertDialog(
+            title: Text('Join a game'),
+            content: JoinRoomDialog(),
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+            contentPadding: const EdgeInsets.all(0),
+          ),
+        );
+      },
+    );
   }
 }

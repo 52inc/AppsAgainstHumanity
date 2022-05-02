@@ -8,7 +8,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:kt_dart/kt.dart';
 
 class MobileLayout extends StatelessWidget {
-
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<CreateGameBloc, CreateGameState>(
@@ -17,10 +16,14 @@ class MobileLayout extends StatelessWidget {
           length: 2,
           child: Scaffold(
             appBar: AppBar(
-              brightness: Brightness.dark,
+              systemOverlayStyle: SystemUiOverlayStyle(
+                statusBarBrightness: Brightness.dark,
+              ),
+              // brightness: Brightness.dark,
               title: Text(
                 context.strings.titleNewGame,
-                style: context.theme.textTheme.headline6.copyWith(color: Colors.white),
+                style: context.theme.textTheme.headline6!
+                    .copyWith(color: Colors.white),
               ),
               leading: IconButton(
                 icon: Icon(Icons.arrow_back, color: Colors.white),
@@ -48,7 +51,9 @@ class MobileLayout extends StatelessWidget {
                       child: Container(
                         margin: const EdgeInsets.symmetric(horizontal: 16),
                         child: Text(
-                          state.isLoading ? "Loading..." : "${state.totalPrompts} Prompts ${state.totalResponses} Responses",
+                          state.isLoading
+                              ? "Loading..."
+                              : "${state.totalPrompts} Prompts ${state.totalResponses} Responses",
                           style: context.theme.textTheme.headline6,
                         ),
                       ),
@@ -57,17 +62,20 @@ class MobileLayout extends StatelessWidget {
                 ),
               ),
             ),
-            floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
-            floatingActionButton: state.selectedSets.isNotEmpty() && !state.isLoading
-                ? FloatingActionButton(
-              child: Icon(Icons.check),
-              onPressed: () async {
-                // Start game?
-                Analytics().logSelectContent(contentType: 'action', itemId: 'create_game');
-                context.bloc<CreateGameBloc>().add(CreateGame());
-              },
-            )
-                : null,
+            floatingActionButtonLocation:
+                FloatingActionButtonLocation.endDocked,
+            floatingActionButton:
+                state.selectedSets.isNotEmpty() && !state.isLoading
+                    ? FloatingActionButton(
+                        child: Icon(Icons.check),
+                        onPressed: () async {
+                          // Start game?
+                          Analytics().logSelectContent(
+                              contentType: 'action', itemId: 'create_game');
+                          context.read<CreateGameBloc>().add(CreateGame());
+                        },
+                      )
+                    : null,
             body: TabBarView(
               children: [
                 CardSetList(state),

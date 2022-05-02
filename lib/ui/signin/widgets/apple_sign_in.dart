@@ -18,7 +18,7 @@ class AppleSignIn extends StatelessWidget {
         iconAlignment: IconAlignment.left,
         height: 48,
         onPressed: () {
-          context.bloc<SignInBloc>().add(LoginWithApplePressed());
+          context.read<SignInBloc>().add(LoginWithApplePressed());
         },
       );
     } else {

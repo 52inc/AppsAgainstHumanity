@@ -6,8 +6,8 @@ class WebScreen extends StatelessWidget {
   final String url;
 
   WebScreen({
-    @required this.title,
-    @required this.url,
+    required this.title,
+    required this.url,
   });
 
   @override

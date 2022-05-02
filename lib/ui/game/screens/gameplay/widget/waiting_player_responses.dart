@@ -13,8 +13,10 @@ class WaitingPlayerResponses extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var players = state.players?.where((element) {
-      return element.id != state.game.turn?.judgeId && element.isInactive != true;
-    })?.toList() ?? [];
+          return element.id != state.game?.turn?.judgeId &&
+              element.isInactive != true;
+        }).toList() ??
+        [];
 
     var columnCount = 3;
     if (MediaQuery.of(context).size.width >= 600) {
@@ -36,7 +38,9 @@ class WaitingPlayerResponses extends StatelessWidget {
                 itemCount: players.length,
                 itemBuilder: (context, index) {
                   var player = players[index];
-                  var hasSubmittedResponse = state.game.turn?.responses?.containsKey(player.id) ?? false;
+                  var hasSubmittedResponse =
+                      state.game?.turn?.responses.containsKey(player.id) ??
+                          false;
                   return PlayerResponseCard(player, hasSubmittedResponse);
                 }),
           ),
@@ -75,7 +79,7 @@ class PlayerResponseCard extends StatelessWidget {
                   textAlign: TextAlign.center,
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
-                  style: context.theme.textTheme.bodyText2.copyWith(
+                  style: context.theme.textTheme.bodyText2?.copyWith(
                     color: context.colorOnCard,
                   ),
                 ),

@@ -4,13 +4,13 @@ import 'package:appsagainsthumanity/internal.dart';
 
 class ResponseCardView extends StatelessWidget {
   final ResponseCard card;
-  final Widget child;
+  final Widget? child;
 
   static const textPadding = 20.0;
 
   ResponseCardView({
-    Key key,
-    @required this.card,
+    Key? key,
+    required this.card,
     this.child,
   }) : super(key: key);
 
@@ -37,7 +37,7 @@ class ResponseCardView extends StatelessWidget {
             _buildText(context, card.text),
             if (child != null)
               Expanded(
-                child: child,
+                child: child ?? const SizedBox(),
               ),
           ],
         ),
@@ -57,7 +57,7 @@ class ResponseCardView extends StatelessWidget {
   }
 }
 
-Widget buildResponseCardStack(List<ResponseCard> cards, {Widget lastChild}) {
+Widget buildResponseCardStack(List<ResponseCard> cards, {Widget? lastChild}) {
   if (cards.isNotEmpty) {
     var nextCard = cards.first;
     var remaining = cards.sublist(1);
@@ -65,10 +65,10 @@ Widget buildResponseCardStack(List<ResponseCard> cards, {Widget lastChild}) {
       key: ValueKey(nextCard),
       card: nextCard,
       child: remaining.isNotEmpty
-        ? buildResponseCardStack(remaining, lastChild: lastChild)
-        : lastChild,
+          ? buildResponseCardStack(remaining, lastChild: lastChild)
+          : lastChild,
     );
   } else {
-    return null;
+    return const SizedBox();
   }
 }

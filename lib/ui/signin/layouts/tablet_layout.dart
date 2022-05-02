@@ -20,7 +20,7 @@ class TabletLayout extends StatelessWidget {
           child: Text(
             context.strings.appNameDisplay,
             style: GoogleFonts.raleway(
-              textStyle: context.theme.textTheme.headline3.copyWith(
+              textStyle: context.theme.textTheme.headline3?.copyWith(
                 color: Colors.white,
                 fontWeight: FontWeight.bold,
                 fontSize: 48,
@@ -43,12 +43,14 @@ class TabletLayout extends StatelessWidget {
                   margin: const EdgeInsets.symmetric(vertical: 32),
                   child: Row(
                     children: [
-                      Expanded(child: Container(height: 1, color: Colors.white60)),
+                      Expanded(
+                          child: Container(height: 1, color: Colors.white60)),
                       Container(
                         margin: const EdgeInsets.symmetric(horizontal: 16),
                         child: Text('OR'),
                       ),
-                      Expanded(child: Container(height: 1, color: Colors.white60)),
+                      Expanded(
+                          child: Container(height: 1, color: Colors.white60)),
                     ],
                   ),
                 ),
@@ -69,18 +71,19 @@ class TabletLayout extends StatelessWidget {
                       height: 24,
                     ),
                     onPressed: () {
-                      context.bloc<SignInBloc>().add(LoginWithGooglePressed());
+                      context.read<SignInBloc>().add(LoginWithGooglePressed());
                     },
                   ),
                 ),
                 Container(
                   width: 400,
-                  margin: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
+                  margin:
+                      const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
                   child: AuthButton.withIcon(
                     text: context.strings.actionSignInAnonymously,
                     iconData: MdiIcons.incognito,
                     onPressed: () {
-                      context.bloc<SignInBloc>().add(LoginAnonymouslyPressed());
+                      context.read<SignInBloc>().add(LoginAnonymouslyPressed());
                     },
                   ),
                 ),

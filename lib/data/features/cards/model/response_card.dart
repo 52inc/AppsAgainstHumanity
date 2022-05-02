@@ -13,17 +13,17 @@ class ResponseCard extends Equatable {
   final String source;
 
   ResponseCard({
-    @required this.cid,
-    @required this.text,
-    @required this.set,
-    @required this.source,
+    required this.cid,
+    required this.text,
+    required this.set,
+    required this.source,
   });
 
-  factory ResponseCard.fromJson(Map<String, dynamic> json) => _$ResponseCardFromJson(json);
+  factory ResponseCard.fromJson(Map<String, dynamic> json) =>
+      _$ResponseCardFromJson(json);
 
   Map<String, dynamic> toJson() => _$ResponseCardToJson(this);
 
   @override
   List<Object> get props => [cid, text, set, source];
 }
-

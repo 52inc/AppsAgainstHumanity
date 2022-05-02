@@ -1,5 +1,6 @@
 import 'package:appsagainsthumanity/ui/game/bloc/bloc.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:appsagainsthumanity/internal.dart';
 
 class StartingRoomScreen extends StatelessWidget {
@@ -11,8 +12,11 @@ class StartingRoomScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        brightness: Brightness.dark,
-        textTheme: context.theme.textTheme,
+        systemOverlayStyle: SystemUiOverlayStyle(
+          statusBarBrightness: Brightness.dark,
+        ),
+        // brightness: Brightness.dark,
+        // textTheme: context.theme.textTheme,
         iconTheme: context.theme.iconTheme,
         title: Text("Game is starting..."),
         bottom: PreferredSize(
@@ -30,13 +34,13 @@ class StartingRoomScreen extends StatelessWidget {
                     children: <Widget>[
                       Text(
                         "Game ID",
-                        style: context.theme.textTheme.bodyText1.copyWith(
+                        style: context.theme.textTheme.bodyText1?.copyWith(
                           color: Colors.white70,
                         ),
                       ),
                       Text(
-                        state.game.gid,
-                        style: context.theme.textTheme.headline4.copyWith(
+                        state.game!.gid,
+                        style: context.theme.textTheme.headline4?.copyWith(
                           color: context.primaryColor,
                           fontWeight: FontWeight.bold,
                         ),

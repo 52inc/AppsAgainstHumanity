@@ -61,7 +61,7 @@ class _EmailAuthFormState extends State<EmailAuthForm> {
               keyboardType: TextInputType.emailAddress,
               textInputAction: TextInputAction.next,
               validator: (value) {
-                if (!EmailValidator.validate(value)) {
+                if (!EmailValidator.validate(value!)) {
                   return context.strings.errorInvalidEmailAddress;
                 }
                 return null;
@@ -86,7 +86,9 @@ class _EmailAuthFormState extends State<EmailAuthForm> {
                 prefixIcon: Icon(Icons.vpn_key),
                 suffixIcon: IconButton(
                   icon: Icon(
-                    _isPasswordObscured ? Icons.visibility_rounded : Icons.visibility_off_rounded,
+                    _isPasswordObscured
+                        ? Icons.visibility_rounded
+                        : Icons.visibility_off_rounded,
                   ),
                   onPressed: () {
                     setState(() {
@@ -99,7 +101,7 @@ class _EmailAuthFormState extends State<EmailAuthForm> {
               textInputAction: TextInputAction.next,
               obscureText: _isPasswordObscured,
               validator: (value) {
-                if (value.length < 8) {
+                if (value!.length < 8) {
                   return context.strings.errorInvalidPasswordLength;
                 }
                 return null;
@@ -128,11 +130,14 @@ class _EmailAuthFormState extends State<EmailAuthForm> {
                   prefixIcon: Icon(Icons.vpn_key),
                   suffixIcon: IconButton(
                     icon: Icon(
-                      _isConfirmPasswordObscured ? Icons.visibility_rounded : Icons.visibility_off_rounded,
+                      _isConfirmPasswordObscured
+                          ? Icons.visibility_rounded
+                          : Icons.visibility_off_rounded,
                     ),
                     onPressed: () {
                       setState(() {
-                        _isConfirmPasswordObscured = !_isConfirmPasswordObscured;
+                        _isConfirmPasswordObscured =
+                            !_isConfirmPasswordObscured;
                       });
                     },
                   ),
@@ -141,7 +146,7 @@ class _EmailAuthFormState extends State<EmailAuthForm> {
                 textInputAction: TextInputAction.next,
                 obscureText: _isConfirmPasswordObscured,
                 validator: (value) {
-                  if (value.length < 8) {
+                  if (value!.length < 8) {
                     return context.strings.errorInvalidPasswordLength;
                   } else if (value != _passwordController.text) {
                     return context.strings.errorMismatchingPasswords;
@@ -171,7 +176,7 @@ class _EmailAuthFormState extends State<EmailAuthForm> {
                 keyboardType: TextInputType.name,
                 textInputAction: TextInputAction.next,
                 validator: (value) {
-                  if (value.isEmpty) {
+                  if (value!.isEmpty) {
                     return context.strings.errorInvalidUserName;
                   }
                   return null;
@@ -206,7 +211,7 @@ class _EmailAuthFormState extends State<EmailAuthForm> {
                 padding: const EdgeInsets.symmetric(vertical: 20),
               ),
               onPressed: () {
-                if (_formKey.currentState.validate()) {
+                if (_formKey.currentState!.validate()) {
                   _authenticateWithEmail(context);
                 }
               },
@@ -219,8 +224,8 @@ class _EmailAuthFormState extends State<EmailAuthForm> {
             child: TextButton(
               child: Text(
                 _authState == EmailAuthState.signIn
-                  ? context.strings.actionEmailAltSignUp
-                  : context.strings.actionEmailAltSignIn,
+                    ? context.strings.actionEmailAltSignUp
+                    : context.strings.actionEmailAltSignIn,
                 style: GoogleFonts.raleway(
                   color: Colors.white60,
                   fontSize: 14,
@@ -249,15 +254,17 @@ class _EmailAuthFormState extends State<EmailAuthForm> {
       ),
     );
   }
-  
+
   void _authenticateWithEmail(BuildContext context) {
     final email = _emailController.text.trim();
     final password = _passwordController.text.trim();
     if (_authState == EmailAuthState.signIn) {
-      context.bloc<SignInBloc>().add(LoginWithEmailPressed(email, password));
+      context.read<SignInBloc>().add(LoginWithEmailPressed(email, password));
     } else {
       final userName = _userNameController.text.trim();
-      context.bloc<SignInBloc>().add(SignUpWithEmailPressed(email, password, userName));
+      context
+          .read<SignInBloc>()
+          .add(SignUpWithEmailPressed(email, password, userName));
     }
   }
 }

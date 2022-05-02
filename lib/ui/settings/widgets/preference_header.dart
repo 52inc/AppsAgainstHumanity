@@ -5,7 +5,10 @@ class PreferenceHeader extends StatelessWidget {
   final String title;
   final bool includeIconSpacing;
 
-  PreferenceHeader({@required this.title, this.includeIconSpacing = true});
+  PreferenceHeader({
+    required this.title,
+    this.includeIconSpacing = true,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -16,7 +19,7 @@ class PreferenceHeader extends StatelessWidget {
       alignment: Alignment.centerLeft,
       child: Text(
         title,
-        style: context.theme.textTheme.subtitle2.copyWith(
+        style: context.theme.textTheme.subtitle2?.copyWith(
           color: context.primaryColor,
         ),
       ),

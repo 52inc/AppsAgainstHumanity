@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 
 class ResponsiveWidgetMediator extends StatelessWidget {
-
   final WidgetBuilder mobile;
   final WidgetBuilder tablet;
 
   const ResponsiveWidgetMediator({
-    @required this.mobile,
-    @required this.tablet,
+    required this.mobile,
+    required this.tablet,
   });
 
   @override

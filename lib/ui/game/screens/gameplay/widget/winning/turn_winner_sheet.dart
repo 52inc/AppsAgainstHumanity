@@ -9,15 +9,16 @@ import 'package:appsagainsthumanity/ui/widgets/player_circle_avatar.dart';
 import 'package:flutter/material.dart';
 
 class TurnWinnerSheet extends StatelessWidget {
-  final GameViewState state;
-  final TurnWinner turnWinner;
-  final ScrollController scrollController;
+  final GameViewState? state;
+  final TurnWinner? turnWinner;
+  final ScrollController? scrollController;
 
-  TurnWinnerSheet(this.state, this.scrollController) : turnWinner = state.game.turn.winner;
+  TurnWinnerSheet(this.state, this.scrollController)
+      : turnWinner = state?.game?.turn?.winner;
 
   @override
   Widget build(BuildContext context) {
-    var playerName = turnWinner.playerName ?? Player.DEFAULT_NAME;
+    var playerName = turnWinner?.playerName ?? Player.DEFAULT_NAME;
     if (playerName.trim().isEmpty) {
       playerName = Player.DEFAULT_NAME;
     }
@@ -32,7 +33,7 @@ class TurnWinnerSheet extends StatelessWidget {
               margin: const EdgeInsets.only(bottom: 16),
               child: Text(
                 "Winner!",
-                style: context.theme.textTheme.headline3.copyWith(
+                style: context.theme.textTheme.headline3?.copyWith(
                   color: Colors.white,
                 ),
               ),
@@ -44,7 +45,7 @@ class TurnWinnerSheet extends StatelessWidget {
               margin: const EdgeInsets.only(top: 16),
               child: Text(
                 playerName,
-                style: context.theme.textTheme.headline5.copyWith(
+                style: context.theme.textTheme.headline5?.copyWith(
                   color: Colors.white,
                 ),
               ),
@@ -53,12 +54,12 @@ class TurnWinnerSheet extends StatelessWidget {
               height: 850,
               margin: const EdgeInsets.only(top: 24),
               child: PromptCardView(
-                state: state,
+                state: state!,
                 margin: const EdgeInsets.symmetric(horizontal: 32),
                 child: Container(
                   margin: const EdgeInsets.symmetric(horizontal: 32),
                   child: buildResponseCardStack(
-                    turnWinner.response,
+                    turnWinner!.response!,
                     lastChild: Column(
                       children: [
                         Divider(),
@@ -67,7 +68,7 @@ class TurnWinnerSheet extends StatelessWidget {
                           alignment: Alignment.centerLeft,
                           child: Text(
                             "Player Responses".toUpperCase(),
-                            style: context.theme.textTheme.subtitle2.copyWith(
+                            style: context.theme.textTheme.subtitle2?.copyWith(
                               color: AppColors.primaryVariant,
                             ),
                           ),
@@ -76,9 +77,9 @@ class TurnWinnerSheet extends StatelessWidget {
                           child: Container(
                             margin: const EdgeInsets.only(top: 16),
                             child: OtherResponsesPager(
-                              turnWinner.playerId,
-                              state.game.round - 1,
-                              turnWinner.responses,
+                              turnWinner!.playerId!,
+                              state!.game!.round - 1,
+                              turnWinner!.responses!,
                             ),
                           ),
                         ),
@@ -98,10 +99,10 @@ class TurnWinnerSheet extends StatelessWidget {
     return PlayerCircleAvatar(
       radius: 40,
       player: Player(
-        id: turnWinner.playerId,
-        name: turnWinner.playerName,
-        avatarUrl: turnWinner.playerAvatarUrl,
-        isRandoCardrissian: turnWinner.isRandoCardrissian,
+        id: turnWinner!.playerId!,
+        name: turnWinner!.playerName!,
+        avatarUrl: turnWinner!.playerAvatarUrl!,
+        isRandoCardrissian: turnWinner!.isRandoCardrissian!,
       ),
     );
   }

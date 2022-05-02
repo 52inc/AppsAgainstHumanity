@@ -15,16 +15,17 @@ class PromptContainer extends StatelessWidget {
   Widget build(BuildContext context) {
     // We only want this block builder to update when the prompt changes
     return BlocBuilder<GameBloc, GameViewState>(
-      condition: (previous, current) {
-        return previous.game.turn?.promptCard != current.game.turn?.promptCard;
+      buildWhen: (previous, current) {
+        return previous.game?.turn?.promptCard !=
+            current.game?.turn?.promptCard;
       },
       builder: (context, state) {
-        var prompt = state.game.turn?.promptCard;
+        var prompt = state.game?.turn?.promptCard;
         return Container(
           margin: const EdgeInsets.only(top: 8),
           child: Column(
             children: [
-              _buildPromptSpecial(context, prompt),
+              _buildPromptSpecial(context, prompt!),
               Expanded(
                 child: Stack(
                   children: [
@@ -70,7 +71,7 @@ class PromptContainer extends StatelessWidget {
         if (state.haveWeSubmittedResponse) {
           return WaitingPlayerResponses(state);
         } else {
-          var responseCardStack = buildResponseCardStack(state.selectedCards);
+          var responseCardStack = buildResponseCardStack(state.selectedCards!);
           if (responseCardStack != null) {
             return Dismissible(
               key: Key("responses"),
@@ -83,8 +84,9 @@ class PromptContainer extends StatelessWidget {
                     alignment: Alignment.topCenter,
                     child: Text(
                       "Clear Responses".toUpperCase(),
-                      style: context.theme.textTheme.subtitle1
-                          .copyWith(color: context.primaryColor, fontWeight: FontWeight.w600),
+                      style: context.theme.textTheme.subtitle1!.copyWith(
+                          color: context.primaryColor,
+                          fontWeight: FontWeight.w600),
                     ),
                   ),
                   Container(
@@ -97,8 +99,9 @@ class PromptContainer extends StatelessWidget {
                 ],
               ),
               onDismissed: (direction) {
-                Analytics().logSelectContent(contentType: 'action', itemId: 'clear_choices');
-                context.bloc<GameBloc>().add(ClearPickedResponseCards());
+                Analytics().logSelectContent(
+                    contentType: 'action', itemId: 'clear_choices');
+                context.read<GameBloc>().add(ClearPickedResponseCards());
               },
               child: Container(
                 margin: const EdgeInsets.symmetric(horizontal: 16),
@@ -114,14 +117,16 @@ class PromptContainer extends StatelessWidget {
   }
 
   Widget _buildPromptSpecial(BuildContext context, PromptCard promptCard) {
-    if (promptCard != null && promptCard.special != null && promptCard.special.isNotEmpty) {
+    if (promptCard != null &&
+        promptCard.special != "" &&
+        promptCard.special.isNotEmpty) {
       return Container(
         height: 36,
         alignment: Alignment.centerRight,
         margin: const EdgeInsets.symmetric(horizontal: 16),
         child: Text(
           promptCard.special.toUpperCase(),
-          style: context.theme.textTheme.subtitle2.copyWith(
+          style: context.theme.textTheme.subtitle2?.copyWith(
             color: Colors.white,
           ),
         ),
@@ -151,15 +156,17 @@ class PromptContainer extends StatelessWidget {
   Widget _buildPromptText(BuildContext context, GameViewState state) {
     return GestureDetector(
       onLongPress: () {
-        Analytics().logSelectContent(contentType: 'action', itemId: 'view_prompt_source');
-        Scaffold.of(context).showSnackBar(SnackBar(
-          content: Text(state.game?.turn?.promptCard?.set ?? ""),
+        Analytics().logSelectContent(
+            contentType: 'action', itemId: 'view_prompt_source');
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text(state.game?.turn?.promptCard.set ?? ""),
           behavior: SnackBarBehavior.floating,
         ));
       },
       child: Container(
         width: double.maxFinite,
-        margin: const EdgeInsets.symmetric(vertical: textPadding, horizontal: textPadding + 16),
+        margin: const EdgeInsets.symmetric(
+            vertical: textPadding, horizontal: textPadding + 16),
         child: BlocBuilder<GameBloc, GameViewState>(
           builder: (context, state) {
             return Text(

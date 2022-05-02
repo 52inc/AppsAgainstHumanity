@@ -14,14 +14,15 @@ class PromptCard extends Equatable {
   final String source;
 
   PromptCard({
-    @required this.cid,
-    @required this.text,
-    @required this.special,
-    @required this.set,
-    @required this.source,
+    required this.cid,
+    required this.text,
+    required this.special,
+    required this.set,
+    required this.source,
   });
 
-  factory PromptCard.fromJson(Map<String, dynamic> json) => _$PromptCardFromJson(json);
+  factory PromptCard.fromJson(Map<String, dynamic> json) =>
+      _$PromptCardFromJson(json);
 
   Map<String, dynamic> toJson() => _$PromptCardToJson(this);
 
@@ -34,4 +35,4 @@ class PromptCard extends Equatable {
   }
 }
 
-Map<String, dynamic> promptCardToJson(PromptCard card) => card?.toJson();
+Map<String, dynamic> promptCardToJson(PromptCard card) => card.toJson();

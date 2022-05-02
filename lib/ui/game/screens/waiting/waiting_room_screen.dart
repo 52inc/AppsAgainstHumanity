@@ -1,4 +1,3 @@
-
 import 'package:appsagainsthumanity/data/features/game/game_repository.dart';
 import 'package:appsagainsthumanity/data/features/game/model/player.dart';
 import 'package:appsagainsthumanity/internal.dart';
@@ -7,6 +6,7 @@ import 'package:appsagainsthumanity/ui/game/bloc/bloc.dart';
 import 'package:appsagainsthumanity/ui/widgets/player_circle_avatar.dart';
 import 'package:clipboard/clipboard.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:share/share.dart';
@@ -16,7 +16,7 @@ class WaitingRoomScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<GameBloc, GameViewState>(
-      bloc: context.bloc<GameBloc>(),
+      bloc: context.read<GameBloc>(),
       builder: (context, state) {
         return _buildScaffold(context, state);
       },
@@ -26,8 +26,11 @@ class WaitingRoomScreen extends StatelessWidget {
   Widget _buildScaffold(BuildContext context, GameViewState state) {
     return Scaffold(
       appBar: AppBar(
-        brightness: Brightness.dark,
-        textTheme: context.theme.textTheme,
+        systemOverlayStyle: SystemUiOverlayStyle(
+          statusBarBrightness: Brightness.dark,
+        ),
+        // brightness: Brightness.dark,
+        // textTheme: context.theme.textTheme,
         iconTheme: context.theme.iconTheme,
         title: Text("Waiting for players"),
         bottom: PreferredSize(
@@ -45,13 +48,13 @@ class WaitingRoomScreen extends StatelessWidget {
                     children: <Widget>[
                       Text(
                         "Game ID",
-                        style: context.theme.textTheme.bodyText1.copyWith(
+                        style: context.theme.textTheme.bodyText1?.copyWith(
                           color: Colors.white70,
                         ),
                       ),
                       Text(
-                        state.game.gid,
-                        style: context.theme.textTheme.headline4.copyWith(
+                        state.game!.gid,
+                        style: context.theme.textTheme.headline4?.copyWith(
                           color: context.primaryColor,
                           fontWeight: FontWeight.bold,
                         ),
@@ -59,7 +62,6 @@ class WaitingRoomScreen extends StatelessWidget {
                     ],
                   ),
                 ),
-
                 Expanded(
                   child: Row(
                     mainAxisSize: MainAxisSize.max,
@@ -70,18 +72,22 @@ class WaitingRoomScreen extends StatelessWidget {
                         child: OutlinedButton(
                           child: Text("INVITE"),
                           style: OutlinedButton.styleFrom(
-                            primary: context.primaryColor,
-                            textStyle: context.theme.textTheme.button.copyWith(
-                              color: context.primaryColor,
-                            ),
-                            side: BorderSide(color: context.primaryColor),
-                            padding: const EdgeInsets.all(16)
-                          ),
+                              primary: context.primaryColor,
+                              textStyle:
+                                  context.theme.textTheme.button?.copyWith(
+                                color: context.primaryColor,
+                              ),
+                              side: BorderSide(color: context.primaryColor),
+                              padding: const EdgeInsets.all(16)),
                           // highlightedBorderColor: context.primaryColor,
                           // splashColor: context.primaryColor.withOpacity(0.40),
                           onPressed: () async {
-                            Analytics().logShare(contentType: 'game', itemId: 'invite', method: 'dynamic_link');
-                            var link = await DynamicLinks.createLink(state.game.id);
+                            Analytics().logShare(
+                                contentType: 'game',
+                                itemId: 'invite',
+                                method: 'dynamic_link');
+                            var link =
+                                await DynamicLinks.createLink(state.game!.id!);
                             _shareLink(context, link.toString());
                           },
                         ),
@@ -110,20 +116,20 @@ class WaitingRoomScreen extends StatelessWidget {
               label: Text("START GAME"),
               backgroundColor: AppColors.primary,
               onPressed: () async {
-                Analytics().logSelectContent(contentType: 'action', itemId: 'start_game');
-                context.bloc<GameBloc>()
-                    .add(StartGame());
+                Analytics().logSelectContent(
+                    contentType: 'action', itemId: 'start_game');
+                context.read<GameBloc>().add(StartGame());
               })
           : null,
       body: BlocListener<GameBloc, GameViewState>(
-        bloc: context.bloc<GameBloc>(),
+        bloc: context.read<GameBloc>(),
         listener: (context, state) {
           if (state.error != null) {
             context.scaffold
               ..hideCurrentSnackBar()
               ..showSnackBar(
                 SnackBar(
-                  content: Text(state.error),
+                  content: Text(state.error!),
                   backgroundColor: AppColors.primary,
                 ),
               );
@@ -138,22 +144,26 @@ class WaitingRoomScreen extends StatelessWidget {
   /// that needs to update to the change in game state
   Widget _buildPlayerList(BuildContext context, GameViewState state) {
     var players = state.players ?? [];
-    var hasRandoBeenInvitedOrNotOwner = (state.players?.any((element) => element.isRandoCardrissian) ?? false) || !state.isOurGame;
+    var hasRandoBeenInvitedOrNotOwner =
+        (state.players?.any((element) => element.isRandoCardrissian) ??
+                false) ||
+            !state.isOurGame;
     return ListView.builder(
         padding: const EdgeInsets.symmetric(vertical: 8),
-        itemCount: hasRandoBeenInvitedOrNotOwner ? players.length : players.length + 1,
+        itemCount:
+            hasRandoBeenInvitedOrNotOwner ? players.length : players.length + 1,
         itemBuilder: (context, index) {
           if (index < players.length) {
             var player = players[index];
             return _buildPlayerTile(context, player, index);
           } else {
-            return _buildRandoCardrissianInvite(context, state.game.id);
+            return _buildRandoCardrissianInvite(context, state.game!.id!);
           }
         });
   }
 
   Widget _buildPlayerTile(BuildContext context, Player player, int index) {
-    var playerName = player.name ?? Player.DEFAULT_NAME;
+    var playerName = player.name == "" ? Player.DEFAULT_NAME : "";
     if (playerName.trim().isEmpty) {
       playerName = Player.DEFAULT_NAME;
     }
@@ -162,18 +172,19 @@ class WaitingRoomScreen extends StatelessWidget {
         onTap: () {},
         title: Text(
           playerName,
-          style: context.theme.textTheme.subtitle1.copyWith(color: Colors.white),
+          style:
+              context.theme.textTheme.subtitle1?.copyWith(color: Colors.white),
         ),
-        leading: PlayerCircleAvatar(player: player)
-    );
+        leading: PlayerCircleAvatar(player: player));
   }
 
-  Widget _buildRandoCardrissianInvite(BuildContext context, String gameDocumentId) {
+  Widget _buildRandoCardrissianInvite(
+      BuildContext context, String gameDocumentId) {
     return ListTile(
       contentPadding: const EdgeInsets.symmetric(horizontal: 24, vertical: 4),
       title: Text(
         "Invite Rando Cardrissian?",
-        style: context.theme.textTheme.subtitle1.copyWith(
+        style: context.theme.textTheme.subtitle1?.copyWith(
           color: Colors.white,
           fontWeight: FontWeight.bold,
         ),
@@ -183,8 +194,10 @@ class WaitingRoomScreen extends StatelessWidget {
       ),
       trailing: Icon(MdiIcons.robot, color: Colors.white),
       onTap: () async {
-        Analytics().logSelectContent(contentType: 'players', itemId: 'invite_rando_cardrissian');
-        await context.repository<GameRepository>()
+        Analytics().logSelectContent(
+            contentType: 'players', itemId: 'invite_rando_cardrissian');
+        await context
+            .read<GameRepository>()
             .addRandoCardrissian(gameDocumentId);
       },
     );
@@ -194,11 +207,9 @@ class WaitingRoomScreen extends StatelessWidget {
     if (kIsWeb) {
       // await shareWeb(link);
       await FlutterClipboard.copy(link);
-      context.scaffold.showSnackBar(
-        SnackBar(
-          content: Text("Link copied to clipboard!"),
-        )
-      );
+      context.scaffold.showSnackBar(SnackBar(
+        content: Text("Link copied to clipboard!"),
+      ));
     } else {
       await Share.share(link.toString());
     }
@@ -214,5 +225,4 @@ class WaitingRoomScreen extends StatelessWidget {
     // link.href = linkToShare;
     // link.click();
   }
-
 }

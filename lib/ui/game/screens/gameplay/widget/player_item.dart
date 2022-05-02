@@ -22,7 +22,8 @@ class PlayerItem extends StatelessWidget {
     bool isSelf = false,
     this.isKicking = false,
     this.hasDownvoted = false,
-  }) : isSelf = isSelf || player.id == FirebaseConstants.DOCUMENT_RANDO_CARDRISSIAN;
+  }) : isSelf =
+            isSelf || player.id == FirebaseConstants.DOCUMENT_RANDO_CARDRISSIAN;
 
   @override
   Widget build(BuildContext context) {
@@ -34,7 +35,7 @@ class PlayerItem extends StatelessWidget {
         direction: DismissDirection.endToStart,
         confirmDismiss: (direction) async {
           Analytics().logSelectContent(contentType: 'action', itemId: 'wave');
-          context.bloc<GameBloc>().add(WaveAtPlayer(player.id));
+          context.read<GameBloc>().add(WaveAtPlayer(player.id));
           return false;
         },
         background: Container(
@@ -52,7 +53,7 @@ class PlayerItem extends StatelessWidget {
   }
 
   Widget _buildPlayerListTile(BuildContext context) {
-    var playerName = player.name ?? Player.DEFAULT_NAME;
+    var playerName = player.name == "" ? Player.DEFAULT_NAME : "";
     if (playerName.trim().isEmpty) {
       playerName = Player.DEFAULT_NAME;
     }
@@ -66,12 +67,12 @@ class PlayerItem extends StatelessWidget {
       onTap: () {},
       title: Text(
         playerName,
-        style: context.theme.textTheme.subtitle1.copyWith(color: Colors.white),
+        style: context.theme.textTheme.subtitle1?.copyWith(color: Colors.white),
       ),
       subtitle: isJudge
           ? Text(
               "Judge",
-              style: context.theme.textTheme.bodyText2.copyWith(
+              style: context.theme.textTheme.bodyText2?.copyWith(
                 color: AppColors.primaryVariant,
               ),
             )
@@ -97,7 +98,8 @@ class PlayerItem extends StatelessWidget {
               padding: const EdgeInsets.only(left: 16),
               child: Text(
                 "${player.prizes?.length ?? 0}",
-                style: context.theme.textTheme.subtitle1.copyWith(fontWeight: FontWeight.w600),
+                style: context.theme.textTheme.subtitle1
+                    ?.copyWith(fontWeight: FontWeight.w600),
               ),
             )
           ],
@@ -130,8 +132,9 @@ class PlayerItem extends StatelessWidget {
                         ),
                         onPressed: () {
                           // Kick Player
-                          Analytics().logSelectContent(contentType: 'action', itemId: 'kick_player');
-                          context.bloc<GameBloc>().add(KickPlayer(player.id));
+                          Analytics().logSelectContent(
+                              contentType: 'action', itemId: 'kick_player');
+                          context.read<GameBloc>().add(KickPlayer(player.id));
                         },
                       ),
                     ),

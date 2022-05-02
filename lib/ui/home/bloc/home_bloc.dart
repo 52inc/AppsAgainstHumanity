@@ -8,12 +8,26 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:logging/logging.dart';
 
 class HomeBloc extends Bloc<HomeEvent, HomeState> {
-  UserRepository _userRepository;
-  GameRepository _gameRepository;
-  StreamSubscription _userSubscription;
-  StreamSubscription _joinedGamesSubscription;
+  UserRepository? _userRepository;
+  GameRepository? _gameRepository;
+  StreamSubscription? _userSubscription;
+  StreamSubscription? _joinedGamesSubscription;
 
-  HomeBloc(this._userRepository, this._gameRepository);
+  HomeBloc({
+    UserRepository? userRepository,
+    GameRepository? gameRepository,
+    StreamSubscription? userSubscription,
+    StreamSubscription? joinedGameSubscription,
+  })  : _userRepository = userRepository,
+        _gameRepository = gameRepository,
+        _userSubscription = userSubscription,
+        _joinedGamesSubscription = joinedGameSubscription,
+        super(
+          HomeState(
+            // user: User(),
+            isLoading: false,
+          ),
+        ) {}
 
   @override
   HomeState get initialState => HomeState.loading();
@@ -22,7 +36,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   Stream<HomeState> mapEventToState(HomeEvent event) async* {
     if (event is HomeStarted) {
       yield* _mapHomeStartedToState();
-    } else if (event is JoinedGamesUpdated){
+    } else if (event is JoinedGamesUpdated) {
       yield* _mapJoinedGamesUpdatedToState(event);
     } else if (event is UserUpdated) {
       yield* _mapUserUpdatedToState(event);
@@ -36,12 +50,13 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   Stream<HomeState> _mapHomeStartedToState() async* {
     try {
       _userSubscription?.cancel();
-      _userSubscription = _userRepository.observeUser().listen((user) {
+      _userSubscription = _userRepository?.observeUser().listen((user) {
         add(UserUpdated(user));
       });
 
       _joinedGamesSubscription?.cancel();
-      _joinedGamesSubscription = _gameRepository.observeJoinedGames().listen((event) {
+      _joinedGamesSubscription =
+          _gameRepository?.observeJoinedGames().listen((event) {
         add(JoinedGamesUpdated(event));
       });
     } catch (e, stacktrace) {
@@ -50,8 +65,10 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     }
   }
 
-  Stream<HomeState> _mapJoinedGamesUpdatedToState(JoinedGamesUpdated event) async* {
-    yield state.copyWith(games: event.games..sort((a, b) => b.joinedAt.compareTo(a.joinedAt)));
+  Stream<HomeState> _mapJoinedGamesUpdatedToState(
+      JoinedGamesUpdated event) async* {
+    yield state.copyWith(
+        games: event.games..sort((a, b) => b.joinedAt.compareTo(a.joinedAt)));
   }
 
   Stream<HomeState> _mapUserUpdatedToState(UserUpdated event) async* {
@@ -60,8 +77,9 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
 
   Stream<HomeState> _mapLeaveGameToState(LeaveGame event) async* {
     try {
-      yield state.copyWith(leavingGame: event.game, games: state.games..remove(event.game));
-      await _gameRepository.leaveGame(event.game);
+      yield state.copyWith(
+          leavingGame: event.game, games: state.games?..remove(event.game));
+      await _gameRepository?.leaveGame(event.game);
       yield state.copyWith(leavingGame: null);
     } catch (e) {
       yield state.copyWith(leavingGame: null, error: "$e");
@@ -71,10 +89,12 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   Stream<HomeState> _mapJoinGameToState(JoinGame event) async* {
     try {
       yield state.copyWith(joiningGame: event.gameCode);
-      var game = await _gameRepository.joinGame(event.gameCode);
-      yield state.copyWith(joiningGame: null, joinedGame: game, overrideNull: true);
+      var game = await _gameRepository?.joinGame(event.gameCode);
+      yield state.copyWith(
+          joiningGame: null, joinedGame: game, overrideNull: true);
     } catch (e) {
-      yield state.copyWith(joiningGame: null, joinedGame: null, error: "$e", overrideNull: true);
+      yield state.copyWith(
+          joiningGame: null, joinedGame: null, error: "$e", overrideNull: true);
     }
   }
 }

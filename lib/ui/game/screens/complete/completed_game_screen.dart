@@ -27,7 +27,7 @@ class CompletedGameScreen extends StatelessWidget {
               margin: const EdgeInsets.only(top: 88),
               child: Text(
                 "Winner",
-                style: context.theme.textTheme.headline2.copyWith(
+                style: context.theme.textTheme.headline2?.copyWith(
                   color: Colors.white,
                 ),
               ),
@@ -36,8 +36,8 @@ class CompletedGameScreen extends StatelessWidget {
             Container(
               margin: const EdgeInsets.only(top: 24),
               child: Text(
-                state.winner?.name ?? Player.DEFAULT_NAME,
-                style: context.theme.textTheme.headline4.copyWith(
+                state.winner.name != "" ? Player.DEFAULT_NAME : "",
+                style: context.theme.textTheme.headline4?.copyWith(
                   color: Colors.white,
                 ),
               ),
@@ -47,34 +47,42 @@ class CompletedGameScreen extends StatelessWidget {
               Container(
                 margin: const EdgeInsets.symmetric(horizontal: 24),
                 width: double.maxFinite,
-                child: RaisedButton(
+                child: ElevatedButton(
                   child: Text("NEW GAME"),
-                  color: AppColors.primary,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8)
+                  style: ElevatedButton.styleFrom(
+                    primary: AppColors.primary,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8)),
                   ),
                   onPressed: () {
-                    Analytics().logSelectContent(contentType: 'game', itemId: 'create_new_game');
+                    Analytics().logSelectContent(
+                        contentType: 'game', itemId: 'create_new_game');
                     Navigator.of(context).pushReplacement(MaterialPageRoute(
-                      builder: (context) => CreateGameScreen()
-                    ));
+                        builder: (context) => CreateGameScreen()));
                   },
                 ),
               ),
             Container(
-              margin: const EdgeInsets.only(top: 8, left: 24, right: 24, bottom: 48),
+              margin: const EdgeInsets.only(
+                  top: 8, left: 24, right: 24, bottom: 48),
               width: double.maxFinite,
-              child: OutlineButton(
+              child: OutlinedButton(
                 child: Text("QUIT"),
-                textColor: Colors.white,
-                borderSide: BorderSide(color: Colors.white),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
+                style: OutlinedButton.styleFrom(
+                  textStyle: TextStyle(
+                    color: Colors.white,
+                  ),
+                  primary: AppColors.primary,
+                  // borderSide: BorderSide(color: Colors.white),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  // highlightedBorderColor: AppColors.primary,
+                  // splashColor: AppColors.primary,
                 ),
-                highlightedBorderColor: AppColors.primary,
-                splashColor: AppColors.primary,
                 onPressed: () {
-                  Analytics().logSelectContent(contentType: 'game', itemId: 'quit');
+                  Analytics()
+                      .logSelectContent(contentType: 'game', itemId: 'quit');
                   Navigator.of(context).pop();
                 },
               ),

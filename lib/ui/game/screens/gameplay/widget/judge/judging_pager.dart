@@ -13,31 +13,38 @@ class JudgingPager extends StatelessWidget {
   final JudgementController controller;
 
   JudgingPager({
-    @required this.state,
-    @required this.controller,
+    required this.state,
+    required this.controller,
   });
 
   @override
   Widget build(BuildContext context) {
-      var responses = state.game.turn?.responses ?? Map<String, List<ResponseCard>>();
-      var playerResponses = responses.entries.map((e) => PlayerResponse(e.key, e.value.toList())).toList();
-      playerResponses.shuffle(Random(state.game.round ?? DateTime.now().millisecondsSinceEpoch));
-      controller.setCurrentResponse(playerResponses[0], 0, playerResponses.length);
-      return PageView.builder(
-          controller: controller.pageController,
-          itemCount: playerResponses.length,
-          itemBuilder: (context, index) {
-              var response = playerResponses[index];
-              return Container(
-                  margin: const EdgeInsets.symmetric(horizontal: 4),
-                  child: buildResponseCardStack(response.responses),
-              );
-          },
-          onPageChanged: (index) {
-              Analytics().logSelectContent(contentType: 'judge', itemId: 'response_change_$index');
-              var playerResponse = playerResponses[index];
-              controller.setCurrentResponse(playerResponse, index, playerResponses.length);
-          },
-      );
+    var responses =
+        state.game?.turn?.responses ?? Map<String, List<ResponseCard>>();
+    var playerResponses = responses.entries
+        .map((e) => PlayerResponse(e.key, e.value.toList()))
+        .toList();
+    playerResponses.shuffle(
+        Random(state.game?.round ?? DateTime.now().millisecondsSinceEpoch));
+    controller.setCurrentResponse(
+        playerResponses[0], 0, playerResponses.length);
+    return PageView.builder(
+      controller: controller.pageController,
+      itemCount: playerResponses.length,
+      itemBuilder: (context, index) {
+        var response = playerResponses[index];
+        return Container(
+          margin: const EdgeInsets.symmetric(horizontal: 4),
+          child: buildResponseCardStack(response.responses),
+        );
+      },
+      onPageChanged: (index) {
+        Analytics().logSelectContent(
+            contentType: 'judge', itemId: 'response_change_$index');
+        var playerResponse = playerResponses[index];
+        controller.setCurrentResponse(
+            playerResponse, index, playerResponses.length);
+      },
+    );
   }
 }

@@ -1,4 +1,4 @@
-import 'dart:io';
+// import 'dart:io';
 
 import 'package:appsagainsthumanity/data/features/users/model/user.dart';
 import 'package:equatable/equatable.dart';
@@ -36,7 +36,7 @@ class DisplayNameChanged extends ProfileEvent {
 
 @immutable
 class PhotoChanged extends ProfileEvent {
-  final PickedFile file;
+  final XFile file;
 
   PhotoChanged(this.file);
 

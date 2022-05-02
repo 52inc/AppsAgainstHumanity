@@ -6,21 +6,22 @@ import 'package:appsagainsthumanity/internal.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:logging/logging.dart';
-import 'package:meta/meta.dart';
+// import 'package:meta/meta.dart';
 
 part 'authentication_event.dart';
-
 part 'authentication_state.dart';
 
-class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> {
+class AuthenticationBloc
+    extends Bloc<AuthenticationEvent, AuthenticationState> {
   final UserRepository _userRepository;
   final AppPreferences _preferences;
 
-  AuthenticationBloc({@required UserRepository userRepository, @required AppPreferences preferences})
-      : assert(userRepository != null),
-        assert(preferences != null),
-        _userRepository = userRepository,
-        _preferences = preferences;
+  AuthenticationBloc({
+    required UserRepository userRepository,
+    required AppPreferences preferences,
+  })  : _userRepository = userRepository,
+        _preferences = preferences,
+        super(Uninitialized()) {}
 
   @override
   AuthenticationState get initialState => Uninitialized();

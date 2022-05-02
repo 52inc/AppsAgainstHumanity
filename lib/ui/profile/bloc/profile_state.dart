@@ -4,8 +4,8 @@ import 'package:meta/meta.dart';
 @immutable
 class ProfileState {
   final bool isLoading;
-  final String error;
-  final User user;
+  final String? error;
+  final User? user;
 
   ProfileState({
     this.isLoading = true,
@@ -14,9 +14,9 @@ class ProfileState {
   });
 
   ProfileState copyWith({
-    bool isLoading,
-    String error,
-    User user,
+    bool? isLoading,
+    String? error,
+    User? user,
   }) {
     return ProfileState(
       isLoading: isLoading ?? this.isLoading,

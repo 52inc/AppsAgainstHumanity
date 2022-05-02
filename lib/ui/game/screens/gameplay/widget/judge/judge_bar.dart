@@ -26,15 +26,18 @@ class JudgeBar extends StatelessWidget {
     );
   }
 
-  Widget _buildHeader(BuildContext context, Player player, {bool hasDownvoted = false}) {
-    var playerName = player.name ?? Player.DEFAULT_NAME;
+  Widget _buildHeader(BuildContext context, Player player,
+      {bool hasDownvoted = false}) {
+    var playerName = player.name != "" ? Player.DEFAULT_NAME : "";
     if (playerName.trim().isEmpty) {
       playerName = Player.DEFAULT_NAME;
     }
     return ListTile(
       contentPadding: const EdgeInsets.symmetric(horizontal: 12),
       title: Text(playerName),
-      subtitle: Text("Current judge", style: context.theme.textTheme.bodyText2.copyWith(color: Colors.white60)),
+      subtitle: Text("Current judge",
+          style: context.theme.textTheme.bodyText2
+              ?.copyWith(color: Colors.white60)),
       leading: _buildJudgeAvatar(context, player),
       trailing: Row(
         mainAxisSize: MainAxisSize.min,
@@ -47,8 +50,9 @@ class JudgeBar extends StatelessWidget {
               color: Colors.white,
             ),
             onPressed: () {
-              Analytics().logSelectContent(contentType: 'action', itemId: 'wave');
-              context.bloc<GameBloc>().add(WaveAtPlayer(player.id));
+              Analytics()
+                  .logSelectContent(contentType: 'action', itemId: 'wave');
+              context.read<GameBloc>().add(WaveAtPlayer(player.id));
             },
           ),
           Container(
@@ -61,9 +65,10 @@ class JudgeBar extends StatelessWidget {
             ),
             onPressed: !hasDownvoted
                 ? () {
-              Analytics().logSelectContent(contentType: 'action', itemId: 'downvote');
-              context.bloc<GameBloc>().add(DownvotePrompt());
-            }
+                    Analytics().logSelectContent(
+                        contentType: 'action', itemId: 'downvote');
+                    context.read<GameBloc>().add(DownvotePrompt());
+                  }
                 : null,
           )
         ],

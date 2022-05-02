@@ -13,13 +13,13 @@ class GameStatusTitle extends StatelessWidget {
           !state.allResponsesSubmitted ? "Waiting for responses" : "Judging",
         );
       } else {
-          if (state.allResponsesSubmitted) {
-              return _buildText(context, "Waiting for judgement!");
-          } else if (state.haveWeSubmittedResponse) {
-              return _buildText(context, "Waiting on other players");
-          } else {
-              return Container();
-          }
+        if (state.allResponsesSubmitted) {
+          return _buildText(context, "Waiting for judgement!");
+        } else if (state.haveWeSubmittedResponse) {
+          return _buildText(context, "Waiting on other players");
+        } else {
+          return Container();
+        }
       }
     });
   }
@@ -27,7 +27,7 @@ class GameStatusTitle extends StatelessWidget {
   Widget _buildText(BuildContext context, String title) {
     return Text(
       title,
-      style: context.theme.textTheme.headline6.copyWith(color: Colors.white),
+      style: context.theme.textTheme.headline6?.copyWith(color: Colors.white),
     );
   }
 }

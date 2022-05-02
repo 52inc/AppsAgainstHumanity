@@ -7,10 +7,13 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:kt_dart/kt.dart';
 
 class CreateGameBloc extends Bloc<CreateGameEvent, CreateGameState> {
-  final CardsRepository cardsRepository;
-  final GameRepository gameRepository;
+  final CardsRepository? cardsRepository;
+  final GameRepository? gameRepository;
 
-  CreateGameBloc(this.cardsRepository, this.gameRepository);
+  CreateGameBloc({
+    this.cardsRepository,
+    this.gameRepository,
+  }) : super(CreateGameState());
 
   @override
   CreateGameState get initialState => CreateGameState.empty();
@@ -38,62 +41,73 @@ class CreateGameBloc extends Bloc<CreateGameEvent, CreateGameState> {
 
   Stream<CreateGameState> _mapScreenLoadedToState() async* {
     try {
-      var cardSets = await cardsRepository.getAvailableCardSets();
-      var filteredCardSets = cardSets.where((cs) {
-        return (cs.source == "Developer" && AppPreferences().developerPackEnabled) || cs.source != "Developer";
+      var cardSets = await cardsRepository?.getAvailableCardSets();
+      var filteredCardSets = cardSets?.where((cs) {
+        return (cs.source == "Developer" &&
+                AppPreferences().developerPackEnabled) ||
+            cs.source != "Developer";
       }).toList();
-      yield state.copyWith(cardSets: filteredCardSets.toImmutableList(), isLoading: false);
+      yield state.copyWith(
+          cardSets: filteredCardSets?.toImmutableList(), isLoading: false);
     } catch (e) {
       yield state.copyWith(isLoading: false, error: e.toString());
     }
   }
 
-  Stream<CreateGameState> _mapCardSetSelectedToState(CardSetSelected event) async* {
+  Stream<CreateGameState> _mapCardSetSelectedToState(
+      CardSetSelected event) async* {
     if (state.selectedSets.contains(event.cardSet)) {
-      yield state.copyWith(selectedSets: state.selectedSets.minusElement(event.cardSet).toSet());
+      yield state.copyWith(
+          selectedSets: state.selectedSets.minusElement(event.cardSet).toSet());
     } else {
-      yield state.copyWith(selectedSets: state.selectedSets.plusElement(event.cardSet).toSet());
+      yield state.copyWith(
+          selectedSets: state.selectedSets.plusElement(event.cardSet).toSet());
     }
   }
 
-  Stream<CreateGameState> _mapCardSourceSelectedToState(CardSourceSelected event) async* {
-    if (event.isAllChecked == null || !event.isAllChecked) {
+  Stream<CreateGameState> _mapCardSourceSelectedToState(
+      CardSourceSelected event) async* {
+    if (event.isAllChecked == false || !event.isAllChecked) {
       // Partial sets are selected, select all
       yield state.copyWith(
-        selectedSets: state.selectedSets.plus(
-          state.cardSets.filter((cs) => cs.source == event.source)
-        ).toSet()
-      );
+          selectedSets: state.selectedSets
+              .plus(state.cardSets.filter((cs) => cs.source == event.source))
+              .toSet());
     } else if (event.isAllChecked) {
       // All sets selected, select none
       yield state.copyWith(
-        selectedSets: state.selectedSets.filter((s) => s.source != event.source).toSet()
-      );
+          selectedSets: state.selectedSets
+              .filter((s) => s.source != event.source)
+              .toSet());
     }
   }
 
-  Stream<CreateGameState> _mapChangePrizesToWinToState(ChangePrizesToWin event) async* {
+  Stream<CreateGameState> _mapChangePrizesToWinToState(
+      ChangePrizesToWin event) async* {
     AppPreferences().prizesToWin = event.prizesToWin;
     yield state.copyWith(prizesToWin: event.prizesToWin);
   }
 
-  Stream<CreateGameState> _mapChangePlayerLimitToState(ChangePlayerLimit event) async* {
+  Stream<CreateGameState> _mapChangePlayerLimitToState(
+      ChangePlayerLimit event) async* {
     AppPreferences().playerLimit = event.playerLimit;
     yield state.copyWith(playerLimit: event.playerLimit);
   }
 
-  Stream<CreateGameState> _mapChangePick2EnabledToState(ChangePick2Enabled event) async* {
+  Stream<CreateGameState> _mapChangePick2EnabledToState(
+      ChangePick2Enabled event) async* {
     yield state.copyWith(pick2Enabled: event.enabled);
   }
 
-  Stream<CreateGameState> _mapChangeDraw2Pick3EnabledToState(ChangeDraw2Pick3Enabled event) async* {
+  Stream<CreateGameState> _mapChangeDraw2Pick3EnabledToState(
+      ChangeDraw2Pick3Enabled event) async* {
     yield state.copyWith(draw2pick3Enabled: event.enabled);
   }
 
   Stream<CreateGameState> _mapCreateGameToState() async* {
     yield state.copyWith(isLoading: true, error: null);
     try {
-      var game = await gameRepository.createGame(
+      var game = await gameRepository?.createGame(
         state.selectedSets,
         prizesToWin: state.prizesToWin,
         playerLimit: state.playerLimit,

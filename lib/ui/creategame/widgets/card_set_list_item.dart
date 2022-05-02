@@ -14,19 +14,21 @@ class CardSetListItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      title: Text(CahScrubber.scrub(cardSet.name)),
+      title: Text(CahScrubber.scrub(cardSet.name!)),
       contentPadding: const EdgeInsets.symmetric(horizontal: 6),
       leading: Checkbox(
         value: isSelected,
         activeColor: AppColors.primary,
         onChanged: (value) {
-          Analytics().logSelectContent(contentType: 'card_set', itemId: cardSet.name);
-          context.bloc<CreateGameBloc>().add(CardSetSelected(cardSet));
+          Analytics()
+              .logSelectContent(contentType: 'card_set', itemId: cardSet.name);
+          context.read<CreateGameBloc>().add(CardSetSelected(cardSet));
         },
       ),
       onTap: () {
-        Analytics().logSelectContent(contentType: 'card_set', itemId: cardSet.name);
-        context.bloc<CreateGameBloc>().add(CardSetSelected(cardSet));
+        Analytics()
+            .logSelectContent(contentType: 'card_set', itemId: cardSet.name);
+        context.read<CreateGameBloc>().add(CardSetSelected(cardSet));
       },
     );
   }

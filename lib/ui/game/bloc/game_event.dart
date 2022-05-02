@@ -24,6 +24,7 @@ class Subscribe extends GameEvent {
 }
 
 class StartGame extends GameEvent {}
+
 class ClearError extends GameEvent {}
 
 /// This event is triggered to update the user id in the game state
@@ -69,12 +70,12 @@ class DownvotesUpdated extends GameEvent {
   List<Object> get props => [downvotes];
 }
 
-class DownvotePrompt extends GameEvent { }
+class DownvotePrompt extends GameEvent {}
 
 @immutable
 class WaveAtPlayer extends GameEvent {
   final String playerId;
-  final String message;
+  final String? message;
 
   WaveAtPlayer(this.playerId, [this.message]);
 
@@ -114,6 +115,6 @@ class KickPlayer extends GameEvent {
   List<Object> get props => [playerId];
 }
 
-class SubmitResponses extends GameEvent { }
+class SubmitResponses extends GameEvent {}
 
-class ClearSubmitting extends GameEvent { }
+class ClearSubmitting extends GameEvent {}

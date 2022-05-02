@@ -8,7 +8,7 @@ class PlayerCircleAvatar extends StatelessWidget {
 
   String get playerInitials {
     var splitName = player.name.split(' ');
-    if (splitName != null && splitName.isNotEmpty) {
+    if (splitName != "" && splitName.isNotEmpty) {
       var nonEmptyCharacters = splitName.where((e) => e.isNotEmpty);
       if (nonEmptyCharacters.isNotEmpty) {
         return nonEmptyCharacters.map((e) => e[0]).join().toUpperCase();
@@ -20,7 +20,10 @@ class PlayerCircleAvatar extends StatelessWidget {
     }
   }
 
-  PlayerCircleAvatar({@required this.player, this.radius = 20});
+  PlayerCircleAvatar({
+    required this.player,
+    this.radius = 20,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -31,18 +34,20 @@ class PlayerCircleAvatar extends StatelessWidget {
           )
         : CircleAvatar(
             radius: this.radius,
-            backgroundImage: player.avatarUrl != null ? NetworkImage(player.avatarUrl) : null,
+            backgroundImage: player.avatarUrl != ""
+                ? NetworkImage(player.avatarUrl)
+                : NetworkImage(""),
             backgroundColor: AppColors.primary,
-            child: player.avatarUrl == null
-                ? player.name != null
+            child: player.avatarUrl == ""
+                ? player.name != ""
                     ? Text(
                         playerInitials,
-                        style: context.theme.textTheme.subtitle1.copyWith(
+                        style: context.theme.textTheme.subtitle1?.copyWith(
                           color: Colors.white,
                         ),
                       )
-                    : null
-                : null,
+                    : const SizedBox()
+                : const SizedBox(),
           );
   }
 }

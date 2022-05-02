@@ -73,12 +73,12 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
         ),
       ),
       body: BlocListener<GameBloc, GameViewState>(
-        condition: (previous, current) {
-          return current.game.turn?.winner != previous.game.turn?.winner;
+        listenWhen: (previous, current) {
+          return current.game?.turn?.winner != previous.game?.turn?.winner;
         },
         listener: (context, state) {
           // Show bottom sheet modal for the winner
-          var turnWinner = state.game.turn?.winner;
+          var turnWinner = state.game?.turn?.winner;
           if (turnWinner != null) {
             print("Showing winner sheet");
             _showWinnerBottomSheet(context, state);
@@ -126,7 +126,7 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
           maxChildSize: 0.97,
           builder: (context, scrollController) {
             return GameBottomSheet(
-              title: "Round ${state.game.round}",
+              title: "Round ${state.game?.round}",
               child: TurnWinnerSheet(state, scrollController),
             );
           },
@@ -153,14 +153,14 @@ class _GamePlayScreenState extends State<GamePlayScreen> {
                     height: 56,
                     alignment: Alignment.center,
                     child: Text(
-                      widget.state.game.gid,
-                      style: context.theme.textTheme.headline6.copyWith(
+                      widget.state.game!.gid,
+                      style: context.theme.textTheme.headline6?.copyWith(
                         color: AppColors.primaryVariant,
                       ),
                     ),
                   )
                 ],
-                child: PlayerList(widget.state.game, scrollController),
+                child: PlayerList(widget.state.game!, scrollController),
               );
             },
           );

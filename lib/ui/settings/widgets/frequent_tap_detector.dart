@@ -4,11 +4,11 @@ import 'package:flutter/material.dart';
 
 class FrequentTapDetector extends StatefulWidget {
   final Widget child;
-  final int threshold;
-  final VoidCallback onTapCountReachedCallback;
+  final int? threshold;
+  final VoidCallback? onTapCountReachedCallback;
 
   FrequentTapDetector({
-    @required this.child,
+    required this.child,
     this.threshold = 5,
     this.onTapCountReachedCallback,
   });
@@ -18,12 +18,12 @@ class FrequentTapDetector extends StatefulWidget {
 }
 
 class _FrequentTapDetectorState extends State<FrequentTapDetector> {
-  Timer _timer;
+  late Timer _timer;
   int _tapCount = 0;
 
   @override
   void dispose() {
-    _timer?.cancel();
+    _timer.cancel();
     super.dispose();
   }
 
@@ -34,7 +34,7 @@ class _FrequentTapDetectorState extends State<FrequentTapDetector> {
       onTap: () {
         _tapCount += 1;
         print("Tap Count ($_tapCount)");
-        if (_tapCount >= widget.threshold) {
+        if (_tapCount >= widget.threshold!) {
           widget.onTapCountReachedCallback?.call();
           _tapCount = 0;
         } else {
@@ -45,7 +45,7 @@ class _FrequentTapDetectorState extends State<FrequentTapDetector> {
   }
 
   void _startResetDelay() {
-    _timer?.cancel();
+    _timer.cancel();
     _timer = Timer(Duration(milliseconds: 1000), _onResetTapCount);
   }
 

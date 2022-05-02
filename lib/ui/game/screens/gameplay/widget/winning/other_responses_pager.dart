@@ -24,7 +24,8 @@ class OtherResponsesPager extends StatefulWidget {
 class _OtherResponsesPagerState extends State<OtherResponsesPager> {
   static const double VIEWPORT_FRACTION = 0.93;
 
-  final PageController pageController = PageController(viewportFraction: VIEWPORT_FRACTION);
+  final PageController pageController =
+      PageController(viewportFraction: VIEWPORT_FRACTION);
 
   @override
   void dispose() {
@@ -34,11 +35,14 @@ class _OtherResponsesPagerState extends State<OtherResponsesPager> {
 
   @override
   Widget build(BuildContext context) {
-    var _responses = widget.responses ?? Map<String, List<ResponseCard>>();
-    var playerResponses = _responses.entries.map((e) => PlayerResponse(e.key, e.value.toList()))
+    var _responses =
+        widget.responses != {} ? Map<String, List<ResponseCard>>() : {};
+    var playerResponses = _responses.entries
+        .map((e) => PlayerResponse(e.key, e.value.toList()))
         .where((element) => element.playerId != widget.winningPlayerId)
         .toList();
-    playerResponses.shuffle(Random(widget.gameRound ?? DateTime.now().millisecondsSinceEpoch));
+    playerResponses.shuffle(Random(
+        widget.gameRound >= 0 ? DateTime.now().millisecondsSinceEpoch : 0));
     return PageView.builder(
       controller: pageController,
       itemCount: playerResponses.length,

@@ -2,13 +2,18 @@ import 'package:appsagainsthumanity/internal.dart';
 import 'package:flutter/material.dart';
 
 class GameBottomSheet extends StatelessWidget {
-  final String title;
-  final String subtitle;
-  final Widget child;
-  final List<Widget> actions;
-  final EdgeInsets margin;
+  final String? title;
+  final String? subtitle;
+  final Widget? child;
+  final List<Widget>? actions;
+  final EdgeInsets? margin;
 
-  GameBottomSheet({this.title, this.subtitle, @required this.child, this.actions, this.margin});
+  GameBottomSheet(
+      {this.title,
+      this.subtitle,
+      @required this.child,
+      this.actions,
+      this.margin});
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +37,7 @@ class GameBottomSheet extends StatelessWidget {
               actions: actions,
               centerTitle: false,
               iconTheme: context.theme.iconTheme,
-              textTheme: context.theme.textTheme,
+              // textTheme: context.theme.textTheme,
               leading: Container(
                 margin: const EdgeInsets.only(left: 8),
                 child: IconButton(
@@ -58,10 +63,10 @@ class GameBottomSheet extends StatelessWidget {
           margin: const EdgeInsets.only(left: 8),
           child: Column(
             children: [
-              Text(title),
+              Text(title!),
               Text(
-                subtitle,
-                style: context.theme.textTheme.bodyText1.copyWith(
+                subtitle!,
+                style: context.theme.textTheme.bodyText1?.copyWith(
                   color: Colors.black38,
                 ),
               )
@@ -71,10 +76,10 @@ class GameBottomSheet extends StatelessWidget {
       } else {
         return Container(
           margin: const EdgeInsets.only(left: 8),
-          child: Text(title),
+          child: Text(title!),
         );
       }
     }
-    return null;
+    return const SizedBox();
   }
 }

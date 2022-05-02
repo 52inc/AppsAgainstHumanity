@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 
 class HeaderItem extends StatelessWidget {
   final String title;
-  final bool isChecked;
+  final bool? isChecked;
 
   HeaderItem(this.title, [this.isChecked]);
 
@@ -14,8 +14,11 @@ class HeaderItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        Analytics().logSelectContent(contentType: 'card_set_source', itemId: title);
-        context.bloc<CreateGameBloc>().add(CardSourceSelected(title, isChecked));
+        Analytics()
+            .logSelectContent(contentType: 'card_set_source', itemId: title);
+        context
+            .read<CreateGameBloc>()
+            .add(CardSourceSelected(title, isChecked!));
       },
       child: Column(
         children: [
@@ -33,8 +36,11 @@ class HeaderItem extends StatelessWidget {
                   value: isChecked,
                   tristate: true,
                   onChanged: (value) {
-                    Analytics().logSelectContent(contentType: 'card_set_source', itemId: title);
-                    context.bloc<CreateGameBloc>().add(CardSourceSelected(title, value));
+                    Analytics().logSelectContent(
+                        contentType: 'card_set_source', itemId: title);
+                    context
+                        .read<CreateGameBloc>()
+                        .add(CardSourceSelected(title, value!));
                   },
                   activeColor: AppColors.primary,
                   checkColor: Colors.white,
@@ -43,8 +49,8 @@ class HeaderItem extends StatelessWidget {
                   child: Container(
                     margin: const EdgeInsets.only(left: 16),
                     child: Text(
-                      CahScrubber.scrub(title) ?? "_UNKNOWN_",
-                      style: context.theme.textTheme.subtitle2.copyWith(
+                      CahScrubber.scrub(title) != "" ? "_UNKNOWN_" : "",
+                      style: context.theme.textTheme.subtitle2?.copyWith(
                         color: AppColors.primaryVariant,
                       ),
                     ),

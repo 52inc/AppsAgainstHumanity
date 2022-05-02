@@ -6,12 +6,12 @@ part 'card_set.g.dart';
 @JsonSerializable()
 class CardSet extends Equatable {
   @JsonKey(ignore: true)
-  String id;
+  String? id;
 
-  final String name;
-  final int prompts;
-  final int responses;
-  final String source;
+  final String? name;
+  final int? prompts;
+  final int? responses;
+  final String? source;
 
   CardSet({
     this.id,
@@ -21,7 +21,8 @@ class CardSet extends Equatable {
     this.source,
   });
 
-  factory CardSet.fromJson(Map<String, dynamic> json) => _$CardSetFromJson(json);
+  factory CardSet.fromJson(Map<String, dynamic> json) =>
+      _$CardSetFromJson(json);
 
   Map<String, dynamic> toJson() => _$CardSetToJson(this);
 
@@ -31,5 +32,11 @@ class CardSet extends Equatable {
   }
 
   @override
-  List<Object> get props => [id, name, prompts, responses, source];
+  List<Object> get props => [
+        id as String,
+        name as String,
+        prompts as int,
+        responses as int,
+        source as String,
+      ];
 }

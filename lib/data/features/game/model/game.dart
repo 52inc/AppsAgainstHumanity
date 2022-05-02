@@ -2,17 +2,17 @@ import 'package:appsagainsthumanity/data/features/game/model/game_state.dart';
 import 'package:appsagainsthumanity/data/features/game/model/turn.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:json_annotation/json_annotation.dart';
-import 'package:meta/meta.dart';
+// import 'package:meta/meta.dart';
 
 part 'game.g.dart';
 
+const PRIZES_TO_WIN = 7;
+const PLAYER_LIMIT = 30;
+
 @JsonSerializable()
 class Game {
-  static const PRIZES_TO_WIN = 7;
-  static const PLAYER_LIMIT = 30;
-
   @JsonKey(ignore: true)
-  String id;
+  String? id;
   final String gid;
   final String ownerId;
   final GameState state;
@@ -21,18 +21,18 @@ class Game {
   final int playerLimit;
   final bool pick2Enabled;
   final bool draw2Pick3Enabled;
-  final List<String> judgeRotation;
+  final List<String>? judgeRotation;
   final Set<String> cardSets;
   @JsonKey(toJson: _turnToJson)
-  final Turn turn;
-  final String winner;
+  final Turn? turn;
+  final String? winner;
 
   Game({
     this.id,
-    @required this.gid,
-    @required this.ownerId,
-    @required this.state,
-    @required this.cardSets,
+    required this.gid,
+    required this.ownerId,
+    required this.state,
+    required this.cardSets,
     this.round = 1,
     this.prizesToWin = PRIZES_TO_WIN,
     this.playerLimit = PLAYER_LIMIT,
@@ -44,7 +44,7 @@ class Game {
   });
 
   factory Game.fromDocument(DocumentSnapshot snapshot) {
-    var game = Game.fromJson(snapshot.data());
+    var game = Game.fromJson(snapshot.data() as Map<String, dynamic>);
     game.id = snapshot.id;
     return game;
   }
@@ -54,16 +54,16 @@ class Game {
   Map<String, dynamic> toJson() => _$GameToJson(this);
 
   Game copyWith({
-    String id,
-    String gid,
-    String ownerId,
-    GameState state,
-    int round,
-    int prizesToWin,
-    List<String> judgeRotation,
-    Set<String> cardSets,
-    Turn turn,
-    String winner,
+    String? id,
+    String? gid,
+    String? ownerId,
+    GameState? state,
+    int? round,
+    int? prizesToWin,
+    List<String>? judgeRotation,
+    Set<String>? cardSets,
+    Turn? turn,
+    String? winner,
   }) {
     return Game(
       id: id ?? this.id,
@@ -80,4 +80,4 @@ class Game {
   }
 }
 
-Map<String, dynamic> _turnToJson(Turn turn) => turn?.toJson();
+Map<String, dynamic> _turnToJson(Turn turn) => turn.toJson();

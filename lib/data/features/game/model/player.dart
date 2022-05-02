@@ -22,24 +22,24 @@ class Player {
   final bool isInactive;
 
   @JsonKey(includeIfNull: false)
-  final List<ResponseCard> hand;
+  final List<ResponseCard>? hand;
 
   @JsonKey(includeIfNull: false)
-  final List<PromptCard> prizes;
+  final List<PromptCard>? prizes;
 
-  Player({
-    @required this.id,
-    @required this.name,
-    this.avatarUrl,
-    this.hand,
-    this.prizes,
-    bool isRandoCardrissian = false,
-    bool isInactive = false
-  }) : isRandoCardrissian = isRandoCardrissian,
+  Player(
+      {required this.id,
+      required this.name,
+      required this.avatarUrl,
+      this.hand,
+      this.prizes,
+      bool isRandoCardrissian = false,
+      bool isInactive = false})
+      : isRandoCardrissian = isRandoCardrissian,
         isInactive = isInactive;
 
   factory Player.fromDocument(DocumentSnapshot documentSnapshot) =>
-      Player.fromJson(documentSnapshot.data());
+      Player.fromJson(documentSnapshot.data() as Map<String, dynamic>);
 
   factory Player.fromJson(Map<String, dynamic> json) => _$PlayerFromJson(json);
 

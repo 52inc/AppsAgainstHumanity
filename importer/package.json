@@ -18,7 +18,7 @@
   "dependencies": {
     "@types/minimist": "^1.2.0",
     "@types/node": "^13.11.1",
-    "firebase-admin": "^8.10.0",
+    "firebase-admin": "^10.1.0",
     "google-spreadsheet": "^3.0.11",
     "minimist": "^1.2.5"
   }

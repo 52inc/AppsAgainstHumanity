@@ -1,15 +1,15 @@
-import 'dart:io';
+// import 'dart:io';
 
 import 'package:appsagainsthumanity/authentication_bloc/authentication_bloc.dart';
 import 'package:appsagainsthumanity/internal.dart';
 import 'package:appsagainsthumanity/ui/signin/bloc/bloc.dart';
-import 'package:appsagainsthumanity/ui/signin/widgets/apple_sign_in.dart';
-import 'package:appsagainsthumanity/ui/signin/widgets/auth_button.dart';
+// import 'package:appsagainsthumanity/ui/signin/widgets/apple_sign_in.dart';
+// import 'package:appsagainsthumanity/ui/signin/widgets/auth_button.dart';
 import 'package:appsagainsthumanity/ui/widgets/reponsive_widget_mediator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+// import 'package:google_fonts/google_fonts.dart';
+// import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
 import 'layouts/mobile_layout.dart';
 import 'layouts/tablet_layout.dart';
@@ -29,7 +29,7 @@ class _SignInScreen extends State<SignInScreen> {
           top: context.paddingTop,
         ),
         child: BlocProvider(
-          create: (context) => SignInBloc(userRepository: context.repository()),
+          create: (context) => SignInBloc(userRepository: context.read()),
           child: _buildBody(),
         ),
       ),
@@ -52,7 +52,7 @@ class _SignInScreen extends State<SignInScreen> {
         }
 
         if (state.isSuccess) {
-          context.bloc<AuthenticationBloc>().add(LoggedIn());
+          context.read<AuthenticationBloc>().add(LoggedIn());
         }
       },
       builder: (context, state) {

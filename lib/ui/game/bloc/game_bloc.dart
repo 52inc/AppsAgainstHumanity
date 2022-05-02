@@ -10,14 +10,28 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class GameBloc extends Bloc<GameEvent, GameViewState> {
-  final Game initialGame;
-  final GameRepository gameRepository;
+  final Game? initialGame;
+  final GameRepository? gameRepository;
 
   StreamSubscription _gameSubscription;
   StreamSubscription _playersSubscription;
   StreamSubscription _downvoteSubscription;
 
-  GameBloc(this.initialGame, this.gameRepository);
+  GameBloc({
+    this.initialGame,
+    this.gameRepository,
+    StreamSubscription? gameSubscription,
+    StreamSubscription? playersSubscription,
+    StreamSubscription? downvoteSubscription,
+  })  : _gameSubscription = gameSubscription!,
+        _playersSubscription = playersSubscription!,
+        _downvoteSubscription = downvoteSubscription!,
+        super(GameViewState());
+
+  // SignInBloc({
+  //   required UserRepository userRepository,
+  // })  : _userRepository = userRepository,
+  //       super(SignInState.loading()) {}
 
   @override
   GameViewState get initialState => GameViewState(game: initialGame);
@@ -59,20 +73,23 @@ class GameBloc extends Bloc<GameEvent, GameViewState> {
 
   Stream<GameViewState> _mapSubscribeToState(Subscribe event) async* {
     var user = FirebaseAuth.instance.currentUser;
-    add(UserUpdated(user.uid));
+    add(UserUpdated(user!.uid));
 
-    _gameSubscription?.cancel();
-    _gameSubscription = gameRepository.observeGame(event.gameId).listen((game) {
+    _gameSubscription.cancel();
+    _gameSubscription =
+        gameRepository!.observeGame(event.gameId).listen((game) {
       add(GameUpdated(game));
     });
-    
-    _playersSubscription?.cancel();
-    _playersSubscription = gameRepository.observePlayers(event.gameId).listen((players) { 
+
+    _playersSubscription.cancel();
+    _playersSubscription =
+        gameRepository!.observePlayers(event.gameId).listen((players) {
       add(PlayersUpdated(players));
     });
 
-    _downvoteSubscription?.cancel();
-    _downvoteSubscription = gameRepository.observeDownvotes(event.gameId).listen((downvotes) {
+    _downvoteSubscription.cancel();
+    _downvoteSubscription =
+        gameRepository!.observeDownvotes(event.gameId).listen((downvotes) {
       add(DownvotesUpdated(downvotes));
     });
   }
@@ -82,26 +99,29 @@ class GameBloc extends Bloc<GameEvent, GameViewState> {
   }
 
   Stream<GameViewState> _mapGameUpdatedToState(GameUpdated event) async* {
-    yield state.copyWith(game: event.game, isLoading: false, isSubmitting: false);
+    yield state.copyWith(
+        game: event.game, isLoading: false, isSubmitting: false);
   }
 
   Stream<GameViewState> _mapPlayersUpdatedToState(PlayersUpdated event) async* {
     yield state.copyWith(players: event.players, isLoading: false);
   }
 
-  Stream<GameViewState> _mapDownvotesUpdatedToState(DownvotesUpdated event) async* {
+  Stream<GameViewState> _mapDownvotesUpdatedToState(
+      DownvotesUpdated event) async* {
     yield state.copyWith(downvotes: event.downvotes, isLoading: false);
   }
 
   Stream<GameViewState> _mapStartGameToState() async* {
     try {
       yield state.copyWith(isSubmitting: true);
-      await gameRepository.startGame(state.game.id);
+      await gameRepository!.startGame(state.game!.id!);
     } catch (e) {
       if (e is PlatformException) {
         print(e);
         if (e.code == 'functionsError') {
-          final Map<String, dynamic> details = Map<String, dynamic>.from(e.details);
+          final Map<String, dynamic> details =
+              Map<String, dynamic>.from(e.details);
           yield state.copyWith(error: details['message'], isSubmitting: false);
         }
       }
@@ -114,7 +134,7 @@ class GameBloc extends Bloc<GameEvent, GameViewState> {
 
   Stream<GameViewState> _mapDownvoteToState() async* {
     try {
-      await gameRepository.downVoteCurrentPrompt(state.game.id);
+      await gameRepository!.downVoteCurrentPrompt(state.game!.id!);
     } catch (e) {
       yield state.copyWith(error: "$e");
     }
@@ -122,15 +142,17 @@ class GameBloc extends Bloc<GameEvent, GameViewState> {
 
   Stream<GameViewState> _mapWaveAtPlayerToState(WaveAtPlayer event) async* {
     try {
-      await gameRepository.waveAtPlayer(state.game.id, event.playerId, event.message);
+      await gameRepository!
+          .waveAtPlayer(state.game!.id!, event.playerId, event.message!);
     } catch (e) {
       yield state.copyWith(error: "$e");
     }
   }
 
-  Stream<GameViewState> _mapPickResponseCardToState(PickResponseCard event) async* {
+  Stream<GameViewState> _mapPickResponseCardToState(
+      PickResponseCard event) async* {
     // Check prompt special to determine if we allow the user to pick tow
-    var special = promptSpecial(state.game.turn?.promptCard?.special);
+    var special = promptSpecial(state.game!.turn!.promptCard.special);
     if (special != null) {
       // With a special there is the opportunity to submit more than 1 card. If the user attempts to select more than
       // the allotted amount for a give prompt special, it will clear the selected and set the picked card as the only one
@@ -139,8 +161,9 @@ class GameBloc extends Bloc<GameEvent, GameViewState> {
       switch (special) {
         case PromptSpecial.pick2:
           // Selected size limit is 2 here.
-          if (currentSelection.length < 2) {
-            yield state.copyWith(selectedCards: currentSelection..add(event.card));
+          if (currentSelection!.length < 2) {
+            yield state.copyWith(
+                selectedCards: currentSelection..add(event.card));
           } else {
             yield state.copyWith(selectedCards: [event.card]);
           }
@@ -148,11 +171,14 @@ class GameBloc extends Bloc<GameEvent, GameViewState> {
         case PromptSpecial.draw2pick3:
           // Selected size limit is 3 here. The firebase function that deals with churning-turns will auto-matically
           // deal out an extra 2 cards to the user at turn start
-          if (currentSelection.length < 3) {
-            yield state.copyWith(selectedCards: currentSelection..add(event.card));
+          if (currentSelection!.length < 3) {
+            yield state.copyWith(
+                selectedCards: currentSelection..add(event.card));
           } else {
             yield state.copyWith(selectedCards: [event.card]);
           }
+          break;
+        case PromptSpecial.derp:
           break;
       }
     } else {
@@ -170,7 +196,7 @@ class GameBloc extends Bloc<GameEvent, GameViewState> {
     if (responses != null && responses.isNotEmpty) {
       try {
         yield state.copyWith(isSubmitting: true);
-        await gameRepository.submitResponse(state.game.id, responses);
+        await gameRepository!.submitResponse(state.game!.id!, responses);
         yield state.copyWith(selectedCards: [], isSubmitting: false);
       } catch (e) {
         yield state.copyWith(error: "$e", isSubmitting: false);
@@ -181,7 +207,7 @@ class GameBloc extends Bloc<GameEvent, GameViewState> {
   Stream<GameViewState> _mapPickWinnerToState(PickWinner event) async* {
     try {
       yield state.copyWith(isSubmitting: true);
-      await gameRepository.pickWinner(state.game.id, event.winningPlayerId);
+      await gameRepository!.pickWinner(state.game!.id!, event.winningPlayerId);
       yield state.copyWith(isSubmitting: false);
     } catch (e) {
       yield state.copyWith(error: "$e", isSubmitting: false);
@@ -191,10 +217,15 @@ class GameBloc extends Bloc<GameEvent, GameViewState> {
   Stream<GameViewState> _mapKickWinnerToState(KickPlayer event) async* {
     try {
       yield state.copyWith(kickingPlayerId: event.playerId);
-      await gameRepository.kickPlayer(state.game.id, event.playerId);
-      yield state.copyWith(kickingPlayerId: null, overrideNull: true);
+      await gameRepository!.kickPlayer(state.game!.id!, event.playerId);
+      yield state.copyWith(
+        kickingPlayerId: null,
+      );
     } catch (e) {
-      yield state.copyWith(error: "$e", kickingPlayerId: null, overrideNull: true);
+      yield state.copyWith(
+        error: "$e",
+        kickingPlayerId: null,
+      );
     }
   }
 

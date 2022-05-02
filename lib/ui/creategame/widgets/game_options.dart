@@ -20,8 +20,9 @@ class GameOptions extends StatelessWidget {
           min: 1,
           max: 15,
           onValueChanged: (value) {
-            Analytics().logSelectContent(contentType: 'game_option', itemId: 'prizes_to_win');
-            context.bloc<CreateGameBloc>().add(ChangePrizesToWin(value));
+            Analytics().logSelectContent(
+                contentType: 'game_option', itemId: 'prizes_to_win');
+            context.read<CreateGameBloc>().add(ChangePrizesToWin(value));
           },
         ),
         CountPreference(
@@ -31,8 +32,9 @@ class GameOptions extends StatelessWidget {
           min: 5,
           max: 30,
           onValueChanged: (value) {
-            Analytics().logSelectContent(contentType: 'game_option', itemId: 'player_limit');
-            context.bloc<CreateGameBloc>().add(ChangePlayerLimit(value));
+            Analytics().logSelectContent(
+                contentType: 'game_option', itemId: 'player_limit');
+            context.read<CreateGameBloc>().add(ChangePlayerLimit(value));
           },
         ),
         SwitchListTile(
@@ -41,8 +43,9 @@ class GameOptions extends StatelessWidget {
           activeColor: AppColors.primary,
           value: state.pick2Enabled,
           onChanged: (value) {
-            Analytics().logSelectContent(contentType: 'game_option', itemId: 'pick2');
-            context.bloc<CreateGameBloc>().add(ChangePick2Enabled(value));
+            Analytics()
+                .logSelectContent(contentType: 'game_option', itemId: 'pick2');
+            context.read<CreateGameBloc>().add(ChangePick2Enabled(value));
           },
         ),
         SwitchListTile(
@@ -51,8 +54,9 @@ class GameOptions extends StatelessWidget {
           activeColor: AppColors.primary,
           value: state.draw2pick3Enabled,
           onChanged: (value) {
-            Analytics().logSelectContent(contentType: 'game_option', itemId: 'draw2_pick3');
-            context.bloc<CreateGameBloc>().add(ChangeDraw2Pick3Enabled(value));
+            Analytics().logSelectContent(
+                contentType: 'game_option', itemId: 'draw2_pick3');
+            context.read<CreateGameBloc>().add(ChangeDraw2Pick3Enabled(value));
           },
         ),
       ],

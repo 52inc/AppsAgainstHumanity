@@ -5,42 +5,46 @@ import 'package:meta/meta.dart';
 
 @immutable
 class HomeState {
-  final User user;
-  final List<UserGame> games;
-  final UserGame leavingGame;
-  final String joiningGame;
-  final Game joinedGame;
-  final String error;
+  final User? user;
+  final List<UserGame>? games;
+  final UserGame? leavingGame;
+  final String? joiningGame;
+  final Game? joinedGame;
+  final String? error;
   final bool isLoading;
 
   HomeState({
-    @required this.user,
-    @required this.isLoading,
-    List<UserGame> games,
+    this.user,
+    List<UserGame>? games,
     this.leavingGame,
     this.joiningGame,
     this.joinedGame,
     this.error,
-  }) : games = games ?? [];
+    required this.isLoading,
+  }) : games = games;
 
   factory HomeState.loading() {
     return HomeState(
-      user: null,
+      // user: User(
+      //   id: '',
+      //   name: '',
+      //   avatarUrl: '',
+      //   updatedAt: DateTime.now(),
+      // ),
       isLoading: true,
       error: null,
     );
   }
 
-  HomeState copyWith({
-    User user,
-    List<UserGame> games,
-    UserGame leavingGame,
-    String joiningGame,
-    Game joinedGame,
-    bool isLoading,
-    String error,
-    bool overrideNull = false
-  }) {
+  HomeState copyWith(
+      {User? user,
+      List<UserGame>? games,
+      UserGame? leavingGame,
+      String? joiningGame,
+      Game? joinedGame,
+      bool? isLoading,
+      String? error,
+      bool overrideNull = false}) {
     return HomeState(
       user: user ?? this.user,
       games: games ?? this.games,

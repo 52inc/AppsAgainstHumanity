@@ -34,20 +34,28 @@ class CardSetList extends StatelessWidget {
   Widget _buildList(KtList<CardSet> sets, KtSet<CardSet> selected) {
     var groupedSets = sets.groupBy((cs) => cs.source);
     var widgets = groupedSets.keys.toList().sortedWith((a, b) {
-      var aW = keyWeight(a);
-      var bW = keyWeight(b);
+      var aW = keyWeight(a!);
+      var bW = keyWeight(b!);
       if (aW.compareTo(bW) == 0) {
         return a.compareTo(b);
       } else {
         return aW.compareTo(bW);
       }
     }).flatMap((key) {
-      var items = groupedSets.get(key).map((cs) => CardSetListItem(cs, selected.contains(cs)));
-      var allItemsSelected = items.all((i) => i.isSelected);
-      var noItemsSelected = items.none((i) => i.isSelected);
+      var items = groupedSets
+          .get(key)
+          ?.map((cs) => CardSetListItem(cs, selected.contains(cs)));
+      var allItemsSelected = items?.all((i) => i.isSelected);
+      var noItemsSelected = items?.none((i) => i.isSelected);
       return mutableListOf<Widget>(
-        HeaderItem(key, allItemsSelected ? true : noItemsSelected ? false : null),
-      )..addAll(items);
+        HeaderItem(
+            key!,
+            allItemsSelected!
+                ? true
+                : noItemsSelected!
+                    ? false
+                    : null),
+      )..addAll(items!);
     });
 
     return ListView.builder(

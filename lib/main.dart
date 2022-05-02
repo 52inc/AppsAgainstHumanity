@@ -31,8 +31,8 @@ void main() async {
   runApp(buildRepositoryProvider(BlocProvider(
     create: (context) {
       return AuthenticationBloc(
-        userRepository: context.repository<UserRepository>(),
-        preferences: AppPreferences()
+        userRepository: context.read<UserRepository>(),
+        preferences: AppPreferences(),
       )..add(AppStarted());
     },
     child: App(),
@@ -49,7 +49,8 @@ Widget buildRepositoryProvider(Widget child) {
         create: (context) => FirestoreCardsRepository(),
       ),
       RepositoryProvider<GameRepository>(
-        create: (context) => FirestoreGameRepository(userRepository: context.repository()),
+        create: (context) =>
+            FirestoreGameRepository(userRepository: context.read()),
       )
     ],
     child: child,
